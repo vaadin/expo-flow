@@ -20,10 +20,10 @@ public class DashboardService {
     public DashboardService() {
         random = new Random(1);
         latestMetrics = List.of(
-                new Metric(MetricType.CURRENT_USERS.getName(), 745.0, "", new DecimalFormat("##")),
-                new Metric(MetricType.VIEWS.getName(), 54.6, "k", new DecimalFormat("##.0")),
-                new Metric(MetricType.CONVERSION_RATE.getName(), 18.0, "%", new DecimalFormat("##.0")),
-                new Metric(MetricType.SIGNUPS.getName(), 300.0, "", new DecimalFormat("##"))
+                new Metric(MetricType.CURRENT_USERS.getName(), 745.0, "", 0),
+                new Metric(MetricType.VIEWS.getName(), 54.6, "k", 1),
+                new Metric(MetricType.CONVERSION_RATE.getName(), 18.0, "%", 1),
+                new Metric(MetricType.SIGNUPS.getName(), 300.0, "", 0)
         );
 
         sink.emitNext(latestMetrics, Sinks.EmitFailureHandler.FAIL_FAST);

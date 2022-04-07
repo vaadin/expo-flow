@@ -33,7 +33,8 @@ public class Highlight extends VerticalLayout {
         var percentage = metric.getChange();
         var value = metric.getValue();
         var unit = metric.getUnit();
-        var formatter = metric.getFormatter();
+        var formatter = new DecimalFormat();
+        formatter.setMaximumFractionDigits(metric.getFractionDigits());
 
         VaadinIcon icon = VaadinIcon.ARROW_UP;
         String prefix = "";
