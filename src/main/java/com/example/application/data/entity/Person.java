@@ -2,14 +2,22 @@ package com.example.application.data.entity;
 
 import java.time.LocalDate;
 import javax.persistence.Entity;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 
 @Entity
 public class Person extends AbstractEntity {
 
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @Email
     private String email;
+    @Past
     private LocalDate dateOfBirth;
+    @NotBlank
     private String country;
 
     public String getFirstName() {
