@@ -17,7 +17,8 @@ public class MapView extends VerticalLayout {
     public MapView() {
         setSizeFull();
         setPadding(false);
-        map.getElement().setAttribute("theme", "borderless");
+        map.addThemeName("borderless");
+
         View view = map.getView();
         view.setCenter(Coordinate.fromLonLat(10.0, 55.0));
         view.setZoom(4);
