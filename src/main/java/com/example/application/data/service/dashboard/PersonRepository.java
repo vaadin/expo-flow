@@ -1,4 +1,4 @@
-package com.example.application.data.service;
+package com.example.application.data.service.dashboard;
 
 import com.example.application.data.entity.Person;
 import java.util.UUID;
