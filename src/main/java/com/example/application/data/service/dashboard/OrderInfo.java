@@ -2,12 +2,12 @@ package com.example.application.data.service.dashboard;
 
 import java.util.List;
 
-public class EventInfo {
+public class OrderInfo {
 
     private String city;
     private List<Integer> values;
 
-    public EventInfo(String city, List<Integer> values) {
+    public OrderInfo(String city, List<Integer> values) {
         this.city = city;
         this.values = values;
     }

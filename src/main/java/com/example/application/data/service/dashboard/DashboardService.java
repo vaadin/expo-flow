@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -62,12 +61,12 @@ public class DashboardService {
         return flux;
     }
 
-    public List<EventInfo> getEventInfo(){
+    public List<OrderInfo> getEventInfo(){
         return List.of(
-          new EventInfo("Berlin", List.of(189, 191, 191, 196, 201, 203, 209, 212, 229, 242, 244, 247)),
-          new EventInfo("London", List.of(138, 146, 148, 148, 152, 153, 163, 173, 178, 179, 185, 187)),
-          new EventInfo("New York", List.of(65, 65, 66, 71, 93, 102, 108, 117, 127, 129, 135, 136)),
-          new EventInfo("Tokyo", List.of(0, 11, 17, 23, 30, 42, 48, 49, 52, 54, 58, 62))
+          new OrderInfo("Berlin", List.of(189, 191, 191, 196, 201, 203, 209, 212, 229, 242, 244, 247)),
+          new OrderInfo("London", List.of(138, 146, 148, 148, 152, 153, 163, 173, 178, 179, 185, 187)),
+          new OrderInfo("New York", List.of(65, 65, 66, 71, 93, 102, 108, 117, 127, 129, 135, 136)),
+          new OrderInfo("Tokyo", List.of(0, 11, 17, 23, 30, 42, 48, 49, 52, 54, 58, 62))
         );
     }
 
