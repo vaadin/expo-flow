@@ -50,7 +50,6 @@ public class DashboardView extends Board {
     private void subscribeToMetrics() {
         var ui = UI.getCurrent();
         service.getMetrics().subscribe(metrics -> {
-            System.out.println("Received metrics" + metrics);
             ui.access(()->{
                 metrics.forEach(metric -> {
                     var highlight = highlights.get(metric.getName());
