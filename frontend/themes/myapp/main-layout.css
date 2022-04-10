@@ -75,13 +75,8 @@
 }
 
 .app-name {
-  align-items: center;
-  display: flex;
-  height: var(--lumo-size-xl);
-  margin: 0;
-  padding-left: var(--lumo-space-m);
-  padding-right: var(--lumo-space-m);
-  font-size: var(--lumo-font-size-m);
+  width: 60%;
+  padding: var(--lumo-space-m);
 }
 
 .drawer-section {

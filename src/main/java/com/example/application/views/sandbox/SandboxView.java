@@ -28,6 +28,8 @@ public class SandboxView extends VerticalLayout {
         form.setAlignItems(Alignment.END);
 
         add(form);
+
+        add(new DatePicker());
     }
 
 }
