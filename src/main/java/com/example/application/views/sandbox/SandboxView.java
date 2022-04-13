@@ -29,7 +29,6 @@ public class SandboxView extends VerticalLayout {
 
         add(form);
 
-        add(new DatePicker());
     }
 
 }
