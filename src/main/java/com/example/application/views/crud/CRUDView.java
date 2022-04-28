@@ -30,11 +30,11 @@ public class CRUDView extends SplitLayout {
 
     private Grid<Person> grid = new Grid<>(Person.class, false);
 
-    private TextField firstName;
-    private TextField lastName;
-    private TextField email;
-    private DatePicker dateOfBirth;
-    private TextField country;
+    private TextField firstName = new TextField("First Name");
+    private TextField lastName = new TextField("Last Name");
+    private TextField email = new TextField("Email");
+    private DatePicker dateOfBirth = new DatePicker("Date Of Birth");
+    private TextField country = new TextField("Country");
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
@@ -55,16 +55,13 @@ public class CRUDView extends SplitLayout {
     }
 
     private void createGrid() {
+        grid.getColumns().forEach(c -> c.setAutoWidth(true));
         grid.setSizeFull();
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("dateOfBirth").setAutoWidth(true);
-        grid.addColumn("country").setAutoWidth(true);
+
         grid.setItems(query -> personService.list(
-                        PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-                .stream());
+                        VaadinSpringDataHelpers.toSpringPageRequest(query))
+        );
 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
@@ -83,11 +80,6 @@ public class CRUDView extends SplitLayout {
         VerticalLayout editorLayout = new VerticalLayout();
 
         FormLayout formLayout = new FormLayout();
-        firstName = new TextField("First Name");
-        lastName = new TextField("Last Name");
-        email = new TextField("Email");
-        dateOfBirth = new DatePicker("Date Of Birth");
-        country = new TextField("Country");
 
         formLayout.add(firstName, lastName, email, dateOfBirth, country);
         editorLayout.add(formLayout);

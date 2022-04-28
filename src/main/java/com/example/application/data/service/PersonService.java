@@ -3,6 +3,7 @@ package com.example.application.data.service;
 import com.example.application.data.entity.Person;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import com.example.application.data.service.dashboard.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class PersonService {
         repository.deleteById(id);
     }
 
-    public Page<Person> list(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Stream<Person> list(Pageable pageable) {
+        return repository.findAll(pageable).stream();
     }
 
     public int count() {
