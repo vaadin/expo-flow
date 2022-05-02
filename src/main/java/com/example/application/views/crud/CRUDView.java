@@ -55,6 +55,9 @@ public class CRUDView extends SplitLayout {
     }
 
     private void createGrid() {
+        grid.addColumn(c -> c.getFirstName() + " " + c.getLastName())
+                .setHeader("Name");
+        grid.addColumns("dateOfBirth", "email");
         grid.getColumns().forEach(c -> c.setAutoWidth(true));
         grid.setSizeFull();
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
