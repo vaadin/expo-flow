@@ -13,19 +13,20 @@ import com.vaadin.flow.router.Route;
 @Route(value = "map", layout = MainLayout.class)
 public class MapView extends VerticalLayout {
 
-    private Map map = new Map();
-
     public MapView() {
         setSizeFull();
         setPadding(false);
+
+        Map map = new Map();
+
         map.addThemeName("borderless");
 
         View view = map.getView();
-        view.setCenter(Coordinate.fromLonLat(-100, 38));
+        view.setCenter(new Coordinate(-100, 38));
         view.setZoom(4);
 
-        var devNexus = new MarkerFeature(Coordinate.fromLonLat(-84.38, 33.75));
-        map.getFeatureLayer().addFeature(devNexus);
+        var javaOne = new MarkerFeature(new Coordinate(-115.1391, 36.1716));
+        map.getFeatureLayer().addFeature(javaOne);
 
         addAndExpand(map);
     }
