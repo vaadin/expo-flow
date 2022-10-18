@@ -28,16 +28,16 @@ import org.springframework.data.domain.PageRequest;
 public class CRUDView extends SplitLayout {
 
 
-    private Grid<Person> grid = new Grid<>(Person.class, false);
+    private final Grid<Person> grid = new Grid<>(Person.class, false);
 
-    private TextField firstName = new TextField("First Name");
-    private TextField lastName = new TextField("Last Name");
-    private TextField email = new TextField("Email");
-    private DatePicker dateOfBirth = new DatePicker("Date Of Birth");
-    private TextField country = new TextField("Country");
+    private final TextField firstName = new TextField("First Name");
+    private final TextField lastName = new TextField("Last Name");
+    private final TextField email = new TextField("Email");
+    private final DatePicker dateOfBirth = new DatePicker("Date Of Birth");
+    private final TextField country = new TextField("Country");
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
+    private final Button cancel = new Button("Cancel");
+    private final Button save = new Button("Save");
 
     private BeanValidationBinder<Person> binder;
 
