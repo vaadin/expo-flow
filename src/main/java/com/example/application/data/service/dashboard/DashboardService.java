@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -63,12 +65,23 @@ public class DashboardService {
 
     public List<OrderInfo> getEventInfo(){
         return List.of(
-          new OrderInfo("Berlin", List.of(189, 191, 191, 196, 201, 203, 209, 212, 229, 242, 244, 247)),
-          new OrderInfo("London", List.of(138, 146, 148, 148, 152, 153, 163, 173, 178, 179, 185, 187)),
-          new OrderInfo("New York", List.of(65, 65, 66, 71, 93, 102, 108, 117, 127, 129, 135, 136)),
-          new OrderInfo("Tokyo", List.of(0, 11, 17, 23, 30, 42, 48, 49, 52, 54, 58, 62))
+          new OrderInfo("Berlin", createListOfCumulativeOrders(80)),
+          new OrderInfo("London", createListOfCumulativeOrders(40)),
+          new OrderInfo("New York", createListOfCumulativeOrders(20)),
+          new OrderInfo("Tokyo", createListOfCumulativeOrders(0))
         );
     }
 
 
+    final Random r = new Random();
+    private List<Integer> createListOfCumulativeOrders(int startValue) {
+        return r.ints(startValue, startValue+100)
+                .distinct()
+                .limit(12)
+                .boxed()
+                .sorted(Comparator.naturalOrder())
+                .mapToInt(Integer::intValue)
+                .boxed()
+                .toList();
+    }
 }

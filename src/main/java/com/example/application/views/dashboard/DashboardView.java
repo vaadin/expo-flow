@@ -3,21 +3,22 @@ package com.example.application.views.dashboard;
 
 import com.example.application.data.service.dashboard.DashboardService;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.board.Board;
 import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.*;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import reactor.core.Disposable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,14 +30,17 @@ public class DashboardView extends Board {
 
     private final DashboardService service;
     private final Map<String, Highlight> highlights = new HashMap<>();
+    private ComboBox<String> year;
+    private VerticalLayout viewEvents;
+    private Chart chart;
+    private Disposable disposable;
+
 
     public DashboardView(DashboardService service) {
         this.service = service;
         setSizeFull();
         addRow(createHighlights());
         addRow(createViewEvents());
-
-        subscribeToMetrics();
     }
 
     private Component[] createHighlights() {
@@ -46,11 +50,13 @@ public class DashboardView extends Board {
         return highlights.values().toArray(new Highlight[0]);
     }
 
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
 
-    private void subscribeToMetrics() {
-        var ui = UI.getCurrent();
-        service.getMetrics().subscribe(metrics -> {
-            ui.access(()->{
+        var ui = attachEvent.getUI();
+        disposable = service.getMetrics().subscribe(metrics -> {
+            ui.access(() -> {
                 metrics.forEach(metric -> {
                     var highlight = highlights.get(metric.getName());
                     highlight.updateValues(metric);
@@ -59,16 +65,41 @@ public class DashboardView extends Board {
         });
     }
 
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        super.onDetach(detachEvent);
+
+        disposable.dispose();
+    }
+
     private Component createViewEvents() {
         // Header
-        Select<String> year = new Select<>();
-        year.setItems("2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021");
-        year.setValue("2021");
+        year = new ComboBox<>();
+        year.setItems("2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023");
+        year.setValue("2023");
         year.setWidth("100px");
+        year.addValueChangeListener(event -> {
+            var newChart = createChart();
+            viewEvents.replace(chart, newChart);
+            chart = newChart;
+        });
 
         HorizontalLayout header = createHeader("Orders", "Cumulative (city/month)");
         header.add(year);
 
+        //Create Chart
+        chart = createChart();
+
+        // Add it all together
+        viewEvents = new VerticalLayout(header, chart);
+        viewEvents.addClassName("p-l");
+        viewEvents.setPadding(false);
+        viewEvents.setSpacing(false);
+        viewEvents.getElement().getThemeList().add("spacing-l");
+        return viewEvents;
+    }
+
+    private Chart createChart() {
         // Chart
         Chart chart = new Chart(ChartType.AREA);
         Configuration conf = chart.getConfiguration();
@@ -88,13 +119,7 @@ public class DashboardView extends Board {
             conf.addSeries(new ListSeries(eventInfo.getCity(), eventInfo.getValues().toArray(new Integer[0])));
         });
 
-        // Add it all together
-        VerticalLayout viewEvents = new VerticalLayout(header, chart);
-        viewEvents.addClassName("p-l");
-        viewEvents.setPadding(false);
-        viewEvents.setSpacing(false);
-        viewEvents.getElement().getThemeList().add("spacing-l");
-        return viewEvents;
+        return chart;
     }
 
     private HorizontalLayout createHeader(String title, String subtitle) {
