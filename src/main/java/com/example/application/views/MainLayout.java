@@ -49,7 +49,7 @@ public class MainLayout extends AppLayout {
 
         Scroller scroller = new Scroller(createNavigation());
 
-        addToDrawer(header, scroller, createFooter());
+        addToDrawer(header, scroller);
     }
 
     private AppNav createNavigation() {
@@ -65,11 +65,6 @@ public class MainLayout extends AppLayout {
         return nav;
     }
 
-    private Footer createFooter() {
-        Footer layout = new Footer();
-
-        return layout;
-    }
 
     @Override
     protected void afterNavigation() {
@@ -81,108 +76,4 @@ public class MainLayout extends AppLayout {
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
     }
-
-    /**
-     * A simple navigation item component, based on ListItem element.
-     */
-//    public static class MenuItemInfo extends ListItem {
-//
-//        private final Class<? extends Component> view;
-//
-//        public MenuItemInfo(String menuTitle, LineAwesomeIcon icon, Class<? extends Component> view) {
-//            this.view = view;
-//            RouterLink link = new RouterLink();
-//            link.addClassNames("menu-item-link");
-//            link.setRoute(view);
-//
-//            Span text = new Span(menuTitle);
-//            text.addClassNames("menu-item-text");
-//
-//            link.add(icon.create(), text);
-//            add(link);
-//        }
-//
-//        public Class<?> getView() {
-//            return view;
-//        }
-//    }
-//
-//    private H1 viewTitle;
-//
-//    public MainLayout() {
-//        setPrimarySection(Section.DRAWER);
-//        addToNavbar(true, createHeaderContent());
-//        addToDrawer(createDrawerContent());
-//    }
-//
-//    private Component createHeaderContent() {
-//        DrawerToggle toggle = new DrawerToggle();
-//        toggle.addClassNames("view-toggle");
-//        toggle.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-//        toggle.getElement().setAttribute("aria-label", "Menu toggle");
-//
-//        viewTitle = new H1();
-//        viewTitle.addClassNames("view-title");
-//
-//        Header header = new Header(toggle, viewTitle);
-//        header.addClassNames("view-header");
-//        return header;
-//    }
-//
-//    private Component createDrawerContent() {
-//        var appName = new Image("images/vaadin.png", "Vaadin");
-//        appName.addClassNames("app-name");
-//
-//        com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
-//                createNavigation(), createFooter());
-//        section.addClassNames("drawer-section");
-//        return section;
-//    }
-//
-//    private Nav createNavigation() {
-//        Nav nav = new Nav();
-//        nav.addClassNames("menu-item-container");
-//        nav.getElement().setAttribute("aria-labelledby", "views");
-//
-//        // Wrap the links in a list; improves accessibility
-//        UnorderedList list = new UnorderedList();
-//        list.addClassNames("navigation-list");
-//        nav.add(list);
-//
-//        for (MenuItemInfo menuItem : createMenuItems()) {
-//            list.add(menuItem);
-//
-//        }
-//        return nav;
-//    }
-//
-//    private MenuItemInfo[] createMenuItems() {
-//        return new MenuItemInfo[]{ //
-//                new MenuItemInfo("CRUD", LineAwesomeIcon.COLUMNS_SOLID, CRUDView.class), //
-//
-//                new MenuItemInfo("Dashboard", LineAwesomeIcon.CHART_AREA_SOLID, DashboardView.class), //
-//
-//                new MenuItemInfo("Map", LineAwesomeIcon.MAP_SOLID, MapView.class), //
-//
-//                new MenuItemInfo("Sandbox", LineAwesomeIcon.GLASSES_SOLID, SandboxView.class), //
-//        };
-//    }
-//
-//    private Footer createFooter() {
-//        Footer layout = new Footer();
-//        layout.addClassNames("footer");
-//
-//        return layout;
-//    }
-//
-//    @Override
-//    protected void afterNavigation() {
-//        super.afterNavigation();
-//        viewTitle.setText(getCurrentPageTitle());
-//    }
-//
-//    private String getCurrentPageTitle() {
-//        PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
-//        return title == null ? "" : title.value();
-//    }
 }

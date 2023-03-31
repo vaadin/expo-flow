@@ -18,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import reactor.core.Disposable;
 
 import java.util.HashMap;
@@ -95,7 +96,7 @@ public class DashboardView extends Board {
         viewEvents.addClassName("p-l");
         viewEvents.setPadding(false);
         viewEvents.setSpacing(false);
-        viewEvents.getElement().getThemeList().add("spacing-l");
+        viewEvents.addClassName(LumoUtility.Gap.LARGE);
         return viewEvents;
     }
 
