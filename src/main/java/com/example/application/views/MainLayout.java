@@ -42,18 +42,14 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
-        H1 appName = new H1("My App");
-        appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
-
         var image = new Image("images/vaadin.png", "Vaadin");
-        image.setWidthFull();
         image.addClassNames("app-name");
 
-        Header header = new Header(appName);
+        Header header = new Header(image);
 
         Scroller scroller = new Scroller(createNavigation());
 
-        addToDrawer(header, image, scroller, createFooter());
+        addToDrawer(header, scroller, createFooter());
     }
 
     private AppNav createNavigation() {
