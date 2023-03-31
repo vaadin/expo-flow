@@ -20,7 +20,7 @@ public class MapView extends VerticalLayout {
         map.addThemeName("borderless");
 
         View view = map.getView();
-        view.setCenter(new Coordinate(6.880651017337574, 50.80061514826724));
+        view.setCenter(new Coordinate(-84.3982603, 33.7591776));
         view.setZoom(16);
 
         var conferenceCenter = new MarkerFeature(new Coordinate(6.880651017337574, 50.80061514826724));
