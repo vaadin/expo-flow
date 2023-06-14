@@ -64,10 +64,11 @@ public class MainLayout extends AppLayout {
         SideNav nav = new SideNav();
         nav.addItem(new SideNavItem("Components", ComponentsView.class, LineAwesomeIcon.CUBES_SOLID.create()));
         nav.addItem(new SideNavItem("Layouts", LayoutsView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
+        nav.addItem(new SideNavItem("Events", EventsView.class, LineAwesomeIcon.CALENDAR_ALT_SOLID.create()));
         nav.addItem(new SideNavItem("Form", FormView.class, LineAwesomeIcon.PEN_SOLID.create()));
         nav.addItem(new SideNavItem("Grid", GridView.class, LineAwesomeIcon.TABLE_SOLID.create()));
         nav.addItem(new SideNavItem("CRUD", CRUDView.class, LineAwesomeIcon.DATABASE_SOLID.create()));
-        nav.addItem(new SideNavItem("Sandbox", SandboxView.class, LineAwesomeIcon.GLASSES_SOLID.create()));
+        nav.addItem(new SideNavItem("Sandbox", SandboxView.class, LineAwesomeIcon.CODE_SOLID.create()));
 
         return nav;
     }
