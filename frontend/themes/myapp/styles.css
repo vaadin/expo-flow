@@ -2,6 +2,10 @@
 @import url('./main-layout.css');
 @import url('./components-view.css');
 
+vaadin-button {
+    border: 1px solid var(--lumo-shade-10pct);
+}
+
 /*
 html {
     --lumo-border-radius: 6px;
