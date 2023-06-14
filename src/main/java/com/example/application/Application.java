@@ -19,7 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @Theme(value = "myapp")
-@PWA(name = "My App", shortName = "My App", offlineResources = {})
+//@PWA(name = "My App", shortName = "My App", offlineResources = {})
 @EnableScheduling
 @Push
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
