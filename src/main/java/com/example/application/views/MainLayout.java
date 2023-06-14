@@ -59,8 +59,6 @@ public class MainLayout extends AppLayout {
     }
 
     private SideNav createNavigation() {
-        // AppNav is not yet an official component.
-        // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         SideNav nav = new SideNav();
         nav.addItem(new SideNavItem("Components", ComponentsView.class, LineAwesomeIcon.CUBES_SOLID.create()));
         nav.addItem(new SideNavItem("Layouts", LayoutsView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));

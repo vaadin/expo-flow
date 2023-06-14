@@ -45,7 +45,7 @@ public class PersonService {
         return repository.findAll();
     }
 
-    public Flux<Person> getLiveVisitors() {
+    public Flux<Person> getPersonStream() {
         return Flux.fromIterable(repository.findAll())
                 .delayElements(Duration.ofSeconds(1));
     }

@@ -1,32 +1,33 @@
 package com.example.application.views;
 
+import com.example.application.data.entity.Person;
 import com.example.application.data.service.PersonService;
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import reactor.core.Disposable;
+
+import java.util.ArrayList;
 
 @PageTitle("Push")
 @Route(value = "push", layout = MainLayout.class)
 public class PushView extends VerticalLayout {
 
-    private final Paragraph name;
     private Disposable subscription;
 
     public PushView(PersonService service) {
+        var people = new ArrayList<Person>();
+        var grid = new Grid<>(Person.class, false);
+        grid.setColumns("firstName", "lastName", "email");
 
-        name = new Paragraph();
-        name.addClassName(LumoUtility.FontSize.LARGE);
-
-        add(new H3("Most recent login:"), name);
+        add(grid);
 
         addAttachListener(e -> {
-            subscription = service.getLiveVisitors().subscribe(person -> {
+            subscription = service.getPersonStream().subscribe(person -> {
                 e.getUI().access(() -> {
-                    name.setText(person.getFirstName() + " " + person.getLastName());
+                    people.add(person);
+                    grid.setItems(people);
                 });
             });
         });
