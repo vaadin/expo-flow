@@ -2,6 +2,7 @@ package com.example.application.data.service;
 
 import com.example.application.data.entity.Person;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.stream.Stream;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Service
 public class PersonService {
@@ -41,6 +43,11 @@ public class PersonService {
 
     public List<Person> findAll() {
         return repository.findAll();
+    }
+
+    public Flux<Person> getLiveVisitors() {
+        return Flux.fromIterable(repository.findAll())
+                .delayElements(Duration.ofSeconds(1));
     }
 
 }
