@@ -66,6 +66,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(new SideNavItem("Form", FormView.class, LineAwesomeIcon.PEN_SOLID.create()));
         nav.addItem(new SideNavItem("Grid", GridView.class, LineAwesomeIcon.TABLE_SOLID.create()));
         nav.addItem(new SideNavItem("Push", PushView.class, LineAwesomeIcon.BELL_SOLID.create()));
+        nav.addItem(new SideNavItem("Chat", ChatView.class, LineAwesomeIcon.COMMENTS_SOLID.create()));
         nav.addItem(new SideNavItem("Sandbox", SandboxView.class, LineAwesomeIcon.CODE_SOLID.create()));
 
         return nav;

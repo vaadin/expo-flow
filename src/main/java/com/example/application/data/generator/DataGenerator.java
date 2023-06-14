@@ -1,7 +1,7 @@
 package com.example.application.data.generator;
 
 import com.example.application.data.entity.Person;
-import com.example.application.data.service.PersonRepository;
+import com.example.application.data.repository.PersonRepository;
 import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
 import com.vaadin.flow.spring.annotation.SpringComponent;

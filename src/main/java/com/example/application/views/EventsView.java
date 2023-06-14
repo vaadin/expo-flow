@@ -1,7 +1,7 @@
 package com.example.application.views;
 
 import com.example.application.data.entity.Person;
-import com.example.application.data.service.PersonService;
+import com.example.application.service.PersonService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
