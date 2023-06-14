@@ -1,20 +1,19 @@
 package com.example.application.views;
 
 
-import com.example.application.components.appnav.AppNav;
-import com.example.application.components.appnav.AppNavItem;
-import com.example.application.views.crud.CRUDView;
-import com.example.application.views.dashboard.DashboardView;
-import com.example.application.views.map.MapView;
-import com.example.application.views.sandbox.SandboxView;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.sidenav.SideNav;
+import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
@@ -42,25 +41,33 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
-        var image = new Image("images/vaadin.png", "Vaadin");
+        var image = new H2("Vaadin Flow");
         image.addClassNames("app-name");
 
         Header header = new Header(image);
 
         Scroller scroller = new Scroller(createNavigation());
 
-        addToDrawer(header, scroller);
+        var themeToggle = new Checkbox("Dark theme");
+
+        themeToggle.addValueChangeListener(e -> {
+            var js = "document.documentElement.setAttribute('theme', $0)";
+            getElement().executeJs(js, e.getValue() ? Lumo.DARK : Lumo.LIGHT);
+        });
+
+        addToDrawer(header, scroller, new VerticalLayout(themeToggle));
     }
 
-    private AppNav createNavigation() {
+    private SideNav createNavigation() {
         // AppNav is not yet an official component.
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
-        AppNav nav = new AppNav();
-
-        nav.addItem(new AppNavItem("CRUD", CRUDView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
-        nav.addItem(new AppNavItem("Dashboard", DashboardView.class, LineAwesomeIcon.CHART_AREA_SOLID.create()));
-        nav.addItem(new AppNavItem("Map", MapView.class, LineAwesomeIcon.MAP_SOLID.create()));
-        nav.addItem(new AppNavItem("Sandbox", SandboxView.class, LineAwesomeIcon.GLASSES_SOLID.create()));
+        SideNav nav = new SideNav();
+        nav.addItem(new SideNavItem("Components", ComponentsView.class, LineAwesomeIcon.CUBES_SOLID.create()));
+        nav.addItem(new SideNavItem("Layouts", LayoutsView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
+        nav.addItem(new SideNavItem("Form", FormView.class, LineAwesomeIcon.PEN_SOLID.create()));
+        nav.addItem(new SideNavItem("Grid", GridView.class, LineAwesomeIcon.TABLE_SOLID.create()));
+        nav.addItem(new SideNavItem("CRUD", CRUDView.class, LineAwesomeIcon.DATABASE_SOLID.create()));
+        nav.addItem(new SideNavItem("Sandbox", SandboxView.class, LineAwesomeIcon.GLASSES_SOLID.create()));
 
         return nav;
     }

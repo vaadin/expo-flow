@@ -1,4 +1,4 @@
-package com.example.application.views.crud;
+package com.example.application.views;
 
 import com.example.application.data.entity.Person;
 import com.example.application.data.service.PersonService;
@@ -24,7 +24,6 @@ import org.springframework.data.domain.PageRequest;
 
 @PageTitle("CRUD")
 @Route(value = "crud", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
 public class CRUDView extends SplitLayout {
 
 

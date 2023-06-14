@@ -1,7 +1,8 @@
-package com.example.application.views.sandbox;
+package com.example.application.views;
 
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
@@ -27,8 +28,8 @@ public class SandboxView extends VerticalLayout {
         var form = new HorizontalLayout(name,button);
         form.setAlignItems(Alignment.END);
 
-        add(form);
 
+        add(form);
     }
 
 }

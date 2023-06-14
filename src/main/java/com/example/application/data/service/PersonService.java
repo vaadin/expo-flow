@@ -1,13 +1,12 @@
 package com.example.application.data.service;
 
 import com.example.application.data.entity.Person;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import com.example.application.data.service.dashboard.PersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ public class PersonService {
 
     private final PersonRepository repository;
 
-    @Autowired
     public PersonService(PersonRepository repository) {
         this.repository = repository;
     }
@@ -39,6 +37,10 @@ public class PersonService {
 
     public int count() {
         return (int) repository.count();
+    }
+
+    public List<Person> findAll() {
+        return repository.findAll();
     }
 
 }
