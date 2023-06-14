@@ -13,6 +13,7 @@ import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.map.Map;
 import com.vaadin.flow.component.map.configuration.Coordinate;
 import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
@@ -124,6 +125,8 @@ public class ComponentsView extends VerticalLayout {
             setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
             setValue(Set.of(people.get(0), people.get(12)));
         }}, "col-span-2");
+
+        addComponent(new LoginForm(), "col-span-2", "tall");
 
         addComponent(new Tabs() {{
             add(new Tab("Details"), new Tab("Payment"), new Tab("Shipping"));
