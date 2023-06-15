@@ -2,7 +2,14 @@
 @import url('./main-layout.css');
 @import url('./components-view.css');
 
-vaadin-button {
+vaadin-button,
+vaadin-text-field::part(input-field),
+vaadin-email-field::part(input-field),
+vaadin-password-field::part(input-field),
+vaadin-combo-box::part(input-field),
+vaadin-date-picker::part(input-field),
+vaadin-time-picker::part(input-field),
+vaadin-multi-select-combo-box::part(input-field) {
     border: 1px solid var(--lumo-shade-10pct);
 }
 
