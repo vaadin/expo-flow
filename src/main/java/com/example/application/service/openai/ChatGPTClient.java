@@ -15,7 +15,7 @@ import java.util.Map;
 @Service
 public class ChatGPTClient {
 
-    @Value("${openai.api.key}")
+    @Value("${openai.api.key:no-key}")
     String openAiApiKey;
     private final WebClient webClient;
 
