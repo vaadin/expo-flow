@@ -27,6 +27,10 @@ public class ChatGPTClient {
 
     @RegisterReflectionForBinding(ChatGPTResponse.class)
     public Mono<String> generateCompletion(List<Message> messages) {
+
+        if(openAiApiKey.equals("no-key"))
+            return Mono.just("Please set the OPENAI_API_KEY environment variable to use this feature.");
+
         return webClient.post()
                 .header("Authorization", "Bearer " + openAiApiKey)
                 .bodyValue(Map.of(
