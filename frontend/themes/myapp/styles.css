@@ -2,31 +2,29 @@
 @import url('./main-layout.css');
 @import url('./components-view.css');
 
-vaadin-button,
-vaadin-text-field::part(input-field),
-vaadin-email-field::part(input-field),
-vaadin-password-field::part(input-field),
-vaadin-combo-box::part(input-field),
-vaadin-date-picker::part(input-field),
-vaadin-time-picker::part(input-field),
-vaadin-multi-select-combo-box::part(input-field) {
+vaadin-button {
     border: 1px solid var(--lumo-shade-10pct);
 }
 
-/*
 html {
-    --lumo-border-radius: 6px;
-    --lumo-primary-text-color: rgb(217, 8, 112);
-    --lumo-primary-color-50pct: rgba(217, 8, 112, 0.5);
-    --lumo-primary-color-10pct: rgba(217, 8, 112, 0.1);
-    --lumo-primary-color: hsl(330, 93%, 44%);
+    --vaadin-input-field-border-width: 1px;
+    --vaadin-input-field-border-color: var(--lumo-shade-10pct);
 }
 
-[theme~="dark"] {
-    --lumo-border-radius: 0px;
-    --lumo-primary-text-color: rgb(20, 179, 147);
-    --lumo-primary-color-50pct: rgba(20, 179, 147, 0.5);
-    --lumo-primary-color-10pct: rgba(20, 179, 147, 0.1);
-    --lumo-primary-color: hsl(168, 80%, 39%);
-}
-*/
+
+/*html {*/
+/*    --lumo-border-radius: 6px;*/
+/*    --lumo-primary-text-color: rgb(217, 8, 112);*/
+/*    --lumo-primary-color-50pct: rgba(217, 8, 112, 0.5);*/
+/*    --lumo-primary-color-10pct: rgba(217, 8, 112, 0.1);*/
+/*    --lumo-primary-color: hsl(330, 93%, 44%);*/
+/*}*/
+
+/*[theme~="dark"] {*/
+/*    --lumo-border-radius: 0px;*/
+/*    --lumo-primary-text-color: rgb(20, 179, 147);*/
+/*    --lumo-primary-color-50pct: rgba(20, 179, 147, 0.5);*/
+/*    --lumo-primary-color-10pct: rgba(20, 179, 147, 0.1);*/
+/*    --lumo-primary-color: hsl(168, 80%, 39%);*/
+/*}*/
+
