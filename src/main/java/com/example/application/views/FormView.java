@@ -8,6 +8,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.PageTitle;
@@ -19,7 +20,7 @@ public class FormView extends VerticalLayout {
 
     private final TextField firstName = new TextField("First Name");
     private final TextField lastName = new TextField("Last Name");
-    private final TextField email = new TextField("Email");
+    private final EmailField email = new EmailField("Email");
     private final DatePicker dateOfBirth = new DatePicker("Date Of Birth");
 
     private BeanValidationBinder<Person> binder = new BeanValidationBinder<>(Person.class);
@@ -49,17 +50,14 @@ public class FormView extends VerticalLayout {
     }
 
     private void saveAndDisplay() {
-        var person = new Person();
-
-        try {
-            binder.writeBean(person);
-
+        if (binder.validate().isOk()) {
+            var person = binder.getBean();
             var notification = new Notification();
             notification.setDuration(3000);
             notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
             notification.setText("Saved " + person.getFirstName() + " " + person.getLastName());
             notification.open();
-        } catch (Exception e) {
+        } else {
             Notification.show("Error saving person");
         }
     }
@@ -67,6 +65,5 @@ public class FormView extends VerticalLayout {
     private void resetForm() {
         binder.setBean(new Person());
     }
-
 
 }
