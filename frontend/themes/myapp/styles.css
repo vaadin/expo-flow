@@ -6,6 +6,11 @@ vaadin-button {
     border: 1px solid var(--lumo-shade-10pct);
 }
 
+vaadin-button[theme~='tertiary'] {
+    border: none;
+}
+
+
 html {
     --vaadin-input-field-border-width: 1px;
     --vaadin-input-field-border-color: var(--lumo-shade-10pct);
