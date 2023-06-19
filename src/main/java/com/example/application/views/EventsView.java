@@ -40,7 +40,7 @@ public class EventsView extends VerticalLayout {
     }
 
     private void addDatePickerExample() {
-        var datePicker = new DatePicker();
+        var datePicker = new DatePicker("Select date");
         var message = new Span();
 
         datePicker.addValueChangeListener(e -> {
@@ -53,7 +53,7 @@ public class EventsView extends VerticalLayout {
     }
 
     private void addComboBoxExample(List<String> names) {
-        var comboBox = new ComboBox<String>();
+        var comboBox = new ComboBox<String>("Select person");
         comboBox.setItems(names);
 
         var message = new Span();

@@ -47,6 +47,8 @@ public class ComponentsView extends VerticalLayout {
 
         var people = service.findAll();
 
+        addComponent(new LoginForm(), "col-span-2", "tall");
+
         addComponent(
                 new HorizontalLayout(
                         new Button("Save") {{
@@ -97,7 +99,7 @@ public class ComponentsView extends VerticalLayout {
                                     new MessageListItem(
                                             "Using your talent, hobby or profession in a way that makes you contribute with something good to this world is truly the way to go.",
                                             LocalDateTime.now().minusMinutes(55).toInstant(ZoneOffset.UTC),
-                                            "Linsey Listy") {{
+                                            "Lindsey Listy") {{
                                         setUserColorIndex(2);
                                     }}
                             );
@@ -113,7 +115,6 @@ public class ComponentsView extends VerticalLayout {
         addComponent(new TextField("Search") {{
             setPrefixComponent(VaadinIcon.SEARCH.create());
             setValue("John Doe");
-            getElement().setAttribute("error-message", "This field is required");
             setClearButtonVisible(true);
         }});
 
@@ -125,8 +126,6 @@ public class ComponentsView extends VerticalLayout {
             setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
             setValue(Set.of(people.get(0), people.get(12)));
         }}, "col-span-2");
-
-        addComponent(new LoginForm(), "col-span-2", "tall");
 
         addComponent(new Tabs() {{
             add(new Tab("Details"), new Tab("Payment"), new Tab("Shipping"));
