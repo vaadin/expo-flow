@@ -98,6 +98,7 @@ public class ComponentsView extends VerticalLayout {
             series.add(new DataSeriesItem("No", 20));
             series.add(new DataSeriesItem("Maybe", 5));
             getConfiguration().setSeries(series);
+            getConfiguration().getChart().setStyledMode(true);
         }}, "col-span-2", "tall");
 
         addComponent(new VerticalLayout(
