@@ -1,5 +1,6 @@
 package com.example.application.views;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,7 +20,9 @@ public class SandboxView extends VerticalLayout {
 
         button.addClickListener(e -> {
             add(new Paragraph("Hello " + name.getValue()));
+            name.clear();
         });
+        button.addClickShortcut(Key.ENTER);
 
         var form = new HorizontalLayout(name, button);
         form.setAlignItems(Alignment.END);
