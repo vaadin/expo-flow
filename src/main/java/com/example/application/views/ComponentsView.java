@@ -5,6 +5,11 @@ import com.example.application.service.PersonService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.charts.Chart;
+import com.vaadin.flow.component.charts.model.ChartType;
+import com.vaadin.flow.component.charts.model.DataSeries;
+import com.vaadin.flow.component.charts.model.DataSeriesItem;
+import com.vaadin.flow.component.charts.model.ListSeries;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -86,6 +91,14 @@ public class ComponentsView extends VerticalLayout {
             setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
             setValue(people.get(0));
         }});
+
+        addComponent(new Chart(ChartType.PIE) {{
+            DataSeries series = new DataSeries();
+            series.add(new DataSeriesItem("Yes", 10));
+            series.add(new DataSeriesItem("No", 20));
+            series.add(new DataSeriesItem("Maybe", 5));
+            getConfiguration().setSeries(series);
+        }}, "col-span-2", "tall");
 
         addComponent(new VerticalLayout(
                         new MessageList() {{
