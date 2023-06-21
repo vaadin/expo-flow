@@ -17,7 +17,6 @@ public class PushView extends VerticalLayout {
     private Disposable subscription;
 
     public PushView(PersonService service) {
-        var people = new ArrayList<Person>();
         var grid = new Grid<>(Person.class, false);
         grid.setColumns("firstName", "lastName", "email");
 
@@ -26,8 +25,7 @@ public class PushView extends VerticalLayout {
         addAttachListener(e -> {
             subscription = service.getPersonStream().subscribe(person -> {
                 e.getUI().access(() -> {
-                    people.add(person);
-                    grid.setItems(people);
+                    grid.getListDataView().addItem(person);
                 });
             });
         });

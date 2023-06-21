@@ -15,20 +15,18 @@ public class SandboxView extends VerticalLayout {
 
 
     public SandboxView() {
-        var name = new TextField("Your name");
+        var name = new TextField();
         var button = new Button("Say hello");
 
+        name.setPlaceholder("Your name");
+
+        button.addClickShortcut(Key.ENTER);
         button.addClickListener(e -> {
             add(new Paragraph("Hello " + name.getValue()));
             name.clear();
         });
-        button.addClickShortcut(Key.ENTER);
 
-        var form = new HorizontalLayout(name, button);
-        form.setAlignItems(Alignment.END);
-
-
-        add(form);
+        add(new HorizontalLayout(name, button));
     }
 
 }
