@@ -61,8 +61,6 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
         nav.addItem(new SideNavItem("Components", ComponentsView.class, LineAwesomeIcon.CUBES_SOLID.create()));
-        nav.addItem(new SideNavItem("Layouts", LayoutsView.class, LineAwesomeIcon.COLUMNS_SOLID.create()));
-        nav.addItem(new SideNavItem("Events", EventsView.class, LineAwesomeIcon.CALENDAR_ALT_SOLID.create()));
         nav.addItem(new SideNavItem("Form", FormView.class, LineAwesomeIcon.PEN_SOLID.create()));
         nav.addItem(new SideNavItem("Grid", GridView.class, LineAwesomeIcon.TABLE_SOLID.create()));
         nav.addItem(new SideNavItem("Push", PushView.class, LineAwesomeIcon.BELL_SOLID.create()));

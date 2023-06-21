@@ -9,7 +9,6 @@ import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.ChartType;
 import com.vaadin.flow.component.charts.model.DataSeries;
 import com.vaadin.flow.component.charts.model.DataSeriesItem;
-import com.vaadin.flow.component.charts.model.ListSeries;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -40,6 +39,7 @@ import com.vaadin.flow.router.RouteAlias;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Set;
 
 @PageTitle("Components")
@@ -47,118 +47,195 @@ import java.util.Set;
 @RouteAlias(value = "", layout = MainLayout.class)
 public class ComponentsView extends VerticalLayout {
 
+    private final List<Person> people;
+
     public ComponentsView(PersonService service) {
         addClassName("components-view");
 
-        var people = service.findAll();
+        people = service.findAll();
 
-        addComponent(new LoginForm(), "col-span-2", "tall");
-
-        addComponent(
-                new HorizontalLayout(
-                        new Button("Save") {{
-                            addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-                        }},
-                        new Button("Cancel")
-                )
-        );
-
-        addComponent(new RadioButtonGroup<>() {{
-            addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-            setItems("Option one", "Option two", "Option three");
-            setValue("Option one");
-        }});
-
-        addComponent(new DateTimePicker("Meeting date and time") {{
-            setValue(LocalDateTime.now());
-        }}, "col-span-2");
-
-        addComponent(new CheckboxGroup<>() {{
-            addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
-            setItems("Option one", "Option two", "Option three");
-            setValue(Set.of("Option one", "Option three"));
-        }});
-
-        addComponent(new Grid<>(Person.class) {{
-            setItems(people);
-            setColumns("firstName", "lastName", "email", "dateOfBirth");
-            setSelectionMode(Grid.SelectionMode.MULTI);
-            setHeight("100%");
-            people.subList(2, 5).forEach(this::select);
-        }}, "col-span-3", "tall");
-
-        addComponent(new ComboBox<>("People", people) {{
-            setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
-            setValue(people.get(0));
-        }});
-
-        addComponent(new Chart(ChartType.PIE) {{
-            DataSeries series = new DataSeries();
-            series.add(new DataSeriesItem("Yes", 10));
-            series.add(new DataSeriesItem("No", 20));
-            series.add(new DataSeriesItem("Maybe", 5));
-            getConfiguration().setSeries(series);
-            getConfiguration().getChart().setStyledMode(true);
-        }}, "col-span-2", "tall");
-
-        addComponent(new VerticalLayout(
-                        new MessageList() {{
-                            setItems(
-                                    new MessageListItem(
-                                            "Nature does not hurry, yet everything gets accomplished.",
-                                            LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC),
-                                            "Matt Mambo") {{
-                                        setUserColorIndex(1);
-                                    }},
-                                    new MessageListItem(
-                                            "Using your talent, hobby or profession in a way that makes you contribute with something good to this world is truly the way to go.",
-                                            LocalDateTime.now().minusMinutes(55).toInstant(ZoneOffset.UTC),
-                                            "Lindsey Listy") {{
-                                        setUserColorIndex(2);
-                                    }}
-                            );
-                        }},
-                        new MessageInput() {{
-                            setWidth("100%");
-                        }})
-
-                , "col-span-2", "tall");
-
-
-
-        addComponent(new TextField("Search") {{
-            setPrefixComponent(VaadinIcon.SEARCH.create());
-            setValue("John Doe");
-            setClearButtonVisible(true);
-        }});
-
-        addComponent(new Upload());
-
-        addComponent(new MultiSelectComboBox<>("People", people) {{
-            setItems(people);
-            setWidth("100%");
-            setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
-            setValue(Set.of(people.get(0), people.get(12)));
-        }}, "col-span-2");
-
-        addComponent(new Tabs() {{
-            add(new Tab("Details"), new Tab("Payment"), new Tab("Shipping"));
-        }}, "col-span-2");
-
-        addComponent(new Map() {{
-            setHeight("100%");
-            setCenter(new Coordinate(22.2983171, 60.4515391));
-            setZoom(4);
-            getFeatureLayer().addFeature(new MarkerFeature(new Coordinate(22.2983171, 60.4515391)));
-        }}, "col-span-2", "tall");
-
-        addComponent(new RichTextEditor() {{
-            setHeight("100%");
-            setValue("<h1>Rich Text Editor</h1><p>This is a rich text editor</p>");
-        }}, "col-span-2", "tall");
+        addLoginForm();
+        addButtons();
+        addRadioButtonGroup();
+        addDateTimePicker();
+        addCheckBoxGroup();
+        addGrid();
+        addComboBox();
+        addChart();
+        addMessageList();
+        addTextField();
+        addUpload();
+        addMultiSelectComboBox();
+        addTabs();
+        addMap();
+        addRichTextEditor();
     }
 
-    private void addComponent(Component component, String... classNames) {
+    private void addLoginForm() {
+        var loginForm = new LoginForm();
+
+        addComponentToGrid(loginForm, "col-span-2", "tall");
+    }
+
+    private void addButtons() {
+        var save = new Button("Save");
+        var cancel = new Button("Cancel");
+        var layout = new HorizontalLayout();
+
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        layout.add(save, cancel);
+
+        addComponentToGrid(layout);
+    }
+
+    private void addRadioButtonGroup() {
+        var radioButtonGroup = new RadioButtonGroup<String>();
+
+        radioButtonGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        radioButtonGroup.setItems("Option one", "Option two", "Option three");
+        radioButtonGroup.setValue("Option one");
+
+        addComponentToGrid(radioButtonGroup);
+    }
+
+    private void addDateTimePicker() {
+        var dateTimePicker = new DateTimePicker("Meeting date and time");
+
+        dateTimePicker.setValue(LocalDateTime.now());
+
+        addComponentToGrid(dateTimePicker, "col-span-2");
+    }
+
+    private void addCheckBoxGroup() {
+        var checkboxGroup = new CheckboxGroup<String>();
+
+        checkboxGroup.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
+        checkboxGroup.setItems("Option one", "Option two", "Option three");
+        checkboxGroup.setValue(Set.of("Option one", "Option three"));
+
+        addComponentToGrid(checkboxGroup);
+    }
+
+    private void addGrid() {
+        var grid = new Grid<>(Person.class);
+
+        grid.setItems(people);
+        grid.setColumns("firstName", "lastName", "email", "dateOfBirth");
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.setHeight("100%");
+
+        people.subList(2, 5).forEach(grid::select);
+
+        addComponentToGrid(grid, "col-span-3", "tall");
+    }
+
+    private void addComboBox() {
+        var comboBox = new ComboBox<>("People", people);
+
+        comboBox.setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
+        comboBox.setValue(people.get(0));
+
+        addComponentToGrid(comboBox);
+    }
+
+    private void addChart() {
+        var chart = new Chart(ChartType.PIE);
+        var configuration = chart.getConfiguration();
+
+        DataSeries series = new DataSeries();
+        series.add(new DataSeriesItem("Yes", 10));
+        series.add(new DataSeriesItem("No", 20));
+        series.add(new DataSeriesItem("Maybe", 5));
+
+        configuration.setSeries(series);
+        configuration.getChart().setStyledMode(true);
+
+        addComponentToGrid(chart, "col-span-2", "tall");
+    }
+
+    private void addMessageList() {
+        var messageList = new MessageList();
+        var messageInput = new MessageInput();
+        messageList.setItems(
+                new MessageListItem(
+                        "Nature does not hurry, yet everything gets accomplished.",
+                        LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC),
+                        "Matt Mambo") {{
+                    setUserColorIndex(1);
+                }},
+                new MessageListItem(
+                        "Using your talent, hobby or profession in a way that makes you contribute with something good to this world is truly the way to go.",
+                        LocalDateTime.now().minusMinutes(55).toInstant(ZoneOffset.UTC),
+                        "Lindsey Listy") {{
+                    setUserColorIndex(2);
+                }}
+        );
+        messageInput.setWidth("100%");
+
+        var layout = new VerticalLayout(messageList, messageInput);
+
+        addComponentToGrid(layout, "col-span-2", "tall");
+    }
+
+    private void addTextField() {
+        TextField textField = new TextField("Search");
+
+        textField.setPrefixComponent(VaadinIcon.SEARCH.create());
+        textField.setValue("John Doe");
+        textField.setClearButtonVisible(true);
+
+        addComponentToGrid(textField);
+    }
+
+    private void addUpload() {
+        var upload = new Upload();
+
+        addComponentToGrid(upload);
+    }
+
+    private void addMultiSelectComboBox() {
+        MultiSelectComboBox<Person> multiSelectComboBox = new MultiSelectComboBox<>("People", people);
+
+        multiSelectComboBox.setWidth("100%");
+        multiSelectComboBox.setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
+        multiSelectComboBox.setValue(Set.of(people.get(0), people.get(12)));
+
+        addComponentToGrid(multiSelectComboBox, "col-span-2");
+    }
+
+    private void addTabs() {
+        var tabs = new Tabs();
+
+        tabs.add(
+                new Tab("Details"),
+                new Tab("Payment"),
+                new Tab("Shipping")
+        );
+
+        addComponentToGrid(tabs, "col-span-2");
+    }
+
+    private void addMap() {
+        var map = new Map();
+
+        map.setHeight("100%");
+        map.setCenter(new Coordinate(22.2983171, 60.4515391));
+        map.setZoom(4);
+        map.getFeatureLayer().addFeature(new MarkerFeature(new Coordinate(22.2983171, 60.4515391)));
+
+        addComponentToGrid(map, "col-span-2", "tall");
+    }
+
+    private void addRichTextEditor() {
+        var richTextEditor = new RichTextEditor();
+
+        richTextEditor.setHeight("100%");
+        richTextEditor.setValue("<h1>Rich Text Editor</h1><p>This is a rich text editor</p>");
+
+        addComponentToGrid(richTextEditor, "col-span-2", "tall");
+    }
+
+    private void addComponentToGrid(Component component, String... classNames) {
         var wrapper = new Div();
         wrapper.addClassName("component");
         wrapper.add(component);
