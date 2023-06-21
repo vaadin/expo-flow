@@ -167,7 +167,7 @@ public class ComponentsView extends VerticalLayout {
         addAttachListener(e -> {
             subscription = getDeveloperProductivity().subscribe(dataPoint -> {
                 e.getUI().access(() -> {
-                    series.add(new DataSeriesItem(dataPoint.time(), dataPoint.value()), true, false);
+                    series.add(new DataSeriesItem(dataPoint.time(), dataPoint.value()), true, series.getData().size() > 50);
                 });
             });
         });
@@ -279,7 +279,7 @@ public class ComponentsView extends VerticalLayout {
         AtomicLong counter = new AtomicLong();
         AtomicReference<LocalDate> currentDay = new AtomicReference<>(LocalDate.of(2023, 1, 1));
 
-        return Flux.interval(Duration.ofSeconds(1))
+        return Flux.interval(Duration.ofMillis(1000))
                 .map(tick -> {
                     double value = Math.pow(counter.incrementAndGet(), 1.80) + (20 * Math.sin(counter.get() / 50.0)) + (Math.random() * 5);
                     Instant instant = currentDay.get().atStartOfDay(ZoneId.systemDefault()).toInstant();
