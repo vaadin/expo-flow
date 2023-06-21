@@ -6,9 +6,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.model.ChartType;
-import com.vaadin.flow.component.charts.model.DataSeries;
-import com.vaadin.flow.component.charts.model.DataSeriesItem;
+import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -36,11 +34,14 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import reactor.core.Disposable;
+import reactor.core.publisher.Flux;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 @PageTitle("Components")
 @Route(value = "components", layout = MainLayout.class)
@@ -48,20 +49,21 @@ import java.util.Set;
 public class ComponentsView extends VerticalLayout {
 
     private final List<Person> people;
+    private Disposable subscription;
 
     public ComponentsView(PersonService service) {
         addClassName("components-view");
 
         people = service.findAll();
 
-        addLoginForm();
+        addChart();
         addButtons();
         addRadioButtonGroup();
+        addLoginForm();
         addDateTimePicker();
         addCheckBoxGroup();
         addGrid();
         addComboBox();
-        addChart();
         addMessageList();
         addTextField();
         addUpload();
@@ -139,18 +141,44 @@ public class ComponentsView extends VerticalLayout {
     }
 
     private void addChart() {
-        var chart = new Chart(ChartType.PIE);
+        var chart = new Chart(ChartType.LINE);
         var configuration = chart.getConfiguration();
+        var xAxis = configuration.getxAxis();
+        var yAxis = configuration.getyAxis();
+        var series = new DataSeries();
+        var rangeSelector = new RangeSelector();
+        var plotOptions = new PlotOptionsLine();
 
-        DataSeries series = new DataSeries();
-        series.add(new DataSeriesItem("Yes", 10));
-        series.add(new DataSeriesItem("No", 20));
-        series.add(new DataSeriesItem("Maybe", 5));
-
-        configuration.setSeries(series);
         configuration.getChart().setStyledMode(true);
+        configuration.setTitle("Developer Productivity");
+        configuration.setSeries(series);
 
-        addComponentToGrid(chart, "col-span-2", "tall");
+        xAxis.setType(AxisType.DATETIME);
+        yAxis.setTitle("Productivity (kLOC/h)");
+
+        plotOptions.setMarker(new Marker(false));
+
+        series.setPlotOptions(plotOptions);
+        series.setName("Productivity");
+
+        rangeSelector.setSelected(1);
+        configuration.setRangeSelector(rangeSelector);
+
+        addAttachListener(e -> {
+            subscription = getDeveloperProductivity().subscribe(dataPoint -> {
+                e.getUI().access(() -> {
+                    series.add(new DataSeriesItem(dataPoint.time(), dataPoint.value()), true, false);
+                });
+            });
+        });
+
+        addDetachListener(e -> {
+            subscription.dispose();
+        });
+
+
+
+        addComponentToGrid(chart, "col-span-3", "tall");
     }
 
     private void addMessageList() {
@@ -243,4 +271,21 @@ public class ComponentsView extends VerticalLayout {
 
         add(wrapper);
     }
+
+    record DataPoint(Instant time, double value) {}
+
+    // Return a Flux with random data points that grow over time, similar to stock data
+    public Flux<DataPoint> getDeveloperProductivity() {
+        AtomicLong counter = new AtomicLong();
+        AtomicReference<LocalDate> currentDay = new AtomicReference<>(LocalDate.of(2023, 1, 1));
+
+        return Flux.interval(Duration.ofSeconds(1))
+                .map(tick -> {
+                    double value = Math.pow(counter.incrementAndGet(), 1.80) + (20 * Math.sin(counter.get() / 50.0)) + (Math.random() * 5);
+                    Instant instant = currentDay.get().atStartOfDay(ZoneId.systemDefault()).toInstant();
+                    currentDay.set(currentDay.get().plusDays(1));
+                    return new DataPoint(instant, value);
+                });
+    }
+
 }
