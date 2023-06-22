@@ -281,7 +281,7 @@ public class ComponentsView extends VerticalLayout {
 
         return Flux.interval(Duration.ofMillis(1000))
                 .map(tick -> {
-                    double value = Math.pow(counter.incrementAndGet(), 1.80) + (20 * Math.sin(counter.get() / 50.0)) + (Math.random() * 5);
+                    double value = Math.pow(counter.incrementAndGet(), 1.02) + (20 * Math.sin(counter.get() / 50.0)) + (Math.random() * 5);
                     Instant instant = currentDay.get().atStartOfDay(ZoneId.systemDefault()).toInstant();
                     currentDay.set(currentDay.get().plusDays(1));
                     return new DataPoint(instant, value);
