@@ -33,7 +33,6 @@ public class DataGenerator {
             personRepositoryGenerator.setData(Person::setLastName, DataType.LAST_NAME);
             personRepositoryGenerator.setData(Person::setEmail, DataType.EMAIL);
             personRepositoryGenerator.setData(Person::setDateOfBirth, DataType.DATE_OF_BIRTH);
-            personRepositoryGenerator.setData(Person::setCountry, DataType.COUNTRY);
             personRepository.saveAll(personRepositoryGenerator.create(100, seed));
 
             logger.info("Generated demo data");
