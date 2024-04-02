@@ -4,10 +4,8 @@ package com.example.application.views;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
@@ -63,9 +61,8 @@ public class MainLayout extends AppLayout {
         nav.addItem(new SideNavItem("Components", ComponentsView.class, LineAwesomeIcon.CUBES_SOLID.create()));
         nav.addItem(new SideNavItem("Form", FormView.class, LineAwesomeIcon.PEN_SOLID.create()));
         nav.addItem(new SideNavItem("Grid", GridView.class, LineAwesomeIcon.TABLE_SOLID.create()));
-        nav.addItem(new SideNavItem("Push", PushView.class, LineAwesomeIcon.BELL_SOLID.create()));
         nav.addItem(new SideNavItem("Chat", ChatView.class, LineAwesomeIcon.COMMENTS_SOLID.create()));
-        nav.addItem(new SideNavItem("Sandbox", SandboxView.class, LineAwesomeIcon.CODE_SOLID.create()));
+        nav.addItem(new SideNavItem("Playground", PlaygroundView.class, LineAwesomeIcon.CODE_SOLID.create()));
 
         return nav;
     }

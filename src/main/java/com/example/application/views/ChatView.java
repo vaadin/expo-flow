@@ -1,48 +1,34 @@
 package com.example.application.views;
 
-import com.example.application.service.openai.ChatGPTService;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.messages.MessageInput;
-import com.vaadin.flow.component.messages.MessageList;
-import com.vaadin.flow.component.messages.MessageListItem;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import java.time.Instant;
-import java.util.ArrayList;
+import org.springframework.ai.chat.StreamingChatClient;
+import org.vaadin.firitin.components.messagelist.MarkdownMessage;
 
 @PageTitle("Chat")
 @Route(value = "chat", layout = MainLayout.class)
 public class ChatView extends VerticalLayout {
 
-    private final MessageList messageList;
-    private final MessageInput messageInput;
-
-    public ChatView(ChatGPTService chatGPT) {
+    public ChatView(StreamingChatClient chatClient) {
         setSizeFull();
-        messageList = new MessageList();
-        messageInput = new MessageInput();
+        var messageList = new VerticalLayout();
+        var messageInput = new MessageInput();
         messageInput.setWidthFull();
 
         messageInput.addSubmitListener(event -> {
-            var message = event.getValue();
-            addMessage(new MessageListItem(message, Instant.now(), "You"));
+            var question = event.getValue();
+            var userMessage = new MarkdownMessage(question, "You", MarkdownMessage.Color.AVATAR_PRESETS[0]);
+            var assistantMessage = new MarkdownMessage("Assistant", MarkdownMessage.Color.AVATAR_PRESETS[1]);
 
-            var ui = UI.getCurrent();
-            chatGPT.getAnswer(message).subscribe(answer -> {
-                ui.access(() ->
-                        addMessage(new MessageListItem(answer, Instant.now(), "Bot")));
-            });
+            messageList.add(userMessage, assistantMessage);
+
+            chatClient.stream(question).subscribe(assistantMessage::appendMarkdownAsync);
         });
 
-        addAndExpand(messageList);
+        addAndExpand(new Scroller(messageList));
         add(messageInput);
-    }
-
-    private void addMessage(MessageListItem message) {
-        var items = new ArrayList<>(messageList.getItems());
-        items.add(message);
-        messageList.setItems(items);
     }
 }

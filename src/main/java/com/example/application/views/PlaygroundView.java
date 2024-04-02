@@ -11,10 +11,10 @@ import com.vaadin.flow.router.Route;
 
 @PageTitle("Sandbox")
 @Route(value = "sandbox", layout = MainLayout.class)
-public class SandboxView extends VerticalLayout {
+public class PlaygroundView extends VerticalLayout {
 
 
-    public SandboxView() {
+    public PlaygroundView() {
         var name = new TextField();
         var button = new Button("Say hello");
 
