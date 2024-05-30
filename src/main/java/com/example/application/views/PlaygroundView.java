@@ -9,8 +9,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("Sandbox")
-@Route(value = "sandbox", layout = MainLayout.class)
+@PageTitle("Playground")
+@Route(value = "playground", layout = MainLayout.class)
 public class PlaygroundView extends VerticalLayout {
 
 
