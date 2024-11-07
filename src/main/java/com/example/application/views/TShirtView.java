@@ -45,6 +45,8 @@ public class TShirtView extends VerticalLayout {
         // Build the layout
         H1 heading = new H1("Order a cool Vaadin }> T-shirt!");
         Button order = new Button("Place order");
+        order.addClickShortcut(Key.ENTER);
+
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         add(
                 heading,
