@@ -2,7 +2,6 @@ package com.example.application.views;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,14 +27,6 @@ public class PlaygroundView extends VerticalLayout {
         });
 
         add(new HorizontalLayout(name, button));
-VerticalLayout verticallayout = new VerticalLayout();
-TextField textField = new TextField("Text field");
-verticallayout.add(textField);
-TextField textField2 = new TextField("Text field");
-verticallayout.add(textField2);
-ComboBox<String> textField3 = new ComboBox("Text field");
-verticallayout.add(textField3);
-add(verticallayout);
     }
 
 }
