@@ -27,7 +27,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.Route;
 
-@Route("/tshirt")
+@Route(value = "/tshirt", layout = MainLayout.class)
 public class TShirtView extends VerticalLayout {
 
     TShirtService service;
