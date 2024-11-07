@@ -17,6 +17,7 @@ package com.example.application.views;
 
 import com.example.application.data.entity.TShirtOrder;
 import com.example.application.service.TShirtService;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H1;
@@ -64,6 +65,7 @@ public class TShirtView extends VerticalLayout {
             Notification.show(msg, 3000, Notification.Position.MIDDLE);
             init();
         });
+        order.addClickShortcut(Key.ENTER);
 
         // Bind fields from this UI class to domain object using naming convetion
         binder.bindInstanceFields(this);
