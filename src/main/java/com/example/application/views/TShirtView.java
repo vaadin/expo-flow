@@ -19,6 +19,7 @@ import com.example.application.data.entity.TShirtOrder;
 import com.example.application.service.TShirtService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
@@ -46,6 +47,7 @@ public class TShirtView extends VerticalLayout {
         H1 heading = new H1("Order a cool Vaadin }> T-shirt!");
         Button order = new Button("Place order");
         order.addClickShortcut(Key.ENTER);
+        order.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         add(
