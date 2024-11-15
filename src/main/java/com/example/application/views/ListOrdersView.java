@@ -17,6 +17,7 @@ package com.example.application.views;
 
 import com.example.application.data.entity.TShirtOrder;
 import com.example.application.data.repository.TShirtOrderRepository;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
@@ -24,6 +25,14 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.stream.Collectors;
 
 @Route
 public class ListOrdersView extends VerticalLayout {
@@ -51,11 +60,35 @@ public class ListOrdersView extends VerticalLayout {
         listOrders();
         
         update.addClickListener(e -> listOrders());
-        
+
+        add(new Button("Export", e -> {
+            UI.getCurrent().getPage().open("/exportorders");
+        }));
     }
 
     public void listOrders() {
         orders.setItems(repo.findAll());
     }
-    
+
+
+    @RestController
+    public static class OrderExportService {
+
+        @Autowired
+        private TShirtOrderRepository repository;
+
+        @GetMapping("/exportorders")
+        public ResponseEntity<String> export() {
+
+            String data = repository.findAll()
+                    .stream()
+                    .map(o -> String.format("%s;%s;%s", o.getName(),o.getEmail(), o.getShirtSize()))
+                    .collect(Collectors.joining("\n"));
+            return  ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=orderexport.txt")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body(data);
+        }
+
+    }
 }
