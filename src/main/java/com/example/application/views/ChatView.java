@@ -5,14 +5,15 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.springframework.ai.chat.StreamingChatClient;
+import org.springframework.ai.chat.client.ChatClient;
 import org.vaadin.firitin.components.messagelist.MarkdownMessage;
 
 @PageTitle("Chat")
 @Route(value = "chat", layout = MainLayout.class)
 public class ChatView extends VerticalLayout {
 
-    public ChatView(StreamingChatClient chatClient) {
+    public ChatView(ChatClient.Builder chatClientBuilder) {
+        ChatClient chatClient = chatClientBuilder.build();
         setSizeFull();
         var messageList = new VerticalLayout();
         var messageInput = new MessageInput();
@@ -25,7 +26,8 @@ public class ChatView extends VerticalLayout {
 
             messageList.add(userMessage, assistantMessage);
 
-            chatClient.stream(question).subscribe(assistantMessage::appendMarkdownAsync);
+            chatClient.prompt().user(question).stream().content()
+                    .subscribe(assistantMessage::appendMarkdownAsync);
         });
 
         addAndExpand(new Scroller(messageList));
