@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <vaadin.version>24.6.4</vaadin.version>
         <spring.ai.version>1.0.0-M5</spring.ai.version>
         <viritin.version>2.11.3</viritin.version>
