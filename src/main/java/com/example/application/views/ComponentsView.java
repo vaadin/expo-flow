@@ -31,9 +31,12 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import org.vaadin.firitin.appframework.MainLayout;
+import org.vaadin.lineawesome.LineAwesomeIconUrl;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
@@ -43,9 +46,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+@Menu(title = "Components", icon = LineAwesomeIconUrl.CUBES_SOLID, order = 1)
 @PageTitle("Components")
-@Route(value = "components", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@Route(value = "components")
+@RouteAlias(value = "")
 public class ComponentsView extends VerticalLayout {
 
     private final List<Person> people;
