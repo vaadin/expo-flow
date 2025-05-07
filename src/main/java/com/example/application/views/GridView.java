@@ -4,12 +4,16 @@ import com.example.application.data.entity.Person;
 import com.example.application.service.PersonService;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
+import org.vaadin.lineawesome.LineAwesomeIcon;
+import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Grid")
-@Route(value = "grid", layout = MainLayout.class)
+@Route(value = "grid")
+@Menu(title = "Grid", icon = LineAwesomeIconUrl.TABLE_SOLID, order = 3)
 public class GridView extends VerticalLayout {
 
     public GridView(PersonService personService) {

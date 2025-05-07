@@ -3,13 +3,17 @@ package com.example.application.views;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.ai.chat.client.ChatClient;
 import org.vaadin.firitin.components.messagelist.MarkdownMessage;
+import org.vaadin.lineawesome.LineAwesomeIcon;
+import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Chat")
-@Route(value = "chat", layout = MainLayout.class)
+@Menu(title = "Chat", icon = LineAwesomeIconUrl.COMMENTS_SOLID, order = 4)
+@Route(value = "chat")
 public class ChatView extends VerticalLayout {
 
     public ChatView(ChatClient.Builder chatClientBuilder) {

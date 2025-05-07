@@ -1,8 +1,25 @@
-[slot='drawer'] {
+vaadin-scroller[slot="drawer"] {
+  padding: var(--lumo-space-s);
+}
+
+vaadin-side-nav-item vaadin-icon {
+  padding: 0;
+}
+
+
+[slot="drawer"] {
   background-image: linear-gradient(0deg, var(--lumo-shade-5pct), var(--lumo-shade-5pct));
 }
 
-.app-name {
-  width: 60%;
-  padding: var(--lumo-space-m);
+[slot="drawer"]:is(header, footer) {
+  display: flex;
+  align-items: center;
+  gap: var(--lumo-space-s);
+  padding: var(--lumo-space-s) var(--lumo-space-m);
+  min-height: var(--lumo-size-xl);
+  box-sizing: border-box;
+}
+
+[slot="drawer"]:is(header, footer):is(:empty) {
+  display: none;
 }

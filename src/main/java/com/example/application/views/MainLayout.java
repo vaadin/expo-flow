@@ -1,26 +1,32 @@
 package com.example.application.views;
 
-
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Footer;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.orderedlayout.Scroller;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Layout;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.server.menu.MenuConfiguration;
+import com.vaadin.flow.server.menu.MenuEntry;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import org.vaadin.lineawesome.LineAwesomeIcon;
 
-/**
- * The main view is a top-level placeholder for other views.
- */
+import java.util.List;
+
+@Layout
+@AnonymousAllowed
 public class MainLayout extends AppLayout {
 
-    private H2 viewTitle;
+    private H1 viewTitle;
 
     public MainLayout() {
         setPrimarySection(Section.DRAWER);
@@ -30,21 +36,15 @@ public class MainLayout extends AppLayout {
 
     private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
-        toggle.getElement().setAttribute("aria-label", "Menu toggle");
+        toggle.setAriaLabel("Menu toggle");
 
-        viewTitle = new H2();
+        viewTitle = new H1();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
         addToNavbar(true, toggle, viewTitle);
     }
 
-    private void addDrawerContent() {
-        var image = new H2("Vaadin Flow");
-        image.addClassNames("app-name");
-
-        Header header = new Header(image);
-
-        Scroller scroller = new Scroller(createNavigation());
+    private Checkbox createDarkToggle() {
 
         var themeToggle = new Checkbox("Dark theme");
 
@@ -53,21 +53,39 @@ public class MainLayout extends AppLayout {
             getElement().executeJs(js, e.getValue() ? Lumo.DARK : Lumo.LIGHT);
         });
 
-        addToDrawer(header, scroller, new VerticalLayout(themeToggle));
+        return themeToggle;
+    }
+
+    private void addDrawerContent() {
+        H1 appName = new H1("Vaadin }>");
+        appName.addClassNames(LumoUtility.FontWeight.SEMIBOLD);
+        Header header = new Header(appName);
+
+        Scroller scroller = new Scroller(createNavigation());
+
+        addToDrawer(header, scroller, createFooter(), createDarkToggle());
     }
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
-        nav.addItem(new SideNavItem("Components", ComponentsView.class, LineAwesomeIcon.CUBES_SOLID.create()));
-        nav.addItem(new SideNavItem("Form", FormView.class, LineAwesomeIcon.PEN_SOLID.create()));
-        nav.addItem(new SideNavItem("Grid", GridView.class, LineAwesomeIcon.TABLE_SOLID.create()));
-        nav.addItem(new SideNavItem("Chat", ChatView.class, LineAwesomeIcon.COMMENTS_SOLID.create()));
-        nav.addItem(new SideNavItem("Playground", PlaygroundView.class, LineAwesomeIcon.CODE_SOLID.create()));
-        nav.addItem(new SideNavItem("Order T-shirt", TShirtView.class, LineAwesomeIcon.TSHIRT_SOLID.create()));
+
+        List<MenuEntry> menuEntries = MenuConfiguration.getMenuEntries();
+        menuEntries.forEach(entry -> {
+            if (entry.icon() != null) {
+                nav.addItem(new SideNavItem(entry.title(), entry.path(), new SvgIcon(entry.icon())));
+            } else {
+                nav.addItem(new SideNavItem(entry.title(), entry.path()));
+            }
+        });
 
         return nav;
     }
 
+    private Footer createFooter() {
+        Footer layout = new Footer();
+
+        return layout;
+    }
 
     @Override
     protected void afterNavigation() {
@@ -76,7 +94,6 @@ public class MainLayout extends AppLayout {
     }
 
     private String getCurrentPageTitle() {
-        PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
-        return title == null ? "" : title.value();
+        return MenuConfiguration.getPageHeader(getContent()).orElse("");
     }
 }
