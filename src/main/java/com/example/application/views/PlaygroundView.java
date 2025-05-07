@@ -18,7 +18,6 @@ public class PlaygroundView extends VerticalLayout {
 
     public PlaygroundView() {
         var name = new TextField();
-        name.setWidth("500px");
         var button = new Button("Say hello");
 
         name.setPlaceholder("Your name");
@@ -30,7 +29,6 @@ public class PlaygroundView extends VerticalLayout {
         });
 
         add(new HorizontalLayout(name, button));
-        setSizeFull();
     }
 
 }
