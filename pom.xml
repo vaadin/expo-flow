@@ -11,7 +11,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <vaadin.version>24.6.4</vaadin.version>
+        <vaadin.version>24.7.3</vaadin.version>
         <spring.ai.version>1.0.0-M5</spring.ai.version>
         <viritin.version>2.11.3</viritin.version>
     </properties>
@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.4</version>
     </parent>
 
     <repositories>
