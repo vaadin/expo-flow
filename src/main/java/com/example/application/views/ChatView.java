@@ -8,7 +8,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.ai.chat.client.ChatClient;
 import org.vaadin.firitin.components.messagelist.MarkdownMessage;
-import org.vaadin.lineawesome.LineAwesomeIcon;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Chat")

@@ -35,7 +35,6 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import org.vaadin.firitin.appframework.MainLayout;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;

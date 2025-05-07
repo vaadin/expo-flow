@@ -9,7 +9,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.vaadin.lineawesome.LineAwesomeIcon;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Playground")
@@ -19,6 +18,7 @@ public class PlaygroundView extends VerticalLayout {
 
     public PlaygroundView() {
         var name = new TextField();
+        name.setWidth("500px");
         var button = new Button("Say hello");
 
         name.setPlaceholder("Your name");
@@ -30,6 +30,7 @@ public class PlaygroundView extends VerticalLayout {
         });
 
         add(new HorizontalLayout(name, button));
+        setSizeFull();
     }
 
 }
