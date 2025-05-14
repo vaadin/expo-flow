@@ -9,46 +9,27 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import com.example.application.data.repository.PersonRepository;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.hilla.BrowserCallable;
+import com.vaadin.hilla.crud.CrudRepositoryService;
+import com.vaadin.hilla.crud.CrudService;
+import com.vaadin.hilla.crud.filter.Filter;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+@BrowserCallable
+@AnonymousAllowed
 @Service
-public class PersonService {
-
-    private final PersonRepository repository;
-
-    public PersonService(PersonRepository repository) {
-        this.repository = repository;
-    }
-
-    public Optional<Person> get(UUID id) {
-        return repository.findById(id);
-    }
-
-    public Person update(Person entity) {
-        return repository.save(entity);
-    }
-
-    public void delete(UUID id) {
-        repository.deleteById(id);
-    }
-
-    public Stream<Person> list(Pageable pageable) {
-        return repository.findAll(pageable).stream();
-    }
-
-    public int count() {
-        return (int) repository.count();
-    }
+public class PersonService extends CrudRepositoryService<Person, UUID, PersonRepository> {
 
     public List<Person> findAll() {
-        return repository.findAll();
+        return getRepository().findAll();
     }
 
-    public Flux<Person> getPersonStream() {
-        return Flux.fromIterable(repository.findAll())
-                .delayElements(Duration.ofSeconds(1));
+    public List<Person> unfilteredList(Pageable pageable) {
+        return super.list(pageable, null);
     }
-
 }

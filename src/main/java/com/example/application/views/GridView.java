@@ -24,9 +24,7 @@ public class GridView extends VerticalLayout {
         grid.getColumns().forEach(c -> c.setAutoWidth(true));
         grid.setSizeFull();
 
-        grid.setItems(query -> personService.list(
-                VaadinSpringDataHelpers.toSpringPageRequest(query))
-        );
+        grid.setItemsPageable(personService::unfilteredList);
 
         setSizeFull();
         add(grid);

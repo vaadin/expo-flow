@@ -1,16 +1,20 @@
 package com.example.application.service;
 
+import com.example.application.data.entity.Person;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
 import org.jspecify.annotations.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @BrowserCallable
 @AnonymousAllowed
 @Service
 public class HelloReactWorldService {
 
-    public @NonNull String sayHello(@NonNull String name) {
+    public String sayHello(String name) {
         if (name.isEmpty()) {
             return "Hello stranger";
         } else {
