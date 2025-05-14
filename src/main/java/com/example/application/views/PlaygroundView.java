@@ -11,7 +11,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
-@PageTitle("Playground")
+@PageTitle("Java Playground")
 @Route(value = "playground")
 @Menu(title = "Java Playground", icon = LineAwesomeIconUrl.CODE_SOLID, order = 5)
 public class PlaygroundView extends VerticalLayout {

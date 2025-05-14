@@ -15,7 +15,7 @@ export default function HelloReactWorldView() {
         <>
             <section className="flex p-m gap-m items-end">
                 <TextField
-                    label="Your name"
+                    placeholder="Your name"
                     onValueChanged={(e) => {
                         name.value = e.detail.value;
                     }}
