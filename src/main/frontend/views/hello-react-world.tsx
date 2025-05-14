@@ -1,12 +1,7 @@
 import {ViewConfig} from '@vaadin/hilla-file-router/types.js';
 import {useSignal} from '@vaadin/hilla-react-signals';
-import {Button, Grid, GridColumn, Notification, TextField} from '@vaadin/react-components';
-import {HelloReactWorldService, PersonService} from "../generated/endpoints";
-import Person from "../generated/com/example/application/data/entity/Person";
-import {useEffect} from "react";
-import person from "../generated/com/example/application/data/entity/Person";
-import {AutoGrid} from "@vaadin/hilla-react-crud";
-import PersonModel from "../generated/com/example/application/data/entity/PersonModel";
+import {Button, Notification, TextField} from '@vaadin/react-components';
+import {HelloReactWorldService} from "../generated/endpoints";
 
 export const config: ViewConfig = {
     menu: {order: 7, icon: 'line-awesome/svg/globe-solid.svg'},
