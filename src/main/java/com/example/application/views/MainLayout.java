@@ -42,8 +42,8 @@ public class MainLayout extends AppLayout {
     }
 
     private Checkbox createDarkToggle() {
-
         var themeToggle = new Checkbox("Dark theme");
+        themeToggle.getStyle().setPadding("2em");
 
         themeToggle.addValueChangeListener(e -> {
             var js = "document.documentElement.setAttribute('theme', $0)";
