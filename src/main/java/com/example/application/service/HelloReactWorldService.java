@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class HelloReactWorldService {
 
-    public String sayHello(String name) {
+    public String sayCiao(String name) {
         if (name.isEmpty()) {
             return "Hello stranger";
         } else {

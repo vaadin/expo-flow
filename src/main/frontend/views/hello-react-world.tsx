@@ -22,7 +22,7 @@ export default function HelloReactWorldView() {
                 />
                 <Button
                     onClick={async () => {
-                        const serverResponse = await HelloReactWorldService.sayHello(name.value);
+                        const serverResponse = await HelloReactWorldService.sayCiao(name.value);
                         Notification.show(serverResponse);
                     }}
                 >Say hello</Button>
