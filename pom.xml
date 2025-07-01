@@ -11,7 +11,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <vaadin.version>24.8.0</vaadin.version>
+        <vaadin.version>24.8.1</vaadin.version>
         <spring.ai.version>1.0.0</spring.ai.version>
         <viritin.version>2.14.1</viritin.version>
     </properties>
@@ -114,7 +114,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-openai</artifactId>
+            <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>in.virit</groupId>
