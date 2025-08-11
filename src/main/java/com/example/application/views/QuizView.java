@@ -18,14 +18,17 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 import java.util.List;
 import java.util.Set;
 
 
 @PageTitle("Ancient Rome Quiz")
+@Menu(title = "Quiz", icon = LineAwesomeIconUrl.QUESTION_CIRCLE)
 @Route("quiz")
 public class QuizView extends VerticalLayout {
 
