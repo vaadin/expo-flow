@@ -14,6 +14,7 @@ import com.vaadin.flow.component.charts.model.style.SolidColor;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.map.configuration.Coordinate;
@@ -63,6 +64,7 @@ public class QuizView extends VerticalLayout {
             emperorSelect.setPlaceholder("Choose…");
             emperorSelect.addValueChangeListener(e -> {
                 markAnswered("Augustus".equals(e.getValue()));
+                add(new Paragraph("Augustus was the first Roman emperor, reigning from 27 BC until his death in AD 14. He was the founder of the Roman Principate and is considered one of the most effective leaders in history."));
             });
             add(emperorSelect);
         }});
