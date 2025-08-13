@@ -15,6 +15,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.map.configuration.Coordinate;
 import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.map.configuration.layer.TileLayer;
@@ -71,7 +72,7 @@ public class QuizView extends VerticalLayout {
             setMedia(new Image("/images/rome/q2.jpg", "Featured image for the question 2"));
             var battleGrid = new Grid<>(Battle.class);
             battleGrid.setItems(Battle.values());
-            battleGrid.setColumns("name", "war");
+            battleGrid.setColumns("name", "start");
             battleGrid.setSelectionMode(Grid.SelectionMode.MULTI);
             battleGrid.setAllRowsVisible(true);
             battleGrid.asMultiSelect().addSelectionListener(e -> {
@@ -85,6 +86,15 @@ public class QuizView extends VerticalLayout {
                         .collect(Collectors.toSet());
                 Set<Battle> selection = battleGrid.asMultiSelect().getSelectedItems();
                 markAnswered(correctChoises.equals(selection));
+                battleGrid.addColumn("war");
+                // add a custom column to show if the answer was correct with icons
+                battleGrid.addComponentColumn(battle -> {
+                    if (battle.isCorrect()) {
+                        return VaadinIcon.CHECK.create();
+                    } else {
+                        return VaadinIcon.MINUS.create();
+                    }
+                }).setHeader("Part of Punic Wars?");
             }));
         }});
 
@@ -120,6 +130,11 @@ public class QuizView extends VerticalLayout {
             map.addFeatureClickListener(e -> {
                 var f = e.getFeature();
                 markAnswered(f == rome);
+                // Add marker texts to show the map names
+                rome.setText("Rome");
+                carthage.setText("Carthage");
+                athens.setText("Athens");
+                alexandria.setText("Alexandria");
             });
             add(map);
         }});
@@ -168,24 +183,30 @@ public class QuizView extends VerticalLayout {
     }
 
     public enum Battle {
-        Cannae("Cannae", "Second Punic War", true),
-        Alesia("Alesia", "Gallic Wars", false),
-        Zama("Zama", "Second Punic War", true),
-        Actium("Actium", "Final War of the Roman Republic", false),
-        Mylae("Mylae", "First Punic War", true);
+        Cannae("Cannae", "216 BC","Second Punic War", true),
+        Alesia("Alesia", "52 BC","Gallic Wars", false),
+        Zama("Zama", "202 BC", "Second Punic War", true),
+        Actium("Actium", "32 BC", "Final War of the Roman Republic", false),
+        Mylae("Mylae", "260 BC", "First Punic War", true);
 
         private final String name;
+        private final String start;
         private final String war;
         private final boolean correct;
 
-        Battle(String name, String war, boolean correct) {
+        Battle(String name, String start, String war, boolean correct) {
             this.name = name;
+            this.start = start;
             this.war = war;
             this.correct = correct;
         }
 
         public String getName() {
             return name;
+        }
+
+        public String getStart() {
+            return start;
         }
 
         public String getWar() {
