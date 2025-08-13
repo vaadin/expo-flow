@@ -29,6 +29,7 @@ import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.vaadin.firitin.util.VStyle;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 import java.util.Arrays;
@@ -175,6 +176,10 @@ public class QuizView extends VerticalLayout {
             });
             add(pieChart);
         }});
+
+        new VStyle() {{
+            set("filter", "grayscale(50%)");
+        }}.apply(this, "img");
 
     }
 

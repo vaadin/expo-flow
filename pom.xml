@@ -13,7 +13,6 @@
         <java.version>21</java.version>
         <vaadin.version>24.8.2</vaadin.version>
         <spring.ai.version>1.0.0</spring.ai.version>
-        <viritin.version>2.14.1</viritin.version>
     </properties>
 
     <parent>
@@ -117,7 +116,7 @@
         <dependency>
             <groupId>in.virit</groupId>
             <artifactId>viritin</artifactId>
-            <version>${viritin.version}</version>
+            <version>2.19.1</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
