@@ -98,7 +98,7 @@ public class QuizView extends VerticalLayout {
             }));
         }});
 
-        add(new QuestionCard("Q3 — Map: Click the marker dropped to Rome", 3) {{
+        add(new QuestionCard("Map: Click the marker dropped to Rome", 3) {{
             var map = new com.vaadin.flow.component.map.Map();
             map.setWidthFull();
             map.setHeight("320px");
@@ -139,7 +139,7 @@ public class QuizView extends VerticalLayout {
             //setTitle(map);
         }});
 
-        add(new QuestionCard("Q4 — Pie Chart: Which slice represents Plebeians? (Click a slice)",4) {{
+        add(new QuestionCard("Pie Chart: Which slice represents Plebeians? (Click a slice)",4) {{
             setSubtitle(new Span("Roman Social Classes, Patricians, Equestrians, Plebeians, Slaves & Freedmen, by their size."));
             Chart pieChart = new Chart(ChartType.PIE);
             pieChart.getConfiguration().getChart().setBackgroundColor(new SolidColor("transparent"));
