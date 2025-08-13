@@ -1,9 +1,9 @@
 package com.example.application.views.quiz;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.card.Card;
+import com.vaadin.flow.component.card.CardVariant;
 import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.ChartType;
 import com.vaadin.flow.component.charts.model.Configuration;
@@ -25,7 +25,6 @@ import com.vaadin.flow.component.markdown.Markdown;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -57,8 +56,7 @@ public class QuizView extends VerticalLayout {
                 """));
 
         // Q1 — Select
-        add(new QuestionCard("Q1 — Select: Who was the first Roman emperor?") {{
-            setMedia(new Image("/images/rome/q1.jpg","Featured image for the question 1"));
+        add(new QuestionCard("Select: Who was the first Roman emperor?", 1) {{
             var emperorSelect = new Select<String>();
             emperorSelect.setLabel("Choose");
             emperorSelect.setItems("Julius Caesar", "Augustus", "Nero", "Trajan");
@@ -71,8 +69,7 @@ public class QuizView extends VerticalLayout {
         }});
 
         // Q2 — Data Grid (multi-select rows)
-        add(new QuestionCard("Q2 — Data Grid: Select all battles that were part of the Punic Wars:") {{
-            setMedia(new Image("/images/rome/q2.jpg", "Featured image for the question 2"));
+        add(new QuestionCard("Data Grid: Select all battles that were part of the Punic Wars:", 2) {{
             var battleGrid = new Grid<>(Battle.class);
             battleGrid.setItems(Battle.values());
             battleGrid.setColumns("name", "start");
@@ -101,8 +98,7 @@ public class QuizView extends VerticalLayout {
             }));
         }});
 
-        add(new QuestionCard("Q3 — Map: Click the marker dropped to Rome") {{
-            setMedia(new Image("/images/rome/q3.jpg", "Featured image for the question 3"));
+        add(new QuestionCard("Q3 — Map: Click the marker dropped to Rome", 3) {{
             var map = new com.vaadin.flow.component.map.Map();
             map.setWidthFull();
             map.setHeight("320px");
@@ -140,10 +136,10 @@ public class QuizView extends VerticalLayout {
                 alexandria.setText("Alexandria");
             });
             add(map);
+            //setTitle(map);
         }});
 
-        add(new QuestionCard("Q4 — Pie Chart: Which slice represents Plebeians? (Click a slice)") {{
-            setMedia(new Image("/images/rome/q4.jpg", "Featured image for the question 4"));
+        add(new QuestionCard("Q4 — Pie Chart: Which slice represents Plebeians? (Click a slice)",4) {{
             setSubtitle(new Span("Roman Social Classes, Patricians, Equestrians, Plebeians, Slaves & Freedmen, by their size."));
             Chart pieChart = new Chart(ChartType.PIE);
             pieChart.getConfiguration().getChart().setBackgroundColor(new SolidColor("transparent"));
@@ -226,15 +222,13 @@ public class QuizView extends VerticalLayout {
     }
 
     class QuestionCard extends Card {
-        public QuestionCard(String caption) {
+        public QuestionCard(String caption, int questionNumber) {
+            setMedia(new Image("/images/rome/q%s.jpg".formatted(questionNumber), "Featured image"));
             setWidthFull();
             setMaxWidth(1000, Unit.PIXELS);
             setTitle(caption);
-        }
-
-        public QuestionCard(Component content) {
-            this("Q1 — Select: Who was the first Roman emperor?");
-            add(content);
+            addThemeVariants(CardVariant.LUMO_COVER_MEDIA);
+            getStyle().set("--vaadin-card-media-aspect-ratio", "4 / 1");
         }
 
         public void markAnswered(boolean correct) {
