@@ -211,6 +211,7 @@ public class QuizView extends VerticalLayout {
 
         public void markAnswered(boolean correct) {
             setEnabled(false);
+            questionsAnswered++;
             if (correct) {
                 points++;
                 Notification.show("Correct answer! You earned a point. %s/%s questions answered."
@@ -220,7 +221,6 @@ public class QuizView extends VerticalLayout {
                 Notification.show("Bummer, wrong answer. No points earned. Maybe check the source code now?");
                 getStyle().setBorder("2px solid red");
             }
-            questionsAnswered++;
             checkIfQuizCompleted();
         }
     }
