@@ -228,6 +228,7 @@ public class QuizView extends VerticalLayout {
             setMaxWidth(1000, Unit.PIXELS);
             setTitle(caption);
             addThemeVariants(CardVariant.LUMO_COVER_MEDIA);
+            setClassName("roman-empire");
             getStyle().set("--vaadin-card-media-aspect-ratio", "4 / 1");
         }
 
