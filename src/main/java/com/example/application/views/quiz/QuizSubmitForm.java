@@ -3,12 +3,12 @@ package com.example.application.views.quiz;
 import com.example.application.data.entity.TShirtOrder;
 import com.example.application.service.TShirtService;
 import com.example.application.views.ComponentsView;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.markdown.Markdown;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -50,17 +50,20 @@ public class QuizSubmitForm extends Dialog {
     public void showResults(int extraPoints) {
         setHeaderTitle("Congratulations! You have completed the quiz!");
 
-        add(new Markdown("""
-                You earned **%d points** out of **%d** possible points for the raffle. 
-                You'll anyways get a T-shirt for participating and one point for the raffle.
-                If you are not happy with your score, consider sneaking in the source code
-                and trying again by reloading.
-                
-                Now fill in your name and email to submit your answers and participate in the raffle.
-                
-                **By submitting, you agree to Vaadin privacy policy. Yes we'll remind you to try
-                out Vaadin during the next couple of weeks, but you can unsubscribe any time you want.**
-                """.formatted(extraPoints, 4)));
+        add(new Html("""
+        <div>
+            <p>You earned <strong>%d</strong> points out of %d possible points for the raffle. 
+            You'll anyways get a T-shirt for participating and one point for the raffle.
+            If you are not happy with your score, consider sneaking in the source code
+            and trying again by reloading.</p>
+
+            <p>Now fill in your name and email to submit your answers and participate in the raffle.</p>
+
+            <em>By submitting, you agree to <a href="https://vaadin.com/privacy-policy" target="_blank">
+            Vaadin Privacy Policy</a>. Yes we'll remind you to try out Vaadin during the next couple of 
+            weeks, but you can unsubscribe any time you want 🧸.</em>
+        </div>
+        """.formatted(extraPoints, 4)));
 
         add(new FormLayout(name, email, shirtSize));
 
