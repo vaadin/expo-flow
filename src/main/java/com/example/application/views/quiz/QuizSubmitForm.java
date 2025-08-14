@@ -39,12 +39,13 @@ public class QuizSubmitForm extends Dialog {
     }
 
     void submit() {
-        binder.validate();
-        tShirtService.placeOrder(binder.getBean());
-        close();
-        UI.getCurrent().navigate(ComponentsView.class);
-        Notification.show("Thank you for participating! We can't help you more with Roman history more, but any questions regarding Vaadin?", 0, Notification.Position.MIDDLE)
-                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        if(binder.validate().isOk()) {
+            tShirtService.placeOrder(binder.getBean());
+            close();
+            UI.getCurrent().navigate(ComponentsView.class);
+            Notification.show("Thank you for participating! We can't help you more with Roman history more, but any questions regarding Vaadin?", 5000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        }
     }
 
     public void showResults(int extraPoints) {
@@ -71,6 +72,8 @@ public class QuizSubmitForm extends Dialog {
         binder.setBean(new TShirtOrder());
 
         add(submit);
+        setCloseOnOutsideClick(false);
+        setCloseOnEsc(false);
         open();
     }
 }
