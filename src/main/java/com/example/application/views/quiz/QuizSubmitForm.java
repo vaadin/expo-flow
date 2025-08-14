@@ -52,7 +52,7 @@ public class QuizSubmitForm extends Dialog {
 
         add(new Html("""
         <div>
-            <p>You earned <strong>%d</strong> points out of %d possible points for the raffle. 
+            <p>You earned <strong>%d out of %d</strong> possible extrapoints for the raffle. 
             You'll anyways get a T-shirt for participating and one point for the raffle.
             If you are not happy with your score, consider sneaking in the source code
             and trying again by reloading.</p>
