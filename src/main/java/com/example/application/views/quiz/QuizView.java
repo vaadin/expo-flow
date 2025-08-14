@@ -28,7 +28,6 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.vaadin.firitin.util.VStyle;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 import java.util.Arrays;
@@ -45,6 +44,7 @@ public class QuizView extends VerticalLayout {
     private int questionsAnswered, points = 0;
 
     public QuizView(QuizSubmitForm sumbitForm) {
+        setClassName(getClass().getSimpleName().toLowerCase());
         this.sumbitForm = sumbitForm;
         add(new H1("Ancient Rome — JavaZone Vaadin Quiz"));
 
@@ -173,10 +173,6 @@ public class QuizView extends VerticalLayout {
             add(pieChart);
         }});
 
-        new VStyle() {{
-            set("filter", "grayscale(50%)");
-        }}.apply(this, "img");
-
     }
 
     private void checkIfQuizCompleted() {
@@ -228,7 +224,6 @@ public class QuizView extends VerticalLayout {
             setMaxWidth(1000, Unit.PIXELS);
             setTitle(caption);
             addThemeVariants(CardVariant.LUMO_COVER_MEDIA);
-            setClassName("roman-empire");
             getStyle().set("--vaadin-card-media-aspect-ratio", "4 / 1");
         }
 

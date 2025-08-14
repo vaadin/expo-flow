@@ -19,51 +19,46 @@ html {
     --vaadin-input-field-border-color: var(--lumo-shade-10pct);
 }
 
-vaadin-card.roman-empire {
-    margin-bottom: 2em;
-    background: url(marble.jpg);
-    background-size: 150% 150%;
-}
+.quizview {
+    counter-reset: question;
 
-.roman-empire img {
-        filter: sepia(1);
-        mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
-        mask-repeat: no-repeat;
-        mask-size: 100% 100%;
-}
+    vaadin-card {
+        margin-bottom: 2em;
+        background: url(marble.jpg);
+        background-size: 150% 150%;
 
-.roman-empire div[card-string-title] {
-    font-family: "Times New Roman", Times, serif;
-    font-size: 2.5em;
-    text-transform: uppercase;
-    letter-spacing: 0.005em;
-    line-height: 0.8em;
-    font-weight: bold;
-    padding: 0.5em 0 0.5em 0.2em;
-    margin: -2em 0 1em 0;
-    background-clip: text;
-    color: rgba(255,255,255,0.3);
-    text-shadow:
-      0 -0.05em 0.06em rgba(0,0,0,0.5),
-      0.04em 0.05em 0.04em rgba(255,255,255,0.8);
-}
+        img {
+             filter: sepia(1);
+             mask-image: linear-gradient(to bottom, black 30%, transparent 80%);
+             mask-repeat: no-repeat;
+             mask-size: 100% 100%;
+         }
 
-/* Optional: tiny shimmer */
-@media (prefers-reduced-motion: no-preference) {
-  .marble {
-    animation: marbleShift 6s ease-in-out infinite alternate;
-  }
-  @keyframes marbleShift {
-    to { background-position: 60% 40%; }
-  }
-}
+         div[card-string-title] {
+             font-family: "Times New Roman", Times, serif;
+             font-size: 2.5em;
+             text-transform: uppercase;
+             letter-spacing: 0.005em;
+             line-height: 0.8em;
+             font-weight: bold;
+             margin-top: -1em;
+             background-clip: text;
+             color: rgba(255,255,255,0.3);
+             text-shadow:
+               0 -0.05em 0.03em rgba(0,0,0,0.6),
+               0.02em 0.025em 0.02em rgba(255,255,255,0.8);
+         }
 
-/* Fallback if clipping isn’t supported: just use a solid color */
-@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
-  .marble {
-    color: #dcd7cc;
-    text-shadow: 0.05em 0.06em 0.08em rgba(0,0,0,.35);
-  }
+        div[card-string-title]::before {
+	      content: counter(question, upper-roman);
+	      counter-increment: question;
+	      font-size: 200%;
+	      line-height: 1em;
+	      position:absolute;
+	      margin-top: -1em;
+		}
+    }
+
 }
 
 /*
