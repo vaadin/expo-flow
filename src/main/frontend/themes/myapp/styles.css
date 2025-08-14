@@ -28,18 +28,19 @@ html {
         background-size: 150% 150%;
 
         img {
-             filter: sepia(1);
+             filter: grayscale(0.75);
              mask-image: linear-gradient(to bottom, black 30%, transparent 80%);
              mask-repeat: no-repeat;
              mask-size: 100% 100%;
          }
 
          div[card-string-title] {
+             z-index: 1;
              font-family: "Times New Roman", Times, serif;
              font-size: 2.5em;
              text-transform: uppercase;
              letter-spacing: 0.005em;
-             line-height: 0.8em;
+             line-height: 0.9em;
              font-weight: bold;
              margin-top: -1em;
              background-clip: text;
@@ -52,10 +53,12 @@ html {
         div[card-string-title]::before {
 	      content: counter(question, upper-roman);
 	      counter-increment: question;
-	      font-size: 200%;
+	      font-size: 600%;
 	      line-height: 1em;
 	      position:absolute;
-	      margin-top: -1em;
+	      margin-top: -0.7em;
+	      color: rgba(255, 255, 255, .85);
+	      z-index: -1;
 		}
     }
 
