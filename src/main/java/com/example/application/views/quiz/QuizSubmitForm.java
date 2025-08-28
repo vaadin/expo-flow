@@ -24,15 +24,15 @@ public class QuizSubmitForm extends Dialog {
 
     private final TShirtService tShirtService;
     // Form and actions
-    TextField name = new TextField("Name");
-    EmailField email = new EmailField("Email");
-    ComboBox<String> shirtSize = new ComboBox("T-shirt size") {{
+    private TextField name = new TextField("Name");
+    private EmailField email = new EmailField("Email");
+    private ComboBox<String> shirtSize = new ComboBox("T-shirt size") {{
         setItems("S", "M", "L", "XL", "XXL");
         setPlaceholder("Select size");
     }};
-    BeanValidationBinder<TShirtOrder> binder = new BeanValidationBinder<>(TShirtOrder.class);
+    private BeanValidationBinder<TShirtOrder> binder = new BeanValidationBinder<>(TShirtOrder.class);
 
-    Button submit = new Button("Submit your answers and participate!", e -> submit());
+    private Button submit = new Button("Submit your answers and participate!", e -> submit());
 
     public QuizSubmitForm(TShirtService tShirtService) {
         this.tShirtService = tShirtService;

@@ -40,12 +40,14 @@ import java.util.stream.Collectors;
 @Route("quiz")
 public class QuizView extends VerticalLayout {
 
-    private final QuizSubmitForm sumbitForm;
+    private final QuizSubmitForm submitForm;
     private int questionsAnswered, points = 0;
 
-    public QuizView(QuizSubmitForm sumbitForm) {
+    public QuizView(QuizSubmitForm submitForm) {
+        // Attach CSS class name for some fancy styling
         setClassName(getClass().getSimpleName().toLowerCase());
-        this.sumbitForm = sumbitForm;
+        this.submitForm = submitForm;
+
         add(new H1("Ancient Rome — JavaZone Vaadin Quiz"));
 
         add(new Markdown("""
@@ -56,7 +58,50 @@ public class QuizView extends VerticalLayout {
                 """));
 
         // Q1 — Select
-        add(new QuestionCard("Select: Who was the first Roman emperor?", 1) {{
+        add(new RomanEmperorCard());
+        // Q2 — Data Grid (multi-select rows)
+        add(new PunicWarsCard());
+        // Q3 - Map
+        add(new MapOfRomeCard());
+        // Q4 - Chart
+        add(new PlebeiansCard());
+
+    }
+
+    private void checkIfQuizCompleted() {
+        if (questionsAnswered == 4) {
+            submitForm.showResults(points);
+        }
+    }
+
+    class QuestionCard extends Card {
+        public QuestionCard(String caption, int questionNumber) {
+            setMedia(new Image("/images/rome/q%s.jpg".formatted(questionNumber), "Featured image"));
+            setWidthFull();
+            setMaxWidth(1000, Unit.PIXELS);
+            setTitle(caption);
+            addThemeVariants(CardVariant.LUMO_COVER_MEDIA);
+            getStyle().set("--vaadin-card-media-aspect-ratio", "4 / 1");
+        }
+
+        public void markAnswered(boolean correct) {
+            setEnabled(false);
+            questionsAnswered++;
+            if (correct) {
+                points++;
+                Notification.show("Correct answer! You earned a point. %s/%s questions answered."
+                        .formatted(questionsAnswered, 4));
+                getStyle().setBorder("2px solid green");
+            } else {
+                Notification.show("Bummer, wrong answer. No points earned. Maybe check the source code now?");
+                getStyle().setBorder("2px solid red");
+            }
+            checkIfQuizCompleted();
+        }
+    }
+
+    private class RomanEmperorCard extends QuestionCard {
+        {
             var emperorSelect = new Select<String>();
             emperorSelect.setLabel("Choose");
             emperorSelect.setItems("Julius Caesar", "Augustus", "Nero", "Trajan");
@@ -66,10 +111,15 @@ public class QuizView extends VerticalLayout {
                 add(new Paragraph("Augustus was the first Roman emperor, reigning from 27 BC until his death in AD 14. He was the founder of the Roman Principate and is considered one of the most effective leaders in history."));
             });
             add(emperorSelect);
-        }});
+        }
 
-        // Q2 — Data Grid (multi-select rows)
-        add(new QuestionCard("Data Grid: Select all battles that were part of the Punic Wars:", 2) {{
+        public RomanEmperorCard() {
+            super("Select: Who was the first Roman emperor?", 1);
+        }
+    }
+
+    private class PunicWarsCard extends QuestionCard {
+        {
             var battleGrid = new Grid<>(Battle.class);
             battleGrid.setItems(Battle.values());
             battleGrid.setColumns("name", "start");
@@ -81,7 +131,7 @@ public class QuizView extends VerticalLayout {
                 }
             });
             add(battleGrid, new Button("Lock my answer", e -> {
-                Set<Battle> correctChoises = Arrays.asList(Battle.values()).stream()
+                Set<Battle> correctChoises = Arrays.stream(Battle.values())
                         .filter(Battle::isCorrect)
                         .collect(Collectors.toSet());
                 Set<Battle> selection = battleGrid.asMultiSelect().getSelectedItems();
@@ -96,9 +146,15 @@ public class QuizView extends VerticalLayout {
                     }
                 }).setHeader("Part of Punic Wars?");
             }));
-        }});
+        }
 
-        add(new QuestionCard("Map: Click the marker dropped to Rome", 3) {{
+        public PunicWarsCard() {
+            super("Data Grid: Select all battles that were part of the Punic Wars:", 2);
+        }
+    }
+
+    private class MapOfRomeCard extends QuestionCard {
+        {
             var map = new com.vaadin.flow.component.map.Map();
             map.setWidthFull();
             map.setHeight("320px");
@@ -137,9 +193,15 @@ public class QuizView extends VerticalLayout {
             });
             add(map);
             //setTitle(map);
-        }});
+        }
 
-        add(new QuestionCard("Pie Chart: Which slice represents Plebeians? (Click a slice)",4) {{
+        public MapOfRomeCard() {
+            super("Map: Click the marker dropped to Rome", 3);
+        }
+    }
+
+    private class PlebeiansCard extends QuestionCard {
+        {
             setSubtitle(new Span("Roman Social Classes, Patricians, Equestrians, Plebeians, Slaves & Freedmen, by their size."));
             Chart pieChart = new Chart(ChartType.PIE);
             pieChart.getConfiguration().getChart().setBackgroundColor(new SolidColor("transparent"));
@@ -171,75 +233,10 @@ public class QuizView extends VerticalLayout {
                 pieChart.drawChart();
             });
             add(pieChart);
-        }});
-
-    }
-
-    private void checkIfQuizCompleted() {
-        if (questionsAnswered == 4) {
-            sumbitForm.showResults(points);
-        }
-    }
-
-    public enum Battle {
-        Cannae("Cannae", "216 BC","Second Punic War", true),
-        Alesia("Alesia", "52 BC","Gallic Wars", false),
-        Zama("Zama", "202 BC", "Second Punic War", true),
-        Actium("Actium", "32 BC", "Final War of the Roman Republic", false),
-        Mylae("Mylae", "260 BC", "First Punic War", true);
-
-        private final String name;
-        private final String start;
-        private final String war;
-        private final boolean correct;
-
-        Battle(String name, String start, String war, boolean correct) {
-            this.name = name;
-            this.start = start;
-            this.war = war;
-            this.correct = correct;
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public String getStart() {
-            return start;
-        }
-
-        public String getWar() {
-            return war;
-        }
-
-        public boolean isCorrect() {
-            return correct;
-        }
-    }
-
-    class QuestionCard extends Card {
-        public QuestionCard(String caption, int questionNumber) {
-            setMedia(new Image("/images/rome/q%s.jpg".formatted(questionNumber), "Featured image"));
-            setWidthFull();
-            setMaxWidth(1000, Unit.PIXELS);
-            setTitle(caption);
-            addThemeVariants(CardVariant.LUMO_COVER_MEDIA);
-            getStyle().set("--vaadin-card-media-aspect-ratio", "4 / 1");
-        }
-
-        public void markAnswered(boolean correct) {
-            setEnabled(false);
-            questionsAnswered++;
-            if (correct) {
-                points++;
-                Notification.show("Correct answer! You earned a point. %s/%s questions answered."
-                        .formatted(questionsAnswered, 4));
-                getStyle().setBorder("2px solid green");
-            } else {
-                Notification.show("Bummer, wrong answer. No points earned. Maybe check the source code now?");
-                getStyle().setBorder("2px solid red");
-            }
-            checkIfQuizCompleted();
+        public PlebeiansCard() {
+            super("Pie Chart: Which slice represents Plebeians? (Click a slice)", 4);
         }
     }
 }
