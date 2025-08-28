@@ -36,6 +36,7 @@ public class QuizSubmitForm extends Dialog {
 
     public QuizSubmitForm(TShirtService tShirtService) {
         this.tShirtService = tShirtService;
+        setMaxWidth("80em");
     }
 
     void submit() {
