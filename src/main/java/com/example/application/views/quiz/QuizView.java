@@ -101,7 +101,8 @@ public class QuizView extends VerticalLayout {
     }
 
     private class RomanEmperorCard extends QuestionCard {
-        {
+        public RomanEmperorCard() {
+            super("Select: Who was the first Roman emperor?", 1);
             var emperorSelect = new Select<String>();
             emperorSelect.setLabel("Choose");
             emperorSelect.setItems("Julius Caesar", "Augustus", "Nero", "Trajan");
@@ -112,14 +113,11 @@ public class QuizView extends VerticalLayout {
             });
             add(emperorSelect);
         }
-
-        public RomanEmperorCard() {
-            super("Select: Who was the first Roman emperor?", 1);
-        }
     }
 
     private class PunicWarsCard extends QuestionCard {
-        {
+        public PunicWarsCard() {
+            super("Data Grid: Select all battles that were part of the Punic Wars:", 2);
             var battleGrid = new Grid<>(Battle.class);
             battleGrid.setItems(Battle.values());
             battleGrid.setColumns("name", "start");
@@ -147,14 +145,11 @@ public class QuizView extends VerticalLayout {
                 }).setHeader("Part of Punic Wars?");
             }));
         }
-
-        public PunicWarsCard() {
-            super("Data Grid: Select all battles that were part of the Punic Wars:", 2);
-        }
     }
 
     private class MapOfRomeCard extends QuestionCard {
-        {
+        public MapOfRomeCard() {
+            super("Map: Click the marker dropped to Rome", 3);
             var map = new com.vaadin.flow.component.map.Map();
             map.setWidthFull();
             map.setHeight("320px");
@@ -194,14 +189,11 @@ public class QuizView extends VerticalLayout {
             add(map);
             //setTitle(map);
         }
-
-        public MapOfRomeCard() {
-            super("Map: Click the marker dropped to Rome", 3);
-        }
     }
 
     private class PlebeiansCard extends QuestionCard {
-        {
+        public PlebeiansCard() {
+            super("Pie Chart: Which slice represents Plebeians? (Click a slice)", 4);
             setSubtitle(new Span("Roman Social Classes, Patricians, Equestrians, Plebeians, Slaves & Freedmen, by their size."));
             Chart pieChart = new Chart(ChartType.PIE);
             pieChart.getConfiguration().getChart().setBackgroundColor(new SolidColor("transparent"));
@@ -233,10 +225,6 @@ public class QuizView extends VerticalLayout {
                 pieChart.drawChart();
             });
             add(pieChart);
-        }
-
-        public PlebeiansCard() {
-            super("Pie Chart: Which slice represents Plebeians? (Click a slice)", 4);
         }
     }
 }
