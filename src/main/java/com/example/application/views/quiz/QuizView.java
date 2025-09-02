@@ -2,6 +2,7 @@ package com.example.application.views.quiz;
 
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.card.CardVariant;
 import com.vaadin.flow.component.charts.Chart;
@@ -128,22 +129,26 @@ public class QuizView extends VerticalLayout {
                     Notification.show("Great choice! Any more options?");
                 }
             });
-            add(battleGrid, new Button("Lock my answer", e -> {
-                Set<Battle> correctChoises = Arrays.stream(Battle.values())
-                        .filter(Battle::isCorrect)
-                        .collect(Collectors.toSet());
-                Set<Battle> selection = battleGrid.asMultiSelect().getSelectedItems();
-                markAnswered(correctChoises.equals(selection));
-                battleGrid.addColumn("war");
-                // add a custom column to show if the answer was correct with icons
-                battleGrid.addComponentColumn(battle -> {
-                    if (battle.isCorrect()) {
-                        return VaadinIcon.CHECK.create();
-                    } else {
-                        return VaadinIcon.MINUS.create();
-                    }
-                }).setHeader("Part of Punic Wars?");
-            }));
+            add(battleGrid, new Button("Lock my answer") {{
+                addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+                addClickListener(e -> {
+                    Set<Battle> correctChoices = Arrays.stream(Battle.values())
+                            .filter(Battle::isCorrect)
+                            .collect(Collectors.toSet());
+                    Set<Battle> selection = battleGrid.asMultiSelect().getSelectedItems();
+                    markAnswered(correctChoices.equals(selection));
+                    battleGrid.addColumn("war");
+                    // add a custom column to show if the answer was correct with icons
+                    battleGrid.addComponentColumn(battle -> {
+                        if (battle.isCorrect()) {
+                            return VaadinIcon.CHECK.create();
+                        } else {
+                            return VaadinIcon.MINUS.create();
+                        }
+                    }).setHeader("Part of Punic Wars?");
+                });
+            }});
         }
     }
 
