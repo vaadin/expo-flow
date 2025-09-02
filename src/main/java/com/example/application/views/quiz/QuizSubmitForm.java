@@ -49,28 +49,28 @@ public class QuizSubmitForm extends Dialog {
         }
     }
 
-    public void showResults(int extraPoints) {
+    public void showResults(int points) {
         setHeaderTitle("Congratulations! You have completed the quiz!");
 
         add(new Html("""
         <div>
-            <p>You earned <strong>%d out of %d</strong> possible extrapoints for the raffle. 
+            <p>You earned <strong>%d points out of %d</strong>.
             You'll anyways get a T-shirt for participating and one point for the raffle.
             If you are not happy with your score, consider sneaking in the source code
             and trying again by reloading.</p>
 
-            <p>Now fill in your name and email to submit your answers and participate in the raffle.</p>
+            <p>Now fill in your name and email to submit your answers to cash out the swag.</p>
 
             <em>By submitting, you agree to <a href="https://vaadin.com/privacy-policy" target="_blank">
             Vaadin Privacy Policy</a>. Yes we'll remind you to try out Vaadin during the next couple of 
             weeks, but you can unsubscribe any time you want 🧸.</em>
         </div>
-        """.formatted(extraPoints, 4)));
+        """.formatted(points, 4)));
 
         add(new FormLayout(name, email, shirtSize));
 
         binder.bindInstanceFields(this);
-        binder.setBean(new TShirtOrder());
+        binder.setBean(new TShirtOrder(points));
 
         add(submit);
         setCloseOnOutsideClick(false);

@@ -48,7 +48,7 @@ public class ListOrdersView extends VerticalLayout {
         RouterLink orderView = new RouterLink("Submit new order", TShirtView.class);
         add(heading, update, orders, orderView);
         
-        orders.setColumns("name", "email", "shirtSize");
+        orders.setColumns("name", "email", "shirtSize", "points");
         orders.addComponentColumn(order -> {
             Button deleteBtn = new Button(VaadinIcon.TRASH.create());
             deleteBtn.addClickListener(e -> {

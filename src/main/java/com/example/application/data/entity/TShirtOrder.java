@@ -27,7 +27,13 @@ public class TShirtOrder {
     @NotNull
     private String shirtSize;
 
+    private Integer points;
+
     public TShirtOrder() {
+    }
+
+    public TShirtOrder(Integer points) {
+        this.points = points;
     }
 
     public TShirtOrder(String name, String email, String shirtSize) {
@@ -62,5 +68,13 @@ public class TShirtOrder {
 
     public void setShirtSize(String shirtSize) {
         this.shirtSize = shirtSize;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
     }
 }
