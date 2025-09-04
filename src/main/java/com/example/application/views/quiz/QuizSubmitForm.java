@@ -4,8 +4,10 @@ import com.example.application.data.entity.TShirtOrder;
 import com.example.application.service.TShirtService;
 import com.example.application.views.ComponentsView;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -37,6 +39,8 @@ public class QuizSubmitForm extends Dialog {
     public QuizSubmitForm(TShirtService tShirtService) {
         this.tShirtService = tShirtService;
         setMaxWidth("80em");
+        submit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        submit.addClickShortcut(Key.ENTER);
     }
 
     void submit() {
