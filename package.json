@@ -2,6 +2,7 @@
   "name": "no-name",
   "license": "UNLICENSED",
   "dependencies": {
+    "@lottiefiles/dotlottie-wc": "0.2.21",
     "@polymer/polymer": "3.5.2",
     "@vaadin/bundles": "24.8.6",
     "@vaadin/common-frontend": "0.0.19",
@@ -155,11 +156,13 @@
     "@vaadin/dashboard": "24.8.6",
     "@vaadin/grid-pro": "24.8.6",
     "@vaadin/map": "24.8.6",
-    "@vaadin/rich-text-editor": "24.8.6"
+    "@vaadin/rich-text-editor": "24.8.6",
+    "@lottiefiles/dotlottie-wc": "$@lottiefiles/dotlottie-wc"
   },
   "type": "module",
   "vaadin": {
     "dependencies": {
+      "@lottiefiles/dotlottie-wc": "0.2.21",
       "@polymer/polymer": "3.5.2",
       "@vaadin/bundles": "24.8.6",
       "@vaadin/common-frontend": "0.0.19",
@@ -220,6 +223,6 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "71b7a6da031bad2afdf889c563d758e3873ac34681bd14c022e97ae5367ac833"
+    "hash": "89d7163e7a1d35852dfa4e74c101fb5b4fd1bde82c103e6c9586d2e9872f0e1e"
   }
 }

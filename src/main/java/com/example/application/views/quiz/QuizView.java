@@ -49,7 +49,7 @@ public class QuizView extends VerticalLayout {
         setClassName(getClass().getSimpleName().toLowerCase());
         this.submitForm = submitForm;
 
-        add(new H1("Ancient Rome — JavaZone Vaadin Quiz"));
+        add(new H1("Veni, Vidi, Vaadin"));
 
         add(new Markdown("""
                 **Choose wisely, you can only choose once per question!**
@@ -90,6 +90,10 @@ public class QuizView extends VerticalLayout {
             questionsAnswered++;
             if (correct) {
                 points++;
+                LottieComponent confetti = new LottieComponent("/confetti.lottie",
+                        true, false, null, null);
+                confetti.makeFullOverlay();
+                add(confetti);
                 Notification.show("Correct answer! You earned a point. %s/%s questions answered."
                         .formatted(questionsAnswered, 4));
                 getStyle().setBorder("2px solid green");
