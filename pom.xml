@@ -11,15 +11,15 @@
 
     <properties>
         <java.version>21</java.version>
-        <vaadin.version>24.8.7</vaadin.version>
-        <spring.ai.version>1.0.0</spring.ai.version>
-        <viritin.version>2.14.1</viritin.version>
+        <vaadin.version>24.9.2</vaadin.version>
+        <spring.ai.version>1.0.3</spring.ai.version>
+        <viritin.version>2.20.0</viritin.version>
     </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.5</version>
+        <version>3.5.6</version>
         <relativePath/>
     </parent>
 
