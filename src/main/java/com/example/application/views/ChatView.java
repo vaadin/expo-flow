@@ -3,12 +3,10 @@ package com.example.application.views;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -16,7 +14,7 @@ import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -27,7 +25,7 @@ import com.vaadin.flow.router.Route;
 public class ChatView extends VerticalLayout {
 
     private final MessageList messageList = new MessageList();
-    private final TextField input = new TextField();
+    private final TextArea input = new TextArea();
     private final Button sendButton = new Button("Send");
     private final List<MessageListItem> items = new ArrayList<>();
     HorizontalLayout form = new HorizontalLayout(input, sendButton);
@@ -65,6 +63,7 @@ public class ChatView extends VerticalLayout {
         setSizeFull();
         form.expand(input);
         form.setWidthFull();
+        input.setMinRows(1);
         messageList.setSizeFull();
         add(messageList, form);
     }
