@@ -7,14 +7,11 @@ import java.util.List;
 import org.springframework.ai.chat.client.ChatClient;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -25,20 +22,14 @@ import com.vaadin.flow.router.Route;
 public class ChatView extends VerticalLayout {
 
     private final MessageList messageList = new MessageList();
-    private final TextArea input = new TextArea();
-    private final Button sendButton = new Button("Send");
+    private final MessageInput messageInput = new MessageInput();
     private final List<MessageListItem> items = new ArrayList<>();
-    HorizontalLayout form = new HorizontalLayout(input, sendButton);
 
     public ChatView(ChatClient.Builder chatClientBuilder) {
         ChatClient chatClient = chatClientBuilder.build();
 
-        messageList.setItems(items);
-
-        sendButton.addClickShortcut(Key.ENTER);
-        sendButton.addClickListener(e -> {
-            messageList.setMarkdown(true);
-            String userText = input.getValue();
+        messageInput.addSubmitListener(e -> {
+            String userText = e.getValue();
             if (userText == null || userText.isBlank()) {
                 return;
             }
@@ -56,15 +47,12 @@ public class ChatView extends VerticalLayout {
                         });
                     });
             messageList.setItems(items);
-            input.clear();
-            messageList.getChildren().reduce((a,b)->b).orElse(messageList).scrollIntoView();
         });
 
         setSizeFull();
-        form.expand(input);
-        form.setWidthFull();
-        input.setMinRows(1);
+        messageList.setMarkdown(true);
         messageList.setSizeFull();
-        add(messageList, form);
+        messageInput.setWidthFull();
+        add(messageList, messageInput);
     }
 }
