@@ -3,10 +3,12 @@ package com.example.application.views;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -57,6 +59,7 @@ public class ChatView extends VerticalLayout {
                     });
             messageList.setItems(items);
             input.clear();
+            messageList.getChildren().reduce((a,b)->b).orElse(messageList).scrollIntoView();
         });
 
         setSizeFull();
