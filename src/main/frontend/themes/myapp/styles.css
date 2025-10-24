@@ -38,3 +38,15 @@ html {
 }
 
 
+vaadin-message-list {
+  scroll-snap-type: y proximity;
+}
+
+vaadin-message-list::after {
+  display: block;
+  content: '';
+  scroll-snap-align: end;
+  min-height: 1px;
+}
+
+
