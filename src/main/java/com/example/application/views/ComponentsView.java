@@ -170,7 +170,11 @@ public class ComponentsView extends VerticalLayout {
         addAttachListener(e -> {
             subscription = getDeveloperProductivity().subscribe(dataPoint -> {
                 e.getUI().access(() -> {
-                    series.add(new DataSeriesItem(dataPoint.time(), dataPoint.value()), true, series.getData().size() > 50);
+                    // Workaround for Vaadin Charts bug with dynamic updates in 25.0.0-beta9
+                    // Add without notification, then redraw the whole chart
+                    // https://github.com/vaadin/flow-components/issues/8334
+                    series.add(new DataSeriesItem(dataPoint.time(), dataPoint.value()), false, series.getData().size() > 50);
+                    chart.drawChart();
                 });
             });
         });
