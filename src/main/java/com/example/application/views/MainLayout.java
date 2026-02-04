@@ -5,6 +5,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
@@ -42,7 +43,10 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
     }
 
     private void addDrawerContent() {
-        H1 appName = new H1("Vaadin }>");
+        H1 appName = new H1(
+                new Span("Vaadin"){{addClassNames("logo-text");}},
+                new Span("}>"){{addClassNames("logo-symbol");}}
+        );
         appName.addClassNames(LumoUtility.FontWeight.SEMIBOLD);
         Header header = new Header(appName);
 
