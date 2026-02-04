@@ -2,7 +2,4 @@
  * This file has been created by the Vaadin Theme Editor. Please note that
  * manual changes to individual CSS properties may be overwritten by the theme editor.
  */
-html {
-  --aura-accent-color-light:rgba(101,24,199,1);
-  --aura-background-color-light:rgba(61,88,232,1);
-}
+html { --aura-accent-color-light:rgba(4,27,230,1); }
