@@ -2,7 +2,6 @@ package com.example.application.views;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -16,7 +15,6 @@ import com.vaadin.flow.router.Layout;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.server.menu.MenuEntry;
-import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.List;
@@ -43,18 +41,6 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         addToNavbar(true, toggle, viewTitle);
     }
 
-    private Checkbox createDarkToggle() {
-        var themeToggle = new Checkbox("Dark theme");
-        themeToggle.getStyle().setPadding("2em");
-
-        themeToggle.addValueChangeListener(e -> {
-            var js = "document.documentElement.setAttribute('theme', $0)";
-            getElement().executeJs(js, e.getValue() ? Lumo.DARK : Lumo.LIGHT);
-        });
-
-        return themeToggle;
-    }
-
     private void addDrawerContent() {
         H1 appName = new H1("Vaadin }>");
         appName.addClassNames(LumoUtility.FontWeight.SEMIBOLD);
@@ -62,7 +48,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
         Scroller scroller = new Scroller(createNavigation());
 
-        addToDrawer(header, scroller, createFooter(), createDarkToggle());
+        addToDrawer(header, scroller, createFooter());
     }
 
     private SideNav createNavigation() {

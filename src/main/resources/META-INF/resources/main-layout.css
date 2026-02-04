@@ -1,22 +1,17 @@
 vaadin-scroller[slot="drawer"] {
-  padding: var(--lumo-space-s);
+  padding: var(--vaadin-padding-s);
 }
 
 vaadin-side-nav-item vaadin-icon {
   padding: 0;
 }
 
-
-[slot="drawer"] {
-  background-image: linear-gradient(0deg, var(--lumo-shade-5pct), var(--lumo-shade-5pct));
-}
-
 [slot="drawer"]:is(header, footer) {
   display: flex;
   align-items: center;
-  gap: var(--lumo-space-s);
-  padding: var(--lumo-space-s) var(--lumo-space-m);
-  min-height: var(--lumo-size-xl);
+  gap: var(--vaadin-gap-s);
+  padding: var(--vaadin-padding-s) var(--vaadin-padding-m);
+  min-height: var(--vaadin-gap-xl);
   box-sizing: border-box;
 }
 

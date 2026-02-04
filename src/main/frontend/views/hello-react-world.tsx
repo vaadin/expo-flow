@@ -13,7 +13,7 @@ export default function HelloReactWorldView() {
 
     return (
         <>
-            <section className="flex p-m gap-m items-end">
+            <section className="flex p-m gap-2 items-end">
                 <TextField
                     placeholder="Your name"
                     onValueChanged={(e) => {
