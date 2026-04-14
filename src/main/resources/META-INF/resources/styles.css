@@ -4,5 +4,8 @@
 
 html {
     /* color-scheme: dark; */
+}
 
+.shopping-cart-panel {
+    border-radius: var(--vaadin-radius-l);
 }
