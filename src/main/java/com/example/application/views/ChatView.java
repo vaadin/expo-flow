@@ -34,6 +34,7 @@ public class ChatView extends UploadDropZone {
 
         var messageList = new MessageList();
         messageList.setSizeFull();
+        messageList.setMarkdown(true);
         var messageInput = new MessageInput();
 
         // Upload for attachments
