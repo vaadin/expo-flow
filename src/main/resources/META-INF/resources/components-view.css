@@ -29,3 +29,9 @@
     min-height: 400px;
     grid-row: span 2 / span 2;
 }
+
+.components-view .component.wide {
+    width: 100%;
+    min-width: 400px;
+    grid-column: span 2 / span 2;
+}
