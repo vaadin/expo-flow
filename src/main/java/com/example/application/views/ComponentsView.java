@@ -368,6 +368,7 @@ public class ComponentsView extends VerticalLayout {
     private void addComponentToGrid(Component component, String... classNames) {
         var wrapper = new Div();
         wrapper.addClassName("component");
+        wrapper.addClassName("aura-surface");
         wrapper.add(component);
         wrapper.addClassNames(classNames);
 

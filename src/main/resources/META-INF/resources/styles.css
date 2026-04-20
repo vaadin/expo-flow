@@ -1,9 +1,10 @@
+@import "./theme-editor.css";
 @import "theme-editor.css";
 @import "components-view.css";
 @import "main-layout.css";
 
 html {
-    /* color-scheme: dark; */
+    --aura-background-color-dark: #131822;
 }
 
 .shopping-cart-panel {
