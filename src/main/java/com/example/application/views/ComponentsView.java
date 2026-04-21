@@ -82,8 +82,8 @@ public class ComponentsView extends VerticalLayout {
         addMultiSelectComboBox();
         addTabs();
         addMap();
-        addRichTextEditor();
         addStepper();
+        addRichTextEditor();
         addSlider();
         addBadges();
         addProgressBar();
@@ -114,7 +114,7 @@ public class ComponentsView extends VerticalLayout {
 
         var layout = new VerticalLayout(pending, confirmed, warning, denied);
         layout.setAlignItems(Alignment.CENTER);
-        addComponentToGrid(layout, "col-span-2");
+        addComponentToGrid(layout);
 
     }
 
@@ -130,7 +130,7 @@ public class ComponentsView extends VerticalLayout {
         rangeSlider.setValue(new RangeSliderValue(200, 800));
         layout.add(rangeSlider);
 
-        addComponentToGrid(layout, "col-span-2", "tall");
+        addComponentToGrid(layout);
     }
 
     private void addStepper() {
@@ -153,7 +153,7 @@ public class ComponentsView extends VerticalLayout {
         Div childrenExplainer = new Div();
         childrenExplainer.setText("Age 2-12");
         childrenExplainer.getStyle().set("font-size", "0.75em");
-        childrenExplainer.getStyle().set("position", "absolute");
+        childrenExplainer.getStyle().set("position", "relative");
 
         formLayout.addFormItem(childrenField, new Div(children, childrenExplainer));
 
@@ -166,7 +166,7 @@ public class ComponentsView extends VerticalLayout {
         formLayout.setWidth("100%");
         formLayout.getStyle().set("position", "relative");
 
-        addComponentToGrid(formLayout, "col-span-2", "wide");
+        addComponentToGrid(formLayout, "tall");
     }
 
     private void addLoginForm() {
@@ -224,7 +224,7 @@ public class ComponentsView extends VerticalLayout {
 
         people.subList(2, 5).forEach(grid::select);
 
-        addComponentToGrid(grid, "col-span-3", "tall", "wide");
+        addComponentToGrid(grid, "col-span-2", "tall", "wide");
     }
 
     private void addComboBox() {
@@ -330,7 +330,7 @@ public class ComponentsView extends VerticalLayout {
         multiSelectComboBox.setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
         multiSelectComboBox.setValue(Set.of(people.get(0), people.get(12)));
 
-        addComponentToGrid(multiSelectComboBox, "col-span-2");
+        addComponentToGrid(multiSelectComboBox);
     }
 
     private void addTabs() {
@@ -342,7 +342,7 @@ public class ComponentsView extends VerticalLayout {
                 new Tab("Shipping")
         );
 
-        addComponentToGrid(tabs, "col-span-2", "wide");
+        addComponentToGrid(tabs);
     }
 
     private void addMap() {
