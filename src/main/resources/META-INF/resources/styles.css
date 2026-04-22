@@ -10,3 +10,47 @@ html {
 .shopping-cart-panel {
     border-radius: var(--vaadin-radius-l);
 }
+
+/*html {*/
+/*    --aura-app-layout-inset: 0px;*/
+/*    --aura-accent-color-light: #1B68FA;*/
+/*    --aura-background-color-light: #E1E1E1;*/
+/*    --aura-accent-color-dark: #1B68FA;*/
+/*    --aura-background-color-dark: #262626;*/
+/*    --aura-surface-opacity: 1;*/
+/*    --aura-base-radius: 0;*/
+/*    --aura-base-font-size: 16;*/
+/*    --aura-base-size: 20;*/
+/*    --aura-overlay-surface-opacity: 1;*/
+/*    --aura-contrast-level: 2;*/
+
+/*    --vaadin-dashboard-widget-border-width: 0px;*/
+/*    --vaadin-tabs-border-width: 0px;*/
+/*    --vaadin-side-nav-item-border-width: 0px;*/
+/*    --aura-app-layout-border-width: 0px;*/
+
+/*    --vaadin-radius-l: 0;*/
+/*}*/
+
+/*::part(input-field) {*/
+/*    --aura-surface-level: 0;*/
+/*    --aura-surface-opacity: 1;*/
+/*    --vaadin-input-field-border-radius: 0;*/
+/*    border-top-width: 0;*/
+/*    border-inline-width: 0;*/
+/*}*/
+
+/*vaadin-button {*/
+/*    --aura-accent-color-light: inherit;*/
+/*    --aura-accent-color-dark: inherit;*/
+/*    --vaadin-button-border-radius: 0;*/
+/*}*/
+
+/*vaadin-button:not([theme~="primary"], [theme~="tertiary"]) {*/
+/*    --vaadin-button-background: light-dark(var(--aura-neutral-light), var(--aura-neutral-dark));*/
+/*    --vaadin-button-text-color: light-dark(var(--aura-accent-contrast-color-light), var(--aura-accent-contrast-color-dark));*/
+/*}*/
+
+/*components-view .component {*/
+/*    border-width: 0px;*/
+/*}*/
