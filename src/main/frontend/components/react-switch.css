@@ -1,0 +1,8 @@
+/* MUI Switch styled with Vaadin Aura theme colors */
+.react-switch .MuiSwitch-switchBase.Mui-checked {
+  color: var(--aura-accent-color);
+}
+
+.react-switch .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+  background-color: var(--aura-accent-color);
+}
