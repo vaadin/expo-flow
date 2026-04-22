@@ -14,6 +14,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.signals.Signal;
 import com.vaadin.flow.signals.local.ListSignal;
+import org.jspecify.annotations.NonNull;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Shopping List")
@@ -34,7 +35,7 @@ public class ShoppingListView extends HorizontalLayout {
             new Product("Monitor", 249.50));
 
     // Signals for state
-    private final ListSignal<Item> cart = new ListSignal<>();
+    private final ListSignal<@NonNull Item> cart = new ListSignal<>();
     private final Signal<Double> total = Signal.computed(() -> cart.get().stream()
             .mapToDouble(itemSignal -> {
                 var item = itemSignal.get();
