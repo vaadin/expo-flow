@@ -13,8 +13,13 @@
     const hueBackground = (hueAccent + 180) % 360; // complementary
 
     const root = document.documentElement;
+    //Properties for Light Mode
     root.style.setProperty('--aura-accent-color-light', `hsl(${hueAccent}, 90%, 50%)`);
     root.style.setProperty('--aura-background-color-light', `hsl(${hueBackground}, 80%, 50%)`);
+
+    //Properties for Dark Mode
+    root.style.setProperty('--aura-accent-color-dark', `hsl(${hueAccent}, 90%, 50%)`);
+    root.style.setProperty('--aura-background-color', `hsl(${hueBackground}, 80%, 50%)`);
 
     rafId = requestAnimationFrame(tick);
   }
@@ -34,6 +39,9 @@
       const root = document.documentElement;
       root.style.removeProperty('--aura-accent-color-light');
       root.style.removeProperty('--aura-background-color-light');
+
+      root.style.removeProperty('--aura-accent-color-dark');
+      root.style.removeProperty('--aura-background-color');
     },
   };
 })();

@@ -89,7 +89,6 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         darkModeBtn.addClickListener(e -> toggleDarkMode(darkModeBtn));
 
         var controls = new Div(darkModeBtn, new Checkbox("Unicorn mode", this::changeUnicornMode));
-        controls.getStyle().set("display", "flex").set("flex-direction", "column").set("gap", "var(--vaadin-gap-s)");
 
         layout.add(controls);
         return layout;
