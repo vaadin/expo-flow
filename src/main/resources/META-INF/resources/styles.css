@@ -3,6 +3,8 @@
 @import "components-view.css";
 @import "main-layout.css";
 
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap');
+
 html {
     --aura-background-color-dark: #131822;
 }
@@ -15,13 +17,21 @@ html {
 /**
 html {
     --aura-app-layout-inset: 0px;
-    --aura-accent-color-light: #1B68FA;
+
+    --aura-accent-color-light: #222222;
     --aura-background-color-light: #E1E1E1;
-    --aura-accent-color-dark: #1B68FA;
-    --aura-background-color-dark: #262626;
+
+    --aura-accent-color-dark: #EEEEEE;
+    --aura-background-color-dark: #000000;
+
+    --aura-contrast-level: 2;
+    --aura-font-family: 'JetBrains Mono', var(--aura-font-family-system);
+
     --aura-surface-opacity: 1;
+    --aura-surface-level: -0.5;
+
     --aura-base-radius: 0;
-    --aura-base-font-size: 16;
+    --aura-base-font-size: 15;
     --aura-base-size: 20;
     --aura-overlay-surface-opacity: 1;
     --aura-contrast-level: 2;
