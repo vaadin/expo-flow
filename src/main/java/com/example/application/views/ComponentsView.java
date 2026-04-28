@@ -126,8 +126,8 @@ public class ComponentsView extends VerticalLayout {
         slider.setValue(50.0);
         layout.add(slider);
 
-        RangeSlider rangeSlider = new RangeSlider("Price range", 0, 1000);
-        rangeSlider.setValue(new RangeSliderValue(200, 800));
+        RangeSlider rangeSlider = new RangeSlider("Price range", 0.0, 1000.0);
+        rangeSlider.setValue(new RangeSliderValue(200.0, 800.0));
         layout.add(rangeSlider);
 
         addComponentToGrid(layout);
