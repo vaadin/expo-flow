@@ -14,7 +14,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,11 +42,9 @@ public class AiFilterView extends VerticalLayout {
     private final MessageList messageList;
     private final List<Talk> allTalks;
 
-    public AiFilterView(TalkRepository talkRepository, ChatClient.Builder chatClientBuilder) {
+    public AiFilterView(TalkRepository talkRepository, ChatModel chatModel) {
         this.talkRepository = talkRepository;
-
-        chatClient = chatClientBuilder
-                .defaultOptions(OpenAiChatOptions.builder().build())
+        chatClient = ChatClient.builder(chatModel)
                 .build();
 
         grid = new Grid<>(Talk.class);
@@ -107,6 +106,24 @@ public class AiFilterView extends VerticalLayout {
                 });
     }
 
+    private static final String TRACK_PARAM_DESCRIPTION = """                                                                                                                                       
+      Track enum values to filter by, or null. Use the enum name in the list.                                                                                                                     
+      Available tracks:                                                                                                                                                                           
+        AGILE       = "Agile, People & Culture (JAX)"
+        AGILE_FLOW  = "Agile Flow Day - Modern Productivity (JAX)"                                                                                                                                
+        ARCH        = "Architecture & Design (JAX)"
+        CLOUD       = "Clouds, Kubernetes & Serverless (JAX)"                                                                                                                                     
+        CORE_JAVA   = "Core Java & Languages (JAX)"
+        DATA_ML     = "Data & Machine Learning (JAX)"                                                                                                                                             
+        DEVOPS      = "DevOps & CI/CD (JAX)"
+        GEN_AI      = "Generative AI (JAX)"                                                                                                                                                       
+        MICRO       = "Microservices & Modularisierung (JAX)"
+        PERF_SEC    = "Performance & Security (JAX)"                                                                                                                                              
+        SERVER_JAVA = "Serverside Java (JAX)"                                                                                                                                                     
+        WEB_JS      = "Web Development & JavaScript (JAX)"
+      Example: ["GEN_AI", "DATA_ML"]                                                                                                                                                              
+      """;
+
     @Tool(description = """
             Search and filter conference talks shown in the grid. All parameters are optional — pass null to ignore.
             Tracks (exact enum names): AGILE, AGILE_FLOW, ARCH, CLOUD, CORE_JAVA, DATA_ML, DEVOPS, GEN_AI, MICRO, PERF_SEC, SERVER_JAVA, WEB_JS.
@@ -118,7 +135,7 @@ public class AiFilterView extends VerticalLayout {
     int searchTalks(
             @ToolParam(description = "Part of the talk title to match, or null") String title,
             @ToolParam(description = "Part of the speaker name to match, or null") String speaker,
-            @ToolParam(description = "Track enum values to filter by, e.g. [GEN_AI, DATA_ML], or null") List<String> tracks,
+            @ToolParam(description = "Track enum values... \n" + TRACK_PARAM_DESCRIPTION) List<String> tracks,
             @ToolParam(description = "Date as yyyy-MM-dd, or null") String date,
             @ToolParam(description = "Earliest start time as HH:mm (inclusive), or null") String startTimeFrom,
             @ToolParam(description = "Latest start time as HH:mm (inclusive), or null") String startTimeTo,
