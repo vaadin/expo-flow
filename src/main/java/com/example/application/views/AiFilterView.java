@@ -136,15 +136,16 @@ public class AiFilterView extends VerticalLayout {
             @ToolParam(description = "Part of the talk title to match, or null") String title,
             @ToolParam(description = "Part of the speaker name to match, or null") String speaker,
             @ToolParam(description = "Track enum values... \n" + TRACK_PARAM_DESCRIPTION) List<String> tracks,
+            @ToolParam(description = "Language of the talk") String language,
             @ToolParam(description = "Date as yyyy-MM-dd, or null") String date,
             @ToolParam(description = "Earliest start time as HH:mm (inclusive), or null") String startTimeFrom,
             @ToolParam(description = "Latest start time as HH:mm (inclusive), or null") String startTimeTo,
             @ToolParam(description = "Room name or partial match, or null") String room,
             @ToolParam(description = "Talk format enum value, or null") String format
     ) {
-        logger.info("searchTalks: title={}, speaker={}, tracks={}, date={}, startTimeFrom={}, startTimeTo={}, room={}, format={}",
-                title, speaker, tracks, date, startTimeFrom, startTimeTo, room, format);
-        var results = talkRepository.findAll(buildSpec(title, speaker, tracks, date, startTimeFrom, startTimeTo, room, format));
+        logger.info("searchTalks: title={}, speaker={}, language={}, tracks={}, date={}, startTimeFrom={}, startTimeTo={}, room={}, format={}",
+                title, speaker, language, tracks, date, startTimeFrom, startTimeTo, room, format);
+        var results = talkRepository.findAll(buildSpec(title, speaker, tracks, language, date, startTimeFrom, startTimeTo, room, format));
         getUI().ifPresent(ui -> ui.access(() -> grid.setItems(results)));
         return results.size();
     }
@@ -155,7 +156,7 @@ public class AiFilterView extends VerticalLayout {
     }
 
     private Specification<Talk> buildSpec(String title, String speaker, List<String> tracks,
-                                          String date, String startTimeFrom, String startTimeTo,
+                                          String language, String date, String startTimeFrom, String startTimeTo,
                                           String room, String format) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -172,6 +173,9 @@ public class AiFilterView extends VerticalLayout {
                         .toList();
                 query.distinct(true);
                 predicates.add(root.join("tracks").in(trackEnums));
+            }
+            if (language != null && !language.isBlank()) {
+                predicates.add(cb.like(cb.lower(root.get("language")), "%" + language.toLowerCase() + "%"));
             }
             if (date != null && !date.isBlank()) {
                 predicates.add(cb.equal(root.get("startDate"), LocalDate.parse(date)));
