@@ -66,3 +66,5 @@ vaadin-button:not([theme~="primary"], [theme~="tertiary"]) {
 components-view .component {
     border-width: 0px;
 }
+
+ */
