@@ -3,7 +3,6 @@
 @import "components-view.css";
 @import "main-layout.css";
 
-@import "./themes/carbon-theme.css";
 @import "./themes/default-theme.css";
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap');
