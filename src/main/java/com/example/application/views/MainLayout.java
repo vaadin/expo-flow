@@ -7,6 +7,8 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Footer;
@@ -24,6 +26,7 @@ import com.vaadin.flow.router.Layout;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.server.menu.MenuEntry;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.List;
@@ -88,7 +91,15 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         darkModeBtn.setTooltipText("Dark mode");
         darkModeBtn.addClickListener(e -> toggleDarkMode(darkModeBtn));
 
-        var controls = new Div(darkModeBtn, new Checkbox("Unicorn mode", this::changeUnicornMode));
+        var themeSelect = new ComboBox<String>("Theme");
+        themeSelect.setItems("Default", "Carbon");
+        themeSelect.setAllowCustomValue(false);
+        themeSelect.addValueChangeListener(e -> applyTheme(e.getValue()));
+        themeSelect.addAttachListener(e -> applyTheme("Default"));
+        themeSelect.setValue("Default");
+
+        var row = new Div(darkModeBtn, new Checkbox("Unicorn mode", this::changeUnicornMode));
+        var controls = new Div(themeSelect, row);
 
         layout.add(controls);
         return layout;
@@ -105,6 +116,17 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
             button.setIcon(VaadinIcon.MOON.create());
             button.setTooltipText("Dark mode");
         }
+    }
+
+    private void applyTheme(String theme) {
+        UI ui = UI.getCurrent();
+        Registration previous = ComponentUtil.getData(ui, Registration.class);
+        if (previous != null) {
+            previous.remove();
+        }
+        String stylesheet = "Carbon".equals(theme) ? "themes/carbon-theme.css" : "themes/default-theme.css";
+        Registration registration = ui.getPage().addStyleSheet(stylesheet);
+        ComponentUtil.setData(ui, Registration.class, registration);
     }
 
     private void changeUnicornMode(AbstractField.ComponentValueChangeEvent<Checkbox, Boolean> event) {
