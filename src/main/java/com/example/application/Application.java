@@ -18,7 +18,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * and some desktop browsers.
  */
 @SpringBootApplication
-@StyleSheet(Lumo.UTILITY_STYLESHEET)
 @StyleSheet(Aura.STYLESHEET)
 @StyleSheet("styles.css")
 @EnableScheduling
