@@ -124,7 +124,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         if (previous != null) {
             previous.remove();
         }
-        String stylesheet = "Carbon".equals(theme) ? "themes/carbon-theme.css" : "themes/default-theme.css";
+        String stylesheet = "themes/" + theme.toLowerCase().replace(" ", "-") + "-theme.css";
         Registration registration = ui.getPage().addStyleSheet(stylesheet);
         ComponentUtil.setData(ui, Registration.class, registration);
     }
