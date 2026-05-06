@@ -92,7 +92,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         darkModeBtn.addClickListener(e -> toggleDarkMode(darkModeBtn));
 
         var themeSelect = new ComboBox<String>("Theme");
-        themeSelect.setItems("Default", "Carbon");
+        themeSelect.setItems("Default", "Carbon", "Sparkasse", "DHL", "Deutsche Bank");
         themeSelect.setAllowCustomValue(false);
         themeSelect.addValueChangeListener(e -> applyTheme(e.getValue()));
         themeSelect.addAttachListener(e -> applyTheme("Default"));

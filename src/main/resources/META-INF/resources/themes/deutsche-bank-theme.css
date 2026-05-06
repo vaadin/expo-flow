@@ -1,0 +1,41 @@
+html {
+    --aura-app-background: #white;
+    
+    --aura-app-background-light: #0018A8;
+    --aura-app-background-dark: #0C1024;
+
+    --aura-accent-color-light: #0018A8;
+    --aura-background-color-light: #F2F4FA;
+
+    --aura-accent-color-dark: #5C7CFA;
+    --aura-background-color-dark: #0C1024;
+
+    --aura-contrast-level: 1.8;
+    --aura-font-family: 'Inter', var(--aura-font-family-system);
+
+    --aura-base-radius: 0;
+    --aura-base-font-size: 15;
+    --aura-surface-opacity: 1;
+    --aura-surface-level: 0;
+
+    --aura-app-layout-border-width: 0px;
+}
+
+vaadin-app-layout::part(navbar) {
+    --aura-surface-level: 0;
+    background: #0018A8;
+}
+
+vaadin-button[theme~="primary"] {
+    --vaadin-button-border-radius: 0;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+vaadin-button:not([theme~="primary"], [theme~="tertiary"]) {
+    --vaadin-button-border-radius: 0;
+}
+
+::part(input-field) {
+    --vaadin-input-field-border-radius: 0;
+}
