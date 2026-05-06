@@ -1,4 +1,12 @@
 /* MUI Switch styled with Vaadin Aura theme colors */
+.react-switch .MuiSwitch-thumb {
+  border-radius: var(--vaadin-radius-l);
+}
+
+.react-switch .MuiSwitch-track {
+  border-radius: var(--vaadin-radius-l);
+}
+
 .react-switch .MuiSwitch-switchBase.Mui-checked {
   color: var(--aura-accent-color);
 }
