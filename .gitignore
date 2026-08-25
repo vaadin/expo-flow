@@ -19,3 +19,4 @@ drivers/
 error-screenshots/
 webpack.generated.js
 src/main/frontend/generated
+.claude-contained/

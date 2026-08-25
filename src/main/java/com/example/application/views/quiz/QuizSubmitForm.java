@@ -48,7 +48,7 @@ public class QuizSubmitForm extends Dialog {
             tShirtService.placeOrder(binder.getBean());
             close();
             UI.getCurrent().navigate(ComponentsView.class);
-            Notification.show("Thank you for participating! We can't help you more with Roman history more, but any questions regarding Vaadin?", 5000, Notification.Position.MIDDLE)
+            Notification.show("Thank you for participating! We can't help you more with ocean life, but any questions regarding Vaadin?", 5000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         }
     }

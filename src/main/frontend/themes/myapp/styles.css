@@ -24,11 +24,11 @@ html {
 
     vaadin-card {
         margin-bottom: 2em;
-        background: url(marble.jpg);
-        background-size: 150% 150%;
+        background: url(underwater.png),
+                    linear-gradient(160deg, #0a4b6e 0%, #05283d 100%);
+        background-size: cover, 150% 150%;
 
         img {
-             filter: grayscale(0.75);
              mask-image: linear-gradient(to bottom, black 30%, transparent 80%);
              mask-repeat: no-repeat;
              mask-size: 100% 100%;
@@ -36,30 +36,49 @@ html {
 
          div[card-string-title] {
              z-index: 1;
-             font-family: "Times New Roman", Times, serif;
+             font-family: "Trebuchet MS", "Segoe UI", sans-serif;
              font-size: 2.5em;
-             text-transform: uppercase;
-             letter-spacing: 0.005em;
+             letter-spacing: 0.01em;
              line-height: 0.9em;
              font-weight: bold;
              margin-top: -1em;
-             background-clip: text;
-             color: rgba(255,255,255,0.3);
+             color: rgba(255, 255, 255, 0.95);
              text-shadow:
-               0 -0.05em 0.03em rgba(0,0,0,0.6),
-               0.02em 0.025em 0.02em rgba(255,255,255,0.8);
+               0 0 0.4em rgba(64, 224, 255, 0.6),
+               0 0.02em 0.05em rgba(0, 0, 0, 0.5);
          }
 
         div[card-string-title]::before {
-	      content: counter(question, upper-roman);
+	      content: counter(question);
 	      counter-increment: question;
 	      font-size: 600%;
 	      line-height: 1em;
 	      position:absolute;
 	      margin-top: -0.7em;
-	      color: rgba(255, 255, 255, .85);
+	      color: rgba(160, 230, 255, .35);
 	      z-index: -1;
 		}
+
+        /* Make the Q1 Select prominent on the dark underwater card */
+        vaadin-select {
+            --lumo-body-text-color: #05283d;
+            --lumo-secondary-text-color: #37627a;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        vaadin-select::part(label) {
+            color: #eaf9ff;
+            font-weight: 700;
+            font-size: var(--lumo-font-size-l);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+        }
+
+        vaadin-select::part(input-field) {
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            font-size: var(--lumo-font-size-l);
+        }
     }
 
 }
