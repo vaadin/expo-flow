@@ -1,14 +1,17 @@
 package com.example.application.views;
 
 import com.vaadin.flow.component.messages.MessageInput;
+import com.vaadin.flow.component.messages.MessageList;
+import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.ai.chat.client.ChatClient;
-import org.vaadin.firitin.components.messagelist.MarkdownMessage;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
+
+import java.time.Instant;
 
 @PageTitle("Chat")
 @Menu(title = "Chat", icon = LineAwesomeIconUrl.COMMENTS_SOLID, order = 4)
@@ -18,19 +21,23 @@ public class ChatView extends VerticalLayout {
     public ChatView(ChatClient.Builder chatClientBuilder) {
         ChatClient chatClient = chatClientBuilder.build();
         setSizeFull();
-        var messageList = new VerticalLayout();
+        var messageList = new MessageList();
         var messageInput = new MessageInput();
+        messageList.setMarkdown(true);
         messageInput.setWidthFull();
 
         messageInput.addSubmitListener(event -> {
             var question = event.getValue();
-            var userMessage = new MarkdownMessage(question, "You", MarkdownMessage.Color.AVATAR_PRESETS[0]);
-            var assistantMessage = new MarkdownMessage("Assistant", MarkdownMessage.Color.AVATAR_PRESETS[1]);
+            var userMessage = new MessageListItem(question, Instant.now(),"You");
+            userMessage.setUserColorIndex(1);
+            messageList.addItem(userMessage);
 
-            messageList.add(userMessage, assistantMessage);
+            var assistantMessage = new MessageListItem("Assistant");
+            assistantMessage.setUserColorIndex(2);
+            messageList.addItem(assistantMessage);
 
             chatClient.prompt().user(question).stream().content()
-                    .subscribe(assistantMessage::appendMarkdownAsync);
+                    .subscribe(assistantMessage::appendText);
         });
 
         addAndExpand(new Scroller(messageList));
