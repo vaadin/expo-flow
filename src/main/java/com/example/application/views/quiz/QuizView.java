@@ -18,10 +18,12 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.map.Assets;
 import com.vaadin.flow.component.map.configuration.Coordinate;
 import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.map.configuration.layer.TileLayer;
 import com.vaadin.flow.component.map.configuration.source.XYZSource;
+import com.vaadin.flow.component.map.configuration.style.Icon;
 import com.vaadin.flow.component.markdown.Markdown;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -177,10 +179,10 @@ public class QuizView extends VerticalLayout {
             bg.setSource(new XYZSource(opt));
             map.setBackgroundLayer(bg);
 
-            MarkerFeature greatBarrierReef = new MarkerFeature(new Coordinate(147.7, -18.3));
-            MarkerFeature marianaTrench = new MarkerFeature(new Coordinate(142.2, 11.35));
-            MarkerFeature galapagos = new MarkerFeature(new Coordinate(-90.5, -0.5));
-            MarkerFeature hawaii = new MarkerFeature(new Coordinate(-157.5, 21.3));
+            MarkerFeature greatBarrierReef = new MarkerFeature(new Coordinate(147.7, -18.3), createIcon("red"));
+            MarkerFeature marianaTrench = new MarkerFeature(new Coordinate(142.2, 11.35), createIcon("green"));
+            MarkerFeature galapagos = new MarkerFeature(new Coordinate(-90.5, -0.5), createIcon("orange"));
+            MarkerFeature hawaii = new MarkerFeature(new Coordinate(-157.5, 21.3),  createIcon("purple"));
             map.getFeatureLayer().addFeature(greatBarrierReef);
             map.getFeatureLayer().addFeature(marianaTrench);
             map.getFeatureLayer().addFeature(galapagos);
@@ -198,6 +200,21 @@ public class QuizView extends VerticalLayout {
             add(map);
             //setTitle(map);
         }
+    }
+
+    private Icon createIcon(String color){
+        com.vaadin.flow.component.map.configuration.style.Icon.ImageSize pinImageSize = new com.vaadin.flow.component.map.configuration.style.Icon.ImageSize(Assets.PIN.getWidth(),
+                Assets.PIN.getHeight());
+        com.vaadin.flow.component.map.configuration.style.Icon.Options pinIconOptions = new com.vaadin.flow.component.map.configuration.style.Icon.Options();
+        pinIconOptions.setImg(Assets.PIN.getHandler());
+        pinIconOptions.setImgSize(pinImageSize);
+        pinIconOptions.setScale(0.5f);
+        pinIconOptions.setColor(color);
+        pinIconOptions.setAnchorOrigin(com.vaadin.flow.component.map.configuration.style.Icon.AnchorOrigin.BOTTOM_LEFT);
+        // Move image slightly downwards to compensate for whitespace at
+        // the bottom of the image
+        pinIconOptions.setAnchor(new com.vaadin.flow.component.map.configuration.style.Icon.Anchor(0.5f, 0.12f));
+        return new Icon(pinIconOptions);
     }
 
     private class PacificOceanCard extends QuestionCard {
