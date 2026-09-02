@@ -6,7 +6,6 @@
     overflow: auto;
     padding: 32px;
     box-sizing: border-box;
-    background-color: var(--lumo-shade-5pct);
     grid-auto-flow: dense;
 }
 
@@ -16,13 +15,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 0 1px var(--lumo-contrast-10pct);
-    border-radius: var(--lumo-border-radius-s);
-    background-color: var(--lumo-base-color);
+    border: 1px solid var(--vaadin-border-color);
+    border-radius: var(--vaadin-radius-l);
+    background: var(--aura-surface-color);
     padding: 16px 24px;
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
+    --aura-surface-level: 1;
 }
 
 .components-view .component.tall {

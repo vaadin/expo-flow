@@ -1,0 +1,37 @@
+vaadin-scroller[slot="drawer"] {
+  padding: var(--vaadin-padding-s);
+}
+
+vaadin-side-nav-item vaadin-icon {
+  padding: 0;
+}
+
+[slot="drawer"]:is(header, footer) {
+  display: flex;
+  align-items: center;
+  gap: var(--vaadin-gap-s);
+  padding: var(--vaadin-padding-s) var(--vaadin-padding-m);
+  min-height: var(--vaadin-gap-xl);
+  box-sizing: border-box;
+
+  h1 {
+    font-size: 200%;
+    margin-block: 0.3em;
+    text-transform: lowercase;
+    display: flex;
+    gap: 3px;
+    margin-left: 0.2em;
+
+    .logo-symbol {
+        font-family: 'Noto Sans Mono', monospace;
+        font-size: 90%;
+        padding-top: 1px;
+        font-weight: 800;
+    }
+  }
+}
+
+[slot="drawer"]:is(header, footer):is(:empty) {
+  display: none;
+}
+

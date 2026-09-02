@@ -1,0 +1,6 @@
+html {
+    --aura-background-color-dark: #131822;
+
+    /* Teal accent, carried over from the previous Lumo dark theme */
+    --aura-accent-color-dark: #14b393;
+}
