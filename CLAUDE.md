@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Vaadin 25.2 full-stack demo application** showcasing Java Flow views, Hilla React views, Spring AI integration, Vaadin Signals, and runtime theming with Aura. It demonstrates a hybrid architecture where both server-side Java components and client-side React components coexist.
 
-Stack: Java 21, Vaadin 25.2.6, Spring Boot 4.1.0, Spring AI 2.0.0, H2.
+Stack: Java 21, Kotlin 2.3 (version from the Spring Boot parent), Vaadin 25.2.6, Spring Boot 4.1.0, Spring AI 2.0.0, H2.
 
 ## Commands
 
@@ -37,6 +37,7 @@ There is also an `it` profile in the pom, but no `*IT` tests exist, so
 Two types of views coexist under the same router:
 
 - **Java Flow views** (`src/main/java/.../views/`): Server-rendered components with `@Route` and `@Menu` annotations. The layout, navigation, and state live on the server.
+- **Kotlin Flow views** (`src/main/kotlin/.../views/`): Same Flow programming model, written in Kotlin. `KotlinPlaygroundView.kt` is the Kotlin twin of `PlaygroundView.java`. `kotlin-maven-plugin` is bound to `process-sources`/`process-test-sources` so Kotlin compiles before javac and both languages land in the same `target/classes`; route scanning and `vaadin.allowed-packages` treat them identically. Note `@Menu(order = ...)` is a `double`, so Kotlin needs `8.0`, not `8`.
 - **React/Hilla views** (`src/main/frontend/views/`): Client-rendered TSX files. The file-router auto-registers them based on file path.
 
 `MainLayout.java` is the shared shell (AppLayout + SideNav) used by all Java views. React views render into the Hilla outlet.
