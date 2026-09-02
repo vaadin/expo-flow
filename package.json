@@ -3,7 +3,10 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@lottiefiles/dotlottie-wc": "0.2.21",
+    "@mui/material": "^7.1.0",
     "@vaadin/aura": "25.2.7",
     "@vaadin/common-frontend": "0.0.24",
     "@vaadin/hilla-file-router": "25.2.6",
@@ -63,7 +66,10 @@
   },
   "vaadin": {
     "dependencies": {
+      "@emotion/react": "^11.14.0",
+      "@emotion/styled": "^11.14.0",
       "@lottiefiles/dotlottie-wc": "0.2.21",
+      "@mui/material": "^7.1.0",
       "@vaadin/aura": "25.2.7",
       "@vaadin/common-frontend": "0.0.24",
       "@vaadin/hilla-file-router": "25.2.6",
@@ -121,10 +127,13 @@
       "vite": "8.0.16",
       "vite-plugin-checker": "0.14.5"
     },
-    "hash": "c8c514dbe8ed92274c82c8924c7a0df02afd6fcdd3312a4767a71b0e59f9079c"
+    "hash": "ea638ba0672ef4169519b6063099fb182fa6b6f36dae13fb4db92c387b6295cc"
   },
   "overrides": {
+    "@emotion/react": "$@emotion/react",
+    "@emotion/styled": "$@emotion/styled",
     "@lottiefiles/dotlottie-wc": "$@lottiefiles/dotlottie-wc",
+    "@mui/material": "$@mui/material",
     "@vaadin/a11y-base": "25.2.7",
     "@vaadin/accordion": "25.2.7",
     "@vaadin/app-layout": "25.2.7",
