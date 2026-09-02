@@ -36,8 +36,14 @@ public class ChatView extends VerticalLayout {
             assistantMessage.setUserColorIndex(2);
             messageList.addItem(assistantMessage);
 
-            chatClient.prompt().user(question).stream().content()
-                    .subscribe(assistantMessage::appendText);
+            chatClient.prompt()
+                    .user(question)
+                    .stream()
+                    .content()
+                    .subscribe(token ->
+                            event.getUI().access(() ->
+                                    assistantMessage.appendText(token))
+                    );
         });
 
         addAndExpand(new Scroller(messageList));
