@@ -3,6 +3,8 @@ package com.example.application.views;
 import com.example.application.data.entity.Person;
 import com.example.application.service.PersonService;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.badge.Badge;
+import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.Chart;
@@ -12,8 +14,10 @@ import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.map.Map;
@@ -24,11 +28,16 @@ import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.richtexteditor.RichTextEditor;
+import com.vaadin.flow.component.slider.IntegerRangeSlider;
+import com.vaadin.flow.component.slider.IntegerRangeSliderValue;
+import com.vaadin.flow.component.slider.IntegerSlider;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.Menu;
@@ -73,7 +82,91 @@ public class ComponentsView extends VerticalLayout {
         addMultiSelectComboBox();
         addTabs();
         addMap();
+        addStepper();
         addRichTextEditor();
+        addSlider();
+        addBadges();
+        addProgressBar();
+    }
+
+    private void addProgressBar() {
+        var layout = new VerticalLayout();
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setIndeterminate(true);
+        layout.add(new H4("Progress Bar"), progressBar);
+        layout.setWidth("100%");
+
+        addComponentToGrid(layout, "col-span-2", "wide");
+    }
+
+    private void addBadges() {
+
+        Badge pending = new Badge("Pending");
+
+        Badge confirmed = new Badge("Confirmed");
+        confirmed.addThemeVariants(BadgeVariant.SUCCESS);
+
+        Badge warning = new Badge("Warning");
+        warning.addThemeVariants(BadgeVariant.WARNING);
+
+        Badge denied = new Badge("Denied");
+        denied.addThemeVariants(BadgeVariant.ERROR);
+
+        var layout = new VerticalLayout(pending, confirmed, warning, denied);
+        layout.setAlignItems(Alignment.CENTER);
+        addComponentToGrid(layout);
+
+    }
+
+    private void addSlider() {
+
+        var layout = new VerticalLayout();
+
+        IntegerSlider slider = new IntegerSlider("Volume");
+        slider.setValue(50);
+        layout.add(slider);
+
+        IntegerRangeSlider rangeSlider = new IntegerRangeSlider("Price range", 0, 1000);
+        rangeSlider.setValue(new IntegerRangeSliderValue(200, 800));
+        layout.add(rangeSlider);
+
+        addComponentToGrid(layout);
+    }
+
+    private void addStepper() {
+       var formLayout = new FormLayout();
+
+        IntegerField adultsField = new IntegerField();
+        adultsField.setValue(2);
+        adultsField.setStepButtonsVisible(true);
+        adultsField.setMin(0);
+        adultsField.setMax(9);
+        formLayout.addFormItem(adultsField, "Adults");
+
+        IntegerField childrenField = new IntegerField();
+        childrenField.setValue(2);
+        childrenField.setStepButtonsVisible(true);
+        childrenField.setMin(0);
+        childrenField.setMax(9);
+
+        Div children = new Div("Children");
+        Div childrenExplainer = new Div();
+        childrenExplainer.setText("Age 2-12");
+        childrenExplainer.getStyle().set("font-size", "0.75em");
+        childrenExplainer.getStyle().set("position", "relative");
+
+        formLayout.addFormItem(childrenField, new Div(children, childrenExplainer));
+
+        IntegerField infantsField = new IntegerField();
+        infantsField.setValue(1);
+        infantsField.setStepButtonsVisible(true);
+        infantsField.setMin(0);
+        infantsField.setMax(9);
+        formLayout.addFormItem(infantsField, "Infants");
+        formLayout.setWidth("100%");
+        formLayout.getStyle().set("position", "relative");
+
+        addComponentToGrid(formLayout, "tall");
     }
 
     private void addLoginForm() {
@@ -108,7 +201,7 @@ public class ComponentsView extends VerticalLayout {
 
         dateTimePicker.setValue(LocalDateTime.now());
 
-        addComponentToGrid(dateTimePicker, "col-span-2");
+        addComponentToGrid(dateTimePicker, "col-span-2", "wide");
     }
 
     private void addCheckBoxGroup() {
@@ -131,7 +224,7 @@ public class ComponentsView extends VerticalLayout {
 
         people.subList(2, 5).forEach(grid::select);
 
-        addComponentToGrid(grid, "col-span-3", "tall");
+        addComponentToGrid(grid, "col-span-2", "tall", "wide");
     }
 
     private void addComboBox() {
@@ -181,7 +274,7 @@ public class ComponentsView extends VerticalLayout {
 
 
 
-        addComponentToGrid(chart, "col-span-3", "tall");
+        addComponentToGrid(chart, "col-span-2", "tall", "wide");
     }
 
     private void addMessageList() {
@@ -202,10 +295,16 @@ public class ComponentsView extends VerticalLayout {
                 }}
         );
         messageInput.setWidth("100%");
+        messageInput.addSubmitListener(event -> messageList.addItem(
+                new MessageListItem(event.getValue(),
+                        LocalDateTime.now().toInstant(ZoneOffset.UTC), "User")));
 
-        var layout = new VerticalLayout(messageList, messageInput);
+        var layout = new VerticalLayout();
+        layout.addAndExpand(messageList);
+        layout.add(messageInput);
+        layout.setSizeFull();
 
-        addComponentToGrid(layout, "col-span-2", "tall");
+        addComponentToGrid(layout, "col-span-2", "tall", "wide");
     }
 
     private void addTextField() {
@@ -231,7 +330,7 @@ public class ComponentsView extends VerticalLayout {
         multiSelectComboBox.setItemLabelGenerator(person -> person.getFirstName() + " " + person.getLastName());
         multiSelectComboBox.setValue(Set.of(people.get(0), people.get(12)));
 
-        addComponentToGrid(multiSelectComboBox, "col-span-2");
+        addComponentToGrid(multiSelectComboBox);
     }
 
     private void addTabs() {
@@ -243,7 +342,7 @@ public class ComponentsView extends VerticalLayout {
                 new Tab("Shipping")
         );
 
-        addComponentToGrid(tabs, "col-span-2");
+        addComponentToGrid(tabs);
     }
 
     private void addMap() {
@@ -254,7 +353,7 @@ public class ComponentsView extends VerticalLayout {
         map.setZoom(4);
         map.getFeatureLayer().addFeature(new MarkerFeature(new Coordinate(22.2983171, 60.4515391)));
 
-        addComponentToGrid(map, "col-span-2", "tall");
+        addComponentToGrid(map, "col-span-2", "tall", "wide");
     }
 
     private void addRichTextEditor() {
@@ -263,12 +362,13 @@ public class ComponentsView extends VerticalLayout {
         richTextEditor.setHeight("100%");
         richTextEditor.setValue("<h1>Rich Text Editor</h1><p>This is a rich text editor</p>");
 
-        addComponentToGrid(richTextEditor, "col-span-2", "tall");
+        addComponentToGrid(richTextEditor, "col-span-2", "tall", "wide");
     }
 
     private void addComponentToGrid(Component component, String... classNames) {
         var wrapper = new Div();
         wrapper.addClassName("component");
+        wrapper.addClassName("aura-surface");
         wrapper.add(component);
         wrapper.addClassNames(classNames);
 
