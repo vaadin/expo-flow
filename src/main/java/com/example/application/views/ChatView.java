@@ -1,14 +1,21 @@
 package com.example.application.views;
 
+import com.vaadin.flow.component.ai.orchestrator.AIOrchestrator;
+import com.vaadin.flow.component.ai.provider.SpringAILLMProvider;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.upload.*;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 import java.time.Instant;
@@ -16,37 +23,56 @@ import java.time.Instant;
 @PageTitle("Chat")
 @Menu(title = "Chat", icon = LineAwesomeIconUrl.COMMENTS_SOLID, order = 4)
 @Route(value = "chat")
-public class ChatView extends VerticalLayout {
+public class ChatView extends UploadDropZone {
 
-    public ChatView(ChatClient.Builder chatClientBuilder) {
-        ChatClient chatClient = chatClientBuilder.build();
+    public ChatView(ChatModel chatModel) {
         setSizeFull();
+
+        var layout = new VerticalLayout();
+        layout.setSizeFull();
+        setContent(layout);
+
         var messageList = new MessageList();
-        var messageInput = new MessageInput();
+        messageList.setSizeFull();
         messageList.setMarkdown(true);
-        messageInput.setWidthFull();
+        var messageInput = new MessageInput();
 
-        messageInput.addSubmitListener(event -> {
-            var question = event.getValue();
-            var userMessage = new MessageListItem(question, Instant.now(),"You");
-            userMessage.setUserColorIndex(1);
-            messageList.addItem(userMessage);
+        // Upload for attachments
+        var uploadManager = new UploadManager(this);
+        uploadManager.setMaxFiles(5);
+        uploadManager.setMaxFileSize(5 * 1024 * 1024); // 5 MB
+        uploadManager.setAcceptedMimeTypes("image/*", "application/pdf",
+                "text/plain");
+        setUploadManager(uploadManager);
 
-            var assistantMessage = new MessageListItem("Assistant");
-            assistantMessage.setUserColorIndex(2);
-            messageList.addItem(assistantMessage);
+        var uploadButton = new UploadButton(uploadManager);
+        uploadButton.setIcon(VaadinIcon.UPLOAD.create());
 
-            chatClient.prompt()
-                    .user(question)
-                    .stream()
-                    .content()
-                    .subscribe(token ->
-                            event.getUI().access(() ->
-                                    assistantMessage.appendText(token))
-                    );
-        });
+        var inputLayout = new HorizontalLayout(uploadButton, messageInput);
+        inputLayout.setWidthFull();
+        inputLayout.setFlexGrow(1, messageInput);
+        inputLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+        inputLayout.setSpacing(false);
 
-        addAndExpand(new Scroller(messageList));
-        add(messageInput);
+        var uploadFileList = new UploadFileList(uploadManager);
+        uploadFileList.getElement().getStyle().setWidth("100%");
+        uploadFileList.addThemeVariants(UploadFileListVariant.THUMBNAILS);
+
+        var bottomLayout = new VerticalLayout(uploadFileList, inputLayout);
+        bottomLayout.setPadding(false);
+
+        layout.add(messageList, bottomLayout);
+        layout.setFlexGrow(1, messageList);
+        layout.setFlexShrink(0, bottomLayout);
+
+        // Create LLM provider
+        var provider = new SpringAILLMProvider(chatModel);
+
+        AIOrchestrator.builder(provider,
+                        "You are an unhelpful and sarcastic assistant.")
+                .withMessageList(messageList)
+                .withInput(messageInput)
+                .withFileReceiver(uploadManager)
+                .build();
     }
 }
