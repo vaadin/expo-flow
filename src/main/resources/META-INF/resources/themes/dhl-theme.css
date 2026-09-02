@@ -1,0 +1,31 @@
+html {
+    --aura-app-background: #FC0;;
+
+    --aura-accent-color-light: #FC0;
+    --aura-background-color-light: white;
+
+    --aura-accent-color-dark: #FC0;
+    --aura-background-color-dark: #2A2200;
+
+    --aura-contrast-level: 2;
+    --aura-font-family: 'Roboto Condensed', var(--aura-font-family-system);
+
+    --aura-base-radius: 2;
+    --aura-base-font-size: 16;
+    --aura-surface-opacity: 1;
+    --aura-surface-level: 0;
+
+    --aura-app-layout-inset: 0px;
+    --aura-app-layout-border-width: 0px;
+}
+
+vaadin-app-layout vaadin-side-nav {
+    --aura-surface-level: 0;
+}
+
+vaadin-button[theme~="primary"] {
+    --vaadin-button-border-radius: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
