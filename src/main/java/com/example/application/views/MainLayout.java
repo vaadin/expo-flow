@@ -97,7 +97,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         themeSelect.addValueChangeListener(this::onThemeSelect);
         themeSelect.setValue("Default");
 
-        var row = new Div(darkModeBtn, new Checkbox("Unicorn mode", this::changeUnicornMode));
+        var row = new Div(darkModeBtn, new Checkbox("Under the sea mode", this::changeUnderTheSeaMode));
         var controls = new Div(themeSelect, row);
 
         layout.add(controls);
@@ -135,7 +135,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         });
     }
 
-    private void changeUnicornMode(AbstractField.ComponentValueChangeEvent<Checkbox, Boolean> event) {
+    private void changeUnderTheSeaMode(AbstractField.ComponentValueChangeEvent<Checkbox, Boolean> event) {
         event.getSource().getUI().ifPresent(ui -> {
             if (event.getValue()) {
                 ui.getPage().executeJs("window.colorCycle.start()");
