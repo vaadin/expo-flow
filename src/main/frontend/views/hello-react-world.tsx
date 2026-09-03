@@ -1,7 +1,7 @@
 import {ViewConfig} from '@vaadin/hilla-file-router/types.js';
 import {useSignal} from '@vaadin/hilla-react-signals';
-import {Button, Notification, TextField} from '@vaadin/react-components';
-import {HelloReactWorldService} from "../generated/endpoints";
+import {Button, HorizontalLayout, TextField, VerticalLayout} from '@vaadin/react-components';
+import {HelloReactWorldService} from '../generated/endpoints';
 
 export const config: ViewConfig = {
     menu: {order: 7, icon: 'line-awesome/svg/globe-solid.svg'},
@@ -10,23 +10,34 @@ export const config: ViewConfig = {
 
 export default function HelloReactWorldView() {
     const name = useSignal('');
+    const greetings = useSignal<string[]>([]);
+
+    const sayHello = async () => {
+        const serverResponse = await HelloReactWorldService.sayCiao(name.value);
+        greetings.value = [...greetings.value, serverResponse];
+        name.value = '';
+    };
 
     return (
-        <>
-            <section className="flex p-m gap-m items-end">
+        <VerticalLayout theme="padding spacing">
+            <HorizontalLayout theme="spacing">
                 <TextField
                     placeholder="Your name"
+                    value={name.value}
                     onValueChanged={(e) => {
                         name.value = e.detail.value;
                     }}
-                />
-                <Button
-                    onClick={async () => {
-                        const serverResponse = await HelloReactWorldService.sayCiao(name.value);
-                        Notification.show(serverResponse);
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            void sayHello();
+                        }
                     }}
-                >Say hello</Button>
-            </section>
-        </>
+                />
+                <Button onClick={sayHello}>Say hello</Button>
+            </HorizontalLayout>
+            {greetings.value.map((greeting, index) => (
+                <p key={index}>{greeting}</p>
+            ))}
+        </VerticalLayout>
     );
 }
