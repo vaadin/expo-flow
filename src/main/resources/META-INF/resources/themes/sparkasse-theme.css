@@ -33,3 +33,16 @@ vaadin-button:not([theme~="primary"], [theme~="tertiary"]) {
 ::part(input-field) {
     --aura-base-radius: 8;
 }
+
+:is(vaadin-button, vaadin-upload-button, vaadin-menu-bar-button, vaadin-crud-edit)[theme~="primary"]:not(
+        [theme~="success"], [theme~="warning"], [theme~="error"], [theme~="danger"], [theme~="contrast"]) {
+    --vaadin-button-text-color: #fff;
+}
+
+html vaadin-checkbox:is([checked], [indeterminate]):not([readonly], [disabled])::part(checkbox) {
+    --vaadin-checkbox-marker-color: #fff;
+}
+
+html vaadin-radio-button[checked]:not([readonly], [disabled])::part(radio) {
+    --vaadin-radio-button-marker-color: #fff;
+}
