@@ -101,6 +101,28 @@ public class DevoxxTalksView extends VerticalLayout {
                 .withProperty("format", Talk::format)
                 .withProperty("room", Talk::room)
                 .withProperty("description", Talk::description));
+        // The details follow the selection, and the selection follows the keyboard focus:
+        // arrow up / down moves to the next talk and shows its details
+        grid.setDetailsVisibleOnClick(false);
+        grid.asSingleSelect().addValueChangeListener(event -> {
+            if (event.getOldValue() != null) {
+                grid.setDetailsVisible(event.getOldValue(), false);
+            }
+            if (event.getValue() != null) {
+                grid.setDetailsVisible(event.getValue(), true);
+            }
+        });
+        grid.addCellFocusListener(event -> event.getItem().ifPresent(grid::select));
+        // vaadin-grid makes open details a keyboard stop of their own. When arrow up / down lands on
+        // them, press the key once more, so the focus goes straight to the neighbouring talk
+        grid.getElement().executeJs("""
+                this.addEventListener('keydown', e => {
+                    const cell = this.shadowRoot.activeElement;
+                    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && cell?.matches('[part~="details-cell"]')) {
+                        cell.dispatchEvent(new KeyboardEvent('keydown', {key: e.key, bubbles: true, composed: true}));
+                    }
+                });
+                """);
         grid.addThemeVariants(GridVariant.WRAP_CELL_CONTENT);
         grid.setSizeFull();
 
