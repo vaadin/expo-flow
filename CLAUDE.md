@@ -36,6 +36,13 @@ port. The H2 console is at `/h2`.
 There is also an `it` profile in the pom, but no `*IT` tests exist, so
 `mvn -Pit integration-test` currently runs nothing.
 
+## Branches
+
+`devoxxBEL26` is the Devoxx Belgium 2026 branch. `v25` is behind it in every file (Vaadin
+25.1, the old Slider API, Lumo utility classes) and was merged in with `-s ours`, so the
+history contains it while the code stays this branch's. When syncing with `v25` again,
+resolve toward `devoxxBEL26`.
+
 ## Architecture
 
 ### Hybrid View Model
@@ -58,11 +65,11 @@ The app uses **Aura**, the Vaadin 25 default theme. It is loaded from
 @StyleSheet("styles.css")
 ```
 
-- All CSS lives in `src/main/resources/META-INF/resources/`. `styles.css` is the master stylesheet and `@import`s the per-view files (`main-layout.css`, `components-view.css`, `quiz-view.css`, `react-switch.css`).
-- **Aura and Lumo are mutually exclusive.** Do not introduce `--lumo-*` custom properties — they are undefined here. Use the base style `--vaadin-*` properties and Aura's `--aura-*` properties instead.
+- All CSS lives in `src/main/resources/META-INF/resources/`. `styles.css` is the master stylesheet and `@import`s one file per view; give a new view its own `<view>-view.css` and import it there.
+- **Aura and Lumo are mutually exclusive.** Style with the base style `--vaadin-*` properties, Aura's `--aura-*` properties and your own classes. No Lumo stylesheet is loaded, so `--lumo-*` properties and `LumoUtility` classes are undefined here and silently do nothing.
 - Dark mode is the CSS `color-scheme` property, not a `theme="dark"` attribute.
 - `themes/*-theme.css` are alternative themes, swapped at runtime by the ComboBox in `MainLayout.createFooter()` via `Page::addStyleSheet`. To add one, drop in a `<name>-theme.css` and add its display name to that ComboBox.
-- `color-cycle.js` ("unicorn mode") animates the Aura accent and background colours through the hue spectrum.
+- `color-cycle.js` ("unicorn mode", the checkbox in `MainLayout.createFooter()`) animates the Aura accent and background colours through the hue spectrum.
 
 ### Client–Server Communication (Hilla)
 
@@ -120,6 +127,16 @@ the fields and clicks Search. Changed fields flash (`ChangeIndication`).
   asks for one `apply_many`: that took a question from 4–9 tool calls to 2–3. Measured with
   that goal, `gpt-5.5` got all test questions right at about 4 s each; `gpt-4o-mini` and
   `gpt-5.4-mini` were faster but unreliable (e.g. ignoring the time window for "what's next").
+- Goal wording that matters: "what's next" is a 60-minute window, because talk slots often
+  start 40–70 minutes apart and 30 minutes regularly found nothing. When a track covers the
+  topic ("security"), the AI selects the track instead of typing Topics, which matched talks
+  that only mention the word.
+- The grid shows When, Title and Track; speakers, format and room sit in the row details
+  (a `LitRenderer`; `.talk-facts` in `devoxx-view.css` gives them equal columns).
+- Row details follow the selection, and the selection follows the keyboard focus
+  (`addCellFocusListener`), so arrow keys browse the talks. vaadin-grid makes open details a
+  keyboard stop of their own; the `executeJs` keydown listener on the grid re-sends the arrow
+  key from a details cell so the focus goes straight to the next talk.
 - `devoxx/DevoxxTalkService` loads the five `/api/public/schedules/{day}` from
   `devoxx.schedule-url` on startup and falls back to the copies in
   `src/main/resources/devoxx/`. Filtering is in memory (`TalkFilter`), no JPA.
