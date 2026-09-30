@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Vaadin 25.2 full-stack demo application** showcasing Java Flow views, Hilla React views, Spring AI integration, Vaadin Signals, and runtime theming with Aura. It demonstrates a hybrid architecture where both server-side Java components and client-side React components coexist.
 
-Stack: Java 21, Kotlin 2.3 (version from the Spring Boot parent), Vaadin 25.2.6, Spring Boot 4.1.0, Spring AI 2.0.0, H2.
+Stack: Java 25, Kotlin 2.3 (version from the Spring Boot parent), Vaadin 25.2.6, Spring Boot 4.1.0, Spring AI 2.0.0, draiv, H2.
+
+Java is 25 (not 21) because the draiv libraries are compiled for Java 25.
 
 ## Commands
 
@@ -21,6 +23,10 @@ The app runs on port **8888** (`server.port=${PORT:8888}`).
 `OPENAI_API_KEY` must be set — `application.properties` references it without a
 default, so the application context fails to start without it, not just the Chat
 view.
+
+The Devoxx talk search needs no key of its own: it uses the provider selected by
+`PRESENTER_CHAT_PROVIDER` (default `openai`, model `OPENAI_TEXT_MODEL`, default `gpt-5`).
+Set `DEVOXX_DEMO_TIME=2026-10-07T10:15` to rehearse "what's next?" outside conference hours.
 
 The H2 database is a **file** at `~/t-shirt-orders`, so only one instance can run
 at a time. A second one fails with "Database may be already in use". To run a
@@ -94,6 +100,31 @@ together. It extends `UploadDropZone` and uses the modular upload components
 (`UploadManager`, `UploadButton`, `UploadFileList`) for attachments — images,
 PDFs and text, max 5 files at 5 MB each.
 
+### Devoxx talk search (draiv)
+
+`views/devoxx/DevoxxTalksView` searches the Devoxx Belgium 2026 talks in plain
+language, modelled on draiv's `vaadin-grid-search-ui` example. The AI does **not**
+translate the text into a query: `AiSearchBar` hands a goal (`DevoxxTalksView.AI_GOAL`)
+to draiv's `TextPresenterService`, and the LLM operates the ordinary `TalkSearchForm`
+on screen through Spring AI tool calls (`inspect`, `apply`, `apply_many`) — it fills in
+the fields and clicks Search. Changed fields flash (`ChangeIndication`).
+
+- The only draiv wiring is the `chatToolCatalog` bean in `ai/AiSearchConfiguration`;
+  the rest is auto-configured. draiv registers a `@Primary ChatModel` for the selected
+  provider, which `ChatView` gets too.
+- Form fields have stable ids (`filter-*`, `search-button`, `reset-button`); the goal
+  refers to them. Keep ids and goal in sync.
+- Each `assist()` starts without memory, so the view passes the previous request into the
+  goal — that is what makes "only for beginners" refine instead of reset.
+- `devoxx/DevoxxTalkService` loads the five `/api/public/schedules/{day}` from
+  `devoxx.schedule-url` on startup and falls back to the copies in
+  `src/main/resources/devoxx/`. Filtering is in memory (`TalkFilter`), no JPA.
+- draiv is only published as a SNAPSHOT; `draiv.version` in the pom pins one timestamped
+  build, also for its transitive modules in `dependencyManagement`.
+- draiv also brings Mistral, Anthropic, an MCP server and realtime voice.
+  `application.properties` gives the unused providers placeholder keys and disables the
+  MCP server and voice (the MCP server would let anyone on the network drive the UI).
+
 ## Key Configuration
 
 - **Port**: `server.port=${PORT:8888}` in `application.properties`
@@ -120,7 +151,13 @@ test(button).click();
 
 `src/test/resources/application.properties` overrides the datasource with an
 in-memory H2 and supplies a dummy OpenAI key, so tests do not touch
-`~/t-shirt-orders` or need real credentials.
+`~/t-shirt-orders` or need real credentials. It replaces the main file rather than
+adding to it, so it repeats the draiv properties, and it blanks `devoxx.schedule-url`
+so the Devoxx tests run on the bundled schedule.
+
+`DevoxxTalksDrivingTest` drives the talk search form through draiv's `inspect`/`apply`
+tools exactly as the LLM does, without a model — the cheap way to check the AI can
+still operate the form after changing it.
 
 Navigating to a view in such a test is also the cheapest way to check that it
 still constructs — useful after dependency bumps, since experimental-component
