@@ -1,0 +1,7 @@
+/* DevoxxTalksView: the row details under a talk */
+.talk-facts {
+    display: grid;
+    /* Three equal columns, so Author, Format and Room line up from talk to talk */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--vaadin-gap-m);
+}

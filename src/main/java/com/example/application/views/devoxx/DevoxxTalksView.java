@@ -10,10 +10,9 @@ import com.vaadin.flow.automation.indication.ChangeIndication.IndicationStyle;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -86,14 +85,22 @@ public class DevoxxTalksView extends VerticalLayout {
 
         grid.addColumn(talk -> talk.start().format(DAY_AND_TIME) + "–" + talk.end().format(TIME))
                 .setHeader("When").setComparator(Talk::start).setAutoWidth(true).setFlexGrow(0);
-        grid.addColumn(Talk::title).setHeader("Title").setFlexGrow(3);
-        grid.addColumn(Talk::speakers).setHeader("Speakers").setFlexGrow(2);
-        grid.addColumn(Talk::track).setHeader("Track").setSortable(true).setFlexGrow(2);
-        grid.addColumn(Talk::format).setHeader("Format").setSortable(true).setAutoWidth(true).setFlexGrow(0);
-        grid.addColumn(Talk::level).setHeader("Level").setSortable(true).setAutoWidth(true).setFlexGrow(0);
-        grid.addColumn(Talk::room).setHeader("Room").setSortable(true).setAutoWidth(true).setFlexGrow(0);
-        // Click a row to read the abstract
-        grid.setItemDetailsRenderer(new ComponentRenderer<>(talk -> new Paragraph(talk.description())));
+        grid.addColumn(Talk::title).setHeader("Title").setFlexGrow(4);
+        grid.addColumn(Talk::track).setHeader("Track").setSortable(true).setFlexGrow(1);
+        // Click a row to read the abstract. A template renderer: no server-side component per row.
+        // talk-facts (devoxx-view.css) gives Author, Format and Room equal columns in every talk
+        grid.setItemDetailsRenderer(LitRenderer.<Talk>of("""
+                        <div class="talk-facts">
+                            <span><b>Author:</b> ${item.speakers}</span>
+                            <span><b>Format:</b> ${item.format}</span>
+                            <span><b>Room:</b> ${item.room}</span>
+                        </div>
+                        <p>${item.description}</p>
+                        """)
+                .withProperty("speakers", Talk::speakers)
+                .withProperty("format", Talk::format)
+                .withProperty("room", Talk::room)
+                .withProperty("description", Talk::description));
         grid.addThemeVariants(GridVariant.WRAP_CELL_CONTENT);
         grid.setSizeFull();
 
