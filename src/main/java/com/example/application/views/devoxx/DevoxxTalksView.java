@@ -101,8 +101,7 @@ public class DevoxxTalksView extends VerticalLayout {
                 .withProperty("format", Talk::format)
                 .withProperty("room", Talk::room)
                 .withProperty("description", Talk::description));
-        // The details follow the selection, and the selection follows the keyboard focus:
-        // arrow up / down moves to the next talk and shows its details
+        // The details follow the selection: a click opens a talk, a second click closes it
         grid.setDetailsVisibleOnClick(false);
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getOldValue() != null) {
@@ -112,14 +111,20 @@ public class DevoxxTalksView extends VerticalLayout {
                 grid.setDetailsVisible(event.getValue(), true);
             }
         });
-        grid.addCellFocusListener(event -> event.getItem().ifPresent(grid::select));
-        // vaadin-grid makes open details a keyboard stop of their own. When arrow up / down lands on
-        // them, press the key once more, so the focus goes straight to the neighbouring talk
+        // Arrow up / down selects the talk the focus moved to. It sets the grid's activeItem in the
+        // browser, just like a click, so clicks and keys never fight over the selection. vaadin-grid
+        // also makes open details a keyboard stop of their own: when the focus lands there, press the
+        // key once more, so it goes straight to the neighbouring talk
         grid.getElement().executeJs("""
                 this.addEventListener('keydown', e => {
+                    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') {
+                        return;
+                    }
                     const cell = this.shadowRoot.activeElement;
-                    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && cell?.matches('[part~="details-cell"]')) {
+                    if (cell?.matches('[part~="details-cell"]')) {
                         cell.dispatchEvent(new KeyboardEvent('keydown', {key: e.key, bubbles: true, composed: true}));
+                    } else if (cell?.parentElement?._item) {
+                        this.activeItem = cell.parentElement._item;
                     }
                 });
                 """);

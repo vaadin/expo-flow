@@ -133,10 +133,12 @@ the fields and clicks Search. Changed fields flash (`ChangeIndication`).
   that only mention the word.
 - The grid shows When, Title and Track; speakers, format and room sit in the row details
   (a `LitRenderer`; `.talk-facts` in `devoxx-view.css` gives them equal columns).
-- Row details follow the selection, and the selection follows the keyboard focus
-  (`addCellFocusListener`), so arrow keys browse the talks. vaadin-grid makes open details a
-  keyboard stop of their own; the `executeJs` keydown listener on the grid re-sends the arrow
-  key from a details cell so the focus goes straight to the next talk.
+- Row details follow the selection. Arrow keys browse the talks through the `executeJs`
+  keydown listener on the grid: it sets the grid's client-side `activeItem`, exactly what a
+  click does. Selecting from a server-side focus listener instead makes a mouse click open and
+  immediately close the details: the server's select sets `activeItem`, and the click that
+  follows toggles it off. The listener also re-sends the arrow key when the focus lands on a
+  details cell, since vaadin-grid makes open details a keyboard stop of their own.
 - `devoxx/DevoxxTalkService` loads the five `/api/public/schedules/{day}` from
   `devoxx.schedule-url` on startup and falls back to the copies in
   `src/main/resources/devoxx/`. Filtering is in memory (`TalkFilter`), no JPA.
