@@ -27,7 +27,6 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.server.menu.MenuEntry;
 import com.vaadin.flow.shared.Registration;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.List;
 
@@ -50,7 +49,6 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         toggle.setAriaLabel("Menu toggle");
 
         viewTitle = new H1();
-        viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
         addToNavbar(true, toggle, viewTitle);
     }
@@ -60,7 +58,6 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
                 new Span("Vaadin") {{ addClassNames("logo-text"); }},
                 new Span("}>") {{ addClassNames("logo-symbol"); }}
         );
-        appName.addClassNames(LumoUtility.FontWeight.SEMIBOLD);
         Header header = new Header(appName);
 
         Scroller scroller = new Scroller(createNavigation());
