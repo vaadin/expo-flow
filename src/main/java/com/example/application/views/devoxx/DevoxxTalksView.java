@@ -50,16 +50,22 @@ public class DevoxxTalksView extends VerticalLayout {
             Only when it asks for different talks altogether, click Reset (id reset-button) first.
 
             Map the request to the form:
-            - Topics: comma-separated words, matched as whole words in title, track, keywords and \
-            description. Add common variants, e.g. "security, secure, compliance".
+            - Tracks: %s. When one of these tracks covers the topic asked for (e.g. "security"), \
+            select that track and leave Topics empty.
+            - Topics: for other topics. Comma-separated words, matched as whole words in title, track, \
+            keywords and description. Add common variants, e.g. "test, tests, testing".
             - Exclude topics: the same, for what the user does not want. "Without AI" means \
             "AI, LLM, LLMs, GenAI, agent, agents, agentic, MCP, RAG".
             - Speaker: part of a speaker's name.
-            - Tracks: %s.
             - Format: %s.
             - Level: Beginner, Intermediate, Advanced.
-            - Starts after / Starts before: "next", "coming up" or "now" means from now until 30 minutes \
+            - Starts after / Starts before: "next", "coming up" or "now" means from now until 60 minutes \
             from now. A day or part of a day ("Thursday afternoon") means that time window on that date.
+
+            Be quick, every tool round costs time: inspect once, then make all changes and the Search \
+            click in a single apply_many, and do not inspect again afterwards. Set fields with capability \
+            "settable", operation "set" (multi-selects take a list of option labels, Starts after / \
+            before an ISO date-time like 2026-10-08T12:00); click buttons with "activatable", "activate".
 
             Do not invent constraints the user did not ask for. The user may write in any language. \
             Keep your final answer to one short sentence. Request: "%s"

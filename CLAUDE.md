@@ -25,7 +25,7 @@ default, so the application context fails to start without it, not just the Chat
 view.
 
 The Devoxx talk search needs no key of its own: it uses the provider selected by
-`PRESENTER_CHAT_PROVIDER` (default `openai`, model `OPENAI_TEXT_MODEL`, default `gpt-5`).
+`PRESENTER_CHAT_PROVIDER` (default `openai`, model `OPENAI_TEXT_MODEL`, default `gpt-5.5`).
 Set `DEVOXX_DEMO_TIME=2026-10-07T10:15` to rehearse "what's next?" outside conference hours.
 
 The H2 database is a **file** at `~/t-shirt-orders`, so only one instance can run
@@ -116,6 +116,10 @@ the fields and clicks Search. Changed fields flash (`ChangeIndication`).
   refers to them. Keep ids and goal in sync.
 - Each `assist()` starts without memory, so the view passes the previous request into the
   goal — that is what makes "only for beginners" refine instead of reset.
+- Speed is mostly the number of model rounds, so the goal spells out the tool operations and
+  asks for one `apply_many`: that took a question from 4–9 tool calls to 2–3. Measured with
+  that goal, `gpt-5.5` got all test questions right at about 4 s each; `gpt-4o-mini` and
+  `gpt-5.4-mini` were faster but unreliable (e.g. ignoring the time window for "what's next").
 - `devoxx/DevoxxTalkService` loads the five `/api/public/schedules/{day}` from
   `devoxx.schedule-url` on startup and falls back to the copies in
   `src/main/resources/devoxx/`. Filtering is in memory (`TalkFilter`), no JPA.
