@@ -2,6 +2,7 @@ package com.example.application;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
+import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +19,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Theme(value = "myapp")
 @EnableScheduling
 @Push
+@PWA(name = "Vaadin Expo Booth Demo",
+     shortName = "Vaadin Demo")
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {
