@@ -32,9 +32,9 @@ import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.richtexteditor.RichTextEditor;
-import com.vaadin.flow.component.slider.RangeSlider;
-import com.vaadin.flow.component.slider.RangeSliderValue;
-import com.vaadin.flow.component.slider.Slider;
+import com.vaadin.flow.component.slider.DecimalSlider;
+import com.vaadin.flow.component.slider.DecimalRangeSlider;
+import com.vaadin.flow.component.slider.DecimalRangeSliderValue;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -122,12 +122,12 @@ public class ComponentsView extends VerticalLayout {
 
         var layout = new VerticalLayout();
 
-        Slider slider = new Slider("Volume");
+        DecimalSlider slider = new DecimalSlider("Volume");
         slider.setValue(50.0);
         layout.add(slider);
 
-        RangeSlider rangeSlider = new RangeSlider("Price range", 0.0, 1000.0);
-        rangeSlider.setValue(new RangeSliderValue(200.0, 800.0));
+        DecimalRangeSlider rangeSlider = new DecimalRangeSlider("Price range", 0.0, 1000.0);
+        rangeSlider.setValue(new DecimalRangeSliderValue(200.0, 800.0));
         layout.add(rangeSlider);
 
         addComponentToGrid(layout);
