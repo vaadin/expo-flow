@@ -5,12 +5,15 @@ import com.example.application.service.PersonService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
+import com.vaadin.flow.component.breadcrumbs.Breadcrumbs;
+import com.vaadin.flow.component.breadcrumbs.BreadcrumbsItem;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
+import com.vaadin.flow.component.checkbox.Switch;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
@@ -87,6 +90,31 @@ public class ComponentsView extends VerticalLayout {
         addSlider();
         addBadges();
         addProgressBar();
+        addBreadcrumbs();
+        addSwitches();
+    }
+
+    private void addBreadcrumbs() {
+        var breadcrumbs = new Breadcrumbs(Breadcrumbs.Mode.MANUAL);
+        breadcrumbs.add(
+                new BreadcrumbsItem("Vaadin", "/"),
+                new BreadcrumbsItem("Components", "/components"),
+                new BreadcrumbsItem("Breadcrumbs"));
+
+        addComponentToGrid(breadcrumbs, "col-span-2");
+    }
+
+    private void addSwitches() {
+        var notifications = new Switch("Email notifications");
+        notifications.setValue(true);
+        notifications.setHelperText("Receive updates about your account");
+
+        var productNews = new Switch("Product news");
+        var unavailable = new Switch("Unavailable setting");
+        unavailable.setEnabled(false);
+
+        var layout = new VerticalLayout(notifications, productNews, unavailable);
+        addComponentToGrid(layout);
     }
 
     private void addProgressBar() {
