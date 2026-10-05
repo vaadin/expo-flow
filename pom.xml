@@ -12,8 +12,8 @@
     <properties>
         <!-- 25 because the draiv libraries are compiled for Java 25 -->
         <java.version>25</java.version>
-        <vaadin.version>25.2.6</vaadin.version>
-        <spring.ai.version>2.0.0</spring.ai.version>
+        <vaadin.version>25.3.0</vaadin.version>
+        <spring.ai.version>2.0.1</spring.ai.version>
         <!-- draiv is only published as a SNAPSHOT: pin one build so a new upload cannot change the demo -->
         <draiv.version>0.0.1-alpha1-20260930.094638-2</draiv.version>
     </properties>
