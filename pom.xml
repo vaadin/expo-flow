@@ -15,7 +15,8 @@
         <vaadin.version>25.3.0</vaadin.version>
         <spring.ai.version>2.0.1</spring.ai.version>
         <!-- draiv is only published as a SNAPSHOT: pin one build so a new upload cannot change the demo -->
-        <draiv.version>0.0.1-alpha1-20260930.094638-2</draiv.version>
+        <draiv.version>0.0.1-alpha1-SNAPSHOT</draiv.version>
+<!--        <draiv.version>0.0.1-alpha1-20260930.094638-2</draiv.version>-->
     </properties>
 
     <parent>
