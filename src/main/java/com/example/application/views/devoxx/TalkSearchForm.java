@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
+import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
 /**
@@ -49,6 +50,8 @@ public class TalkSearchForm extends FormLayout {
         levels.setId("filter-levels");
         startsAfter.setId("filter-starts-after");
         startsBefore.setId("filter-starts-before");
+
+        startsAfter.setValue(LocalDateTime.now());
 
         setResponsiveSteps(
                 new ResponsiveStep("0", 1),
@@ -88,6 +91,6 @@ public class TalkSearchForm extends FormLayout {
         levels.clear();
         startsAfter.clear();
         startsBefore.clear();
-        onSearch.accept(TalkFilter.empty());
+        onSearch.accept(TalkFilter.initial());
     }
 }

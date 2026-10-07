@@ -16,8 +16,8 @@ public record TalkFilter(String topics, String excludedTopics, String speaker,
                          Set<String> tracks, Set<String> formats, Set<String> levels,
                          LocalDateTime startsAfter, LocalDateTime startsBefore) {
 
-    public static TalkFilter empty() {
-        return new TalkFilter("", "", "", Set.of(), Set.of(), Set.of(), null, null);
+    public static TalkFilter initial() {
+        return new TalkFilter("", "", "", Set.of(), Set.of(), Set.of(), LocalDateTime.now(), null);
     }
 
     public boolean matches(Talk talk) {

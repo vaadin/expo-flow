@@ -137,7 +137,7 @@ public class DevoxxTalksView extends VerticalLayout {
                 grid);
         setSizeFull();
 
-        showTalks(TalkFilter.empty());
+        showTalks(TalkFilter.initial());
     }
 
     private String aiGoal(String request) {
