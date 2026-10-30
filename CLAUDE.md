@@ -24,9 +24,9 @@ The app runs on port **8888** (`server.port=${PORT:8888}`).
 default, so the application context fails to start without it, not just the Chat
 view.
 
-The Devoxx talk search needs no key of its own: it uses the provider selected by
+The W-JAX talk search needs no key of its own: it uses the provider selected by
 `PRESENTER_CHAT_PROVIDER` (default `openai`, model `OPENAI_TEXT_MODEL`, default `gpt-5.5`).
-Set `DEVOXX_DEMO_TIME=2026-10-07T10:15` to rehearse "what's next?" outside conference hours.
+Set `WJAX_DEMO_TIME=2026-11-04T10:30` to rehearse "what's next?" outside conference hours.
 
 The H2 database is a **file** at `~/t-shirt-orders`, so only one instance can run
 at a time. A second one fails with "Database may be already in use". To run a
@@ -42,6 +42,9 @@ There is also an `it` profile in the pom, but no `*IT` tests exist, so
 25.1, the old Slider API, Lumo utility classes) and was merged in with `-s ours`, so the
 history contains it while the code stays this branch's. When syncing with `v25` again,
 resolve toward `devoxxBEL26`.
+
+`wjax26` is the W-JAX 2026 (Munich) branch, made from `devoxxBEL26`: the Devoxx talk
+search was replaced by the W-JAX one.
 
 ## Architecture
 
@@ -107,11 +110,11 @@ together. It extends `UploadDropZone` and uses the modular upload components
 (`UploadManager`, `UploadButton`, `UploadFileList`) for attachments — images,
 PDFs and text, max 5 files at 5 MB each.
 
-### Devoxx talk search (draiv)
+### W-JAX talk search (draiv)
 
-`views/devoxx/DevoxxTalksView` searches the Devoxx Belgium 2026 talks in plain
+`views/wjax/WjaxTalksView` searches the W-JAX 2026 talks in plain
 language, modelled on draiv's `vaadin-grid-search-ui` example. The AI does **not**
-translate the text into a query: `AiSearchBar` hands a goal (`DevoxxTalksView.AI_GOAL`)
+translate the text into a query: `AiSearchBar` hands a goal (`WjaxTalksView.AI_GOAL`)
 to draiv's `TextPresenterService`, and the LLM operates the ordinary `TalkSearchForm`
 on screen through Spring AI tool calls (`inspect`, `apply`, `apply_many`) — it fills in
 the fields and clicks Search. Changed fields flash (`ChangeIndication`).
@@ -122,7 +125,7 @@ the fields and clicks Search. Changed fields flash (`ChangeIndication`).
 - Form fields have stable ids (`filter-*`, `search-button`, `reset-button`); the goal
   refers to them. Keep ids and goal in sync.
 - Each `assist()` starts without memory, so the view passes the previous request into the
-  goal — that is what makes "only for beginners" refine instead of reset.
+  goal — that is what makes "only in English" refine instead of reset.
 - Speed is mostly the number of model rounds, so the goal spells out the tool operations and
   asks for one `apply_many`: that took a question from 4–9 tool calls to 2–3. Measured with
   that goal, `gpt-5.5` got all test questions right at about 4 s each; `gpt-4o-mini` and
@@ -131,17 +134,25 @@ the fields and clicks Search. Changed fields flash (`ChangeIndication`).
   start 40–70 minutes apart and 30 minutes regularly found nothing. When a track covers the
   topic ("security"), the AI selects the track instead of typing Topics, which matched talks
   that only mention the word.
-- The grid shows When, Title and Track; speakers, format and room sit in the row details
-  (a `LitRenderer`; `.talk-facts` in `devoxx-view.css` gives them equal columns).
+- The grid shows When, Title and Tracks; speakers, format, language and room sit in the row
+  details (a `LitRenderer`; `.talk-facts` in `wjax-view.css` gives them equal columns).
 - Row details follow the selection. Arrow keys browse the talks through the `executeJs`
   keydown listener on the grid: it sets the grid's client-side `activeItem`, exactly what a
   click does. Selecting from a server-side focus listener instead makes a mouse click open and
   immediately close the details: the server's select sets `activeItem`, and the click that
   follows toggles it off. The listener also re-sends the arrow key when the focus lands on a
   details cell, since vaadin-grid makes open details a keyboard stop of their own.
-- `devoxx/DevoxxTalkService` loads the five `/api/public/schedules/{day}` from
-  `devoxx.schedule-url` on startup and falls back to the copies in
-  `src/main/resources/devoxx/`. Filtering is in memory (`TalkFilter`), no JPA.
+- `wjax/WjaxTalkService` parses the conference planner's XML export
+  `src/main/resources/wjax/conference-schedule.xml` once on startup (no network). Sessions
+  point to their type, tracks and speakers by `uniqueId`; sessions of type `Break` are
+  dropped. Times are UTC in the XML and converted to Europe/Berlin. The description is
+  `details` plus `longAbstract`, HTML turned into text. Filtering is in memory
+  (`TalkFilter`), no JPA.
+- Compared to Devoxx the data has no level and no keywords, but a language (de/en), so the
+  form has Language instead of Level. Most talks have several tracks; a talk matches if any
+  of them is selected. Track names contain commas, so the grid joins them with " · " and the
+  goal with "; ". Most titles and descriptions are German, so the goal asks for German and
+  English variants of Topics words.
 - draiv is only published as a SNAPSHOT; `draiv.version` in the pom pins one timestamped
   build, also for its transitive modules in `dependencyManagement`.
 - draiv also brings Mistral, Anthropic, an MCP server and realtime voice.
@@ -175,10 +186,9 @@ test(button).click();
 `src/test/resources/application.properties` overrides the datasource with an
 in-memory H2 and supplies a dummy OpenAI key, so tests do not touch
 `~/t-shirt-orders` or need real credentials. It replaces the main file rather than
-adding to it, so it repeats the draiv properties, and it blanks `devoxx.schedule-url`
-so the Devoxx tests run on the bundled schedule.
+adding to it, so it repeats the draiv properties.
 
-`DevoxxTalksDrivingTest` drives the talk search form through draiv's `inspect`/`apply`
+`WjaxTalksDrivingTest` drives the talk search form through draiv's `inspect`/`apply`
 tools exactly as the LLM does, without a model — the cheap way to check the AI can
 still operate the form after changing it.
 

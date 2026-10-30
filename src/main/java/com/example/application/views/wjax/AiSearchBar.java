@@ -1,4 +1,4 @@
-package com.example.application.views.devoxx;
+package com.example.application.views.wjax;
 
 import com.vaadin.draiv.ai.presenter.TextPresenterProperties;
 import com.vaadin.draiv.ai.presenter.TextPresenterService;

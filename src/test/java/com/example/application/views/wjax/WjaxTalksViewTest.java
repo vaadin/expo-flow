@@ -1,7 +1,7 @@
-package com.example.application.views.devoxx;
+package com.example.application.views.wjax;
 
-import com.example.application.devoxx.DevoxxTalkService;
-import com.example.application.devoxx.Talk;
+import com.example.application.wjax.Talk;
+import com.example.application.wjax.WjaxTalkService;
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
@@ -19,38 +19,38 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Uses the form by hand, like a visitor would. Runs on the bundled schedule (see test application.properties). */
+/** Uses the form by hand, like a visitor would. Runs on the bundled W-JAX schedule. */
 @SpringBootTest
-class DevoxxTalksViewTest extends SpringBrowserlessTest {
+class WjaxTalksViewTest extends SpringBrowserlessTest {
 
     @Autowired
-    DevoxxTalkService talkService;
+    WjaxTalkService talkService;
 
     @Test
     void showsAllTalksInitially() {
-        navigate(DevoxxTalksView.class);
+        navigate(WjaxTalksView.class);
 
-        assertEquals(204, talkService.countTalks());
+        assertEquals(119, talkService.countTalks()); // 148 sessions in the XML, 29 of them breaks
         assertEquals(talkService.countTalks(), shownTalks().size());
     }
 
     @Test
-    void filtersByTrackAndLevel() {
-        navigate(DevoxxTalksView.class);
+    void filtersByTrackAndLanguage() {
+        navigate(WjaxTalksView.class);
 
-        test($(MultiSelectComboBox.class).id("filter-tracks")).selectItem("Security, Trust & Compliance");
-        test($(MultiSelectComboBox.class).id("filter-levels")).selectItem("Beginner");
+        test($(MultiSelectComboBox.class).id("filter-tracks")).selectItem("Performance & Security");
+        test($(MultiSelectComboBox.class).id("filter-languages")).selectItem("English");
         test($(Button.class).id("search-button")).click();
 
         var talks = shownTalks();
         assertFalse(talks.isEmpty());
         assertTrue(talks.stream().allMatch(talk ->
-                talk.track().equals("Security, Trust & Compliance") && talk.level().equals("Beginner")));
+                talk.tracks().contains("Performance & Security") && talk.language().equals("English")));
     }
 
     @Test
     void excludedTopicsLeaveOutAiTalks() {
-        navigate(DevoxxTalksView.class);
+        navigate(WjaxTalksView.class);
 
         test($(TextField.class).id("filter-excluded-topics")).setValue("AI, LLM, agents");
         test($(Button.class).id("search-button")).click();
@@ -63,8 +63,8 @@ class DevoxxTalksViewTest extends SpringBrowserlessTest {
 
     @Test
     void filtersByStartTime() {
-        navigate(DevoxxTalksView.class);
-        var from = LocalDateTime.of(2026, 10, 7, 10, 0);
+        navigate(WjaxTalksView.class);
+        var from = LocalDateTime.of(2026, 11, 4, 11, 30);
         var until = from.plusMinutes(30);
 
         test($(DateTimePicker.class).id("filter-starts-after")).setValue(from);
@@ -78,7 +78,7 @@ class DevoxxTalksViewTest extends SpringBrowserlessTest {
 
     @Test
     void resetShowsAllTalksAgain() {
-        navigate(DevoxxTalksView.class);
+        navigate(WjaxTalksView.class);
         test($(TextField.class).id("filter-topics")).setValue("java");
         test($(Button.class).id("search-button")).click();
         assertTrue(shownTalks().size() < talkService.countTalks());

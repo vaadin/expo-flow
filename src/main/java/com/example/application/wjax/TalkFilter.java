@@ -1,4 +1,4 @@
-package com.example.application.devoxx;
+package com.example.application.wjax;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -7,13 +7,13 @@ import java.util.regex.Pattern;
 
 /**
  * What the talk search form asks for. Every criterion is optional: a blank text, an empty set or a
- * {@code null} time means "no constraint".
+ * {@code null} time means "no constraint". A talk matches the tracks if one of its tracks is selected.
  *
  * @param topics         comma-separated words; a talk matches if it contains any of them
  * @param excludedTopics comma-separated words; a talk is left out if it contains any of them
  */
 public record TalkFilter(String topics, String excludedTopics, String speaker,
-                         Set<String> tracks, Set<String> formats, Set<String> levels,
+                         Set<String> tracks, Set<String> formats, Set<String> languages,
                          LocalDateTime startsAfter, LocalDateTime startsBefore) {
 
     public static TalkFilter empty() {
@@ -24,9 +24,9 @@ public record TalkFilter(String topics, String excludedTopics, String speaker,
         return (topics.isBlank() || containsAnyWord(talk.searchableText(), topics))
                 && (excludedTopics.isBlank() || !containsAnyWord(talk.searchableText(), excludedTopics))
                 && (speaker.isBlank() || talk.speakers().toLowerCase().contains(speaker.strip().toLowerCase()))
-                && (tracks.isEmpty() || tracks.contains(talk.track()))
+                && (tracks.isEmpty() || talk.tracks().stream().anyMatch(tracks::contains))
                 && (formats.isEmpty() || formats.contains(talk.format()))
-                && (levels.isEmpty() || levels.contains(talk.level()))
+                && (languages.isEmpty() || languages.contains(talk.language()))
                 && (startsAfter == null || !talk.start().isBefore(startsAfter))
                 && (startsBefore == null || !talk.start().isAfter(startsBefore));
     }

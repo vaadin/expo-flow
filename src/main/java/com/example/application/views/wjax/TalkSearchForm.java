@@ -1,7 +1,7 @@
-package com.example.application.views.devoxx;
+package com.example.application.views.wjax;
 
-import com.example.application.devoxx.DevoxxTalkService;
-import com.example.application.devoxx.TalkFilter;
+import com.example.application.wjax.TalkFilter;
+import com.example.application.wjax.WjaxTalkService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -25,20 +25,20 @@ public class TalkSearchForm extends FormLayout {
     private final TextField speaker = new TextField("Speaker");
     private final MultiSelectComboBox<String> tracks = new MultiSelectComboBox<>("Tracks");
     private final MultiSelectComboBox<String> formats = new MultiSelectComboBox<>("Format");
-    private final MultiSelectComboBox<String> levels = new MultiSelectComboBox<>("Level");
+    private final MultiSelectComboBox<String> languages = new MultiSelectComboBox<>("Language");
     private final DateTimePicker startsAfter = new DateTimePicker("Starts after");
     private final DateTimePicker startsBefore = new DateTimePicker("Starts before");
 
     private final Consumer<TalkFilter> onSearch;
 
-    public TalkSearchForm(DevoxxTalkService talkService, Consumer<TalkFilter> onSearch) {
+    public TalkSearchForm(WjaxTalkService talkService, Consumer<TalkFilter> onSearch) {
         this.onSearch = onSearch;
 
         topics.setPlaceholder("e.g. java, security");
         excludedTopics.setPlaceholder("e.g. AI, LLM");
         tracks.setItems(talkService.tracks());
         formats.setItems(talkService.formats());
-        levels.setItems(talkService.levels());
+        languages.setItems(talkService.languages());
 
         // Stable ids, so the AI (and the tests) can target each field precisely
         topics.setId("filter-topics");
@@ -46,7 +46,7 @@ public class TalkSearchForm extends FormLayout {
         speaker.setId("filter-speaker");
         tracks.setId("filter-tracks");
         formats.setId("filter-formats");
-        levels.setId("filter-levels");
+        languages.setId("filter-languages");
         startsAfter.setId("filter-starts-after");
         startsBefore.setId("filter-starts-before");
 
@@ -54,7 +54,7 @@ public class TalkSearchForm extends FormLayout {
                 new ResponsiveStep("0", 1),
                 new ResponsiveStep("600px", 2),
                 new ResponsiveStep("1100px", 4));
-        add(topics, excludedTopics, speaker, tracks, formats, levels, startsAfter, startsBefore);
+        add(topics, excludedTopics, speaker, tracks, formats, languages, startsAfter, startsBefore);
         add(createButtons(), 4); // full width
     }
 
@@ -74,7 +74,7 @@ public class TalkSearchForm extends FormLayout {
 
     private TalkFilter buildFilter() {
         return new TalkFilter(topics.getValue(), excludedTopics.getValue(), speaker.getValue(),
-                tracks.getValue(), formats.getValue(), levels.getValue(),
+                tracks.getValue(), formats.getValue(), languages.getValue(),
                 startsAfter.getValue(), startsBefore.getValue());
     }
 
@@ -85,7 +85,7 @@ public class TalkSearchForm extends FormLayout {
         speaker.clear();
         tracks.clear();
         formats.clear();
-        levels.clear();
+        languages.clear();
         startsAfter.clear();
         startsBefore.clear();
         onSearch.accept(TalkFilter.empty());

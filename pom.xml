@@ -15,7 +15,7 @@
         <vaadin.version>25.3.0</vaadin.version>
         <spring.ai.version>2.0.1</spring.ai.version>
         <!-- draiv is only published as a SNAPSHOT: pin one build so a new upload cannot change the demo -->
-        <draiv.version>0.0.1-alpha1-20260930.094638-2</draiv.version>
+        <draiv.version>0.0.1-alpha1-20261020.113733-4</draiv.version>
     </properties>
 
     <parent>
@@ -146,7 +146,7 @@
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-model-openai</artifactId>
         </dependency>
-        <!-- draiv: lets the AI drive the live UI (DevoxxTalksView). Brings the driver core too. -->
+        <!-- draiv: lets the AI drive the live UI (WjaxTalksView). Brings the driver core too. -->
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>draiv-ai</artifactId>

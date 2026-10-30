@@ -1,6 +1,6 @@
-package com.example.application.views.devoxx;
+package com.example.application.views.wjax;
 
-import com.example.application.devoxx.Talk;
+import com.example.application.wjax.Talk;
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.draiv.ai.mcp.AliasRegistry;
 import com.vaadin.draiv.ai.mcp.CapabilityMcpTools;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * {@code apply} — just without a model in the loop. If this passes, the AI has everything it needs.
  */
 @SpringBootTest
-class DevoxxTalksDrivingTest extends SpringBrowserlessTest {
+class WjaxTalksDrivingTest extends SpringBrowserlessTest {
 
     private final UiRegistry registry = new UiRegistry();
     private final CapabilityMcpTools tools = new CapabilityMcpTools(
@@ -33,22 +33,22 @@ class DevoxxTalksDrivingTest extends SpringBrowserlessTest {
 
     @Test
     void aiToolsCanFillTheFormAndSearch() {
-        navigate(DevoxxTalksView.class);
+        navigate(WjaxTalksView.class);
         registry.register(DemoPrincipal.ID, UI.getCurrent());
 
         String snapshot = tools.inspect(null, null, null);
 
         // What the LLM would send for "Security talks on Wednesday morning"
-        apply(snapshot, "filter-tracks", "settable", "set", "Security");
-        apply(snapshot, "filter-starts-after", "settable", "set", "2026-10-07T09:00");
-        apply(snapshot, "filter-starts-before", "settable", "set", "2026-10-07T12:00");
+        apply(snapshot, "filter-tracks", "settable", "set", "Performance & Security");
+        apply(snapshot, "filter-starts-after", "settable", "set", "2026-11-04T09:00");
+        apply(snapshot, "filter-starts-before", "settable", "set", "2026-11-04T12:00");
         apply(snapshot, "search-button", "activatable", "activate");
 
         var talks = shownTalks();
         assertFalse(talks.isEmpty());
-        assertTrue(talks.stream().allMatch(talk -> talk.track().equals("Security, Trust & Compliance")
-                && !talk.start().isBefore(LocalDateTime.of(2026, 10, 7, 9, 0))
-                && !talk.start().isAfter(LocalDateTime.of(2026, 10, 7, 12, 0))));
+        assertTrue(talks.stream().allMatch(talk -> talk.tracks().contains("Performance & Security")
+                && !talk.start().isBefore(LocalDateTime.of(2026, 11, 4, 9, 0))
+                && !talk.start().isAfter(LocalDateTime.of(2026, 11, 4, 12, 0))));
     }
 
     private void apply(String snapshot, String id, String capability, String operation, String... args) {

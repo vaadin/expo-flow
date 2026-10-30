@@ -1,4 +1,4 @@
-package com.example.application.devoxx;
+package com.example.application.wjax;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,9 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TalkFilterTest {
 
-    private final Talk talk = new Talk("Maintaining Java apps", "Duke", "Java Language & Platform", "Conference",
-            "Beginner", "Room 5", LocalDateTime.of(2026, 10, 7, 10, 0), LocalDateTime.of(2026, 10, 7, 10, 50),
-            List.of("jvm"), "How to keep a big codebase healthy.");
+    private final Talk talk = new Talk("Maintaining Java apps", "Duke",
+            List.of("Java & JVM Languages", "Java Backend Engineering"), "Session", "English", "Ballsaal",
+            LocalDateTime.of(2026, 11, 4, 10, 0), LocalDateTime.of(2026, 11, 4, 11, 0),
+            "How to keep a big JVM codebase healthy.");
 
     @Test
     void topicsMatchWholeWordsOnly() {
@@ -29,6 +30,12 @@ class TalkFilterTest {
     }
 
     @Test
+    void matchesAnyOfTheTalksTracks() {
+        assertTrue(tracks("Java Backend Engineering", "Frontend & Web Applications").matches(talk));
+        assertFalse(tracks("Frontend & Web Applications").matches(talk));
+    }
+
+    @Test
     void startTimeBoundsAreInclusive() {
         var start = talk.start();
         assertTrue(new TalkFilter("", "", "", Set.of(), Set.of(), Set.of(), start, start).matches(talk));
@@ -37,5 +44,9 @@ class TalkFilterTest {
 
     private static TalkFilter topics(String topics) {
         return new TalkFilter(topics, "", "", Set.of(), Set.of(), Set.of(), null, null);
+    }
+
+    private static TalkFilter tracks(String... tracks) {
+        return new TalkFilter("", "", "", Set.of(tracks), Set.of(), Set.of(), null, null);
     }
 }
