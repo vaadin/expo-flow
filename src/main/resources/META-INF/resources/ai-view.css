@@ -119,3 +119,26 @@ vaadin-grid::part(new-invoice) {
     flex-wrap: wrap;
     gap: 0 var(--vaadin-gap-m, 1rem);
 }
+
+/* FilterDetails: the summary pulses when a filter changes, since the closed block hides the fields' flash */
+.filter-summary.filter-pulse-a {
+    animation: filter-pulse-a 1.5s ease-out;
+}
+
+.filter-summary.filter-pulse-b {
+    animation: filter-pulse-b 1.5s ease-out;
+}
+
+@keyframes filter-pulse-a {
+    0%, 60% {
+        color: var(--aura-accent-color);
+        text-shadow: 0 0 12px color-mix(in srgb, var(--aura-accent-color) 60%, transparent);
+    }
+}
+
+@keyframes filter-pulse-b {
+    0%, 60% {
+        color: var(--aura-accent-color);
+        text-shadow: 0 0 12px color-mix(in srgb, var(--aura-accent-color) 60%, transparent);
+    }
+}
