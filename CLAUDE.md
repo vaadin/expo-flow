@@ -166,9 +166,20 @@ panel that drives the UI through draiv. Concept, tabs and implementation plan:
 `docs/ai-driven-ui.md`. Code lives in `com.example.application.ai` (layout, views, chat panel,
 draiv wiring) and `com.example.application.ai.invoice` (entity, repository, service, form).
 
-- Form Filler (`ai/form`) runs through draiv's `UiAssistant` with an `AgentScope` (the form minus
-  status and Add), not `AiGoalBar`: `AiGoalBar` registers its Enter shortcut on the whole UI, so
-  Enter in any form field or in the chat would start the AI as well.
+- AI Grid (`ai/grid`) and Form Filler (`ai/form`) run through `AiPromptBar`: draiv's
+  `UiAssistant` with an `AgentScope` (the filter bar; the form minus status and Add). Not draiv's
+  `AiGoalBar`, which registers its Enter shortcut on the whole UI, so Enter in any form field or in
+  the chat would start the AI as well.
+- The AI Grid has no search button and no sortable headers for the AI: every filter change
+  refreshes the grid, and the order is a `Select` (`InvoiceSort`). draiv's `sortable` only steps a
+  column through none/ascending/descending like a header click, which the AI cannot do reliably.
+- Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
+  is not split). For several labels the goal says: `set` the first, then `selectable` /
+  `selectByContent` for each further one. (The W-JAX goal's "multi-selects take a list of option
+  labels" has the same problem.)
+- The seed makes the three latest Acme invoices open and over 1,000 €, so the concept's example
+  prompt finds something. Seeding only runs on an empty table: an older `~/t-shirt-orders` keeps
+  its old invoices until `INVOICE` is emptied.
 - Lieferant is a `TextField`, not a ComboBox: draiv's `settable`/`set` picks a ComboBox *item*
   (exact label, then substring) and ignores `allowCustomValue`, so the AI could not enter a new
   supplier. The same goes for every ComboBox the AI should fill with a value that is not an item.

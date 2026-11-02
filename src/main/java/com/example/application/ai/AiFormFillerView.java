@@ -4,36 +4,19 @@ import com.example.application.ai.invoice.InvoiceForm;
 import com.example.application.ai.invoice.InvoiceService;
 import com.vaadin.draiv.ai.ui.AgentScope;
 import com.vaadin.draiv.ai.ui.UiAssistant;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Tab 2: paste a supplier's e-mail, and the AI fills in the invoice form from it. The AI may only
  * touch the form's fields ({@link AgentScope}): the status and the Add button are out of its reach,
  * so a person checks the result and saves it.
- * <p>
- * Not draiv's {@code AiGoalBar}: its Enter shortcut listens on the whole UI, so Enter in a form field
- * or in the chat would start the AI too. This is the same run through {@link UiAssistant}, triggered
- * by the button or Ctrl+Enter in the text area only.
  */
 @PageTitle("Form Filler")
 @Route("ai/form")
 public class AiFormFillerView extends AiTabView {
-
-    private static final Logger log = LoggerFactory.getLogger(AiFormFillerView.class);
 
     static final String EXAMPLE = """
             Hallo, anbei unsere Rechnung RE-2026-114 vom 28.10. für drei 27-Zoll-Monitore: \
@@ -68,69 +51,24 @@ public class AiFormFillerView extends AiTabView {
             Text: "%s"
             """;
 
-    private final UiAssistant assistant;
-    private final InvoiceForm form;
     private final AgentScope scope;
-    private final TextArea text = new TextArea("Lieferanten-E-Mail");
-    private final Button fill = new Button("Formular ausfüllen", VaadinIcon.MAGIC.create());
 
     public AiFormFillerView(UiAssistant assistant, InvoiceService invoiceService) {
         super("Form Filler",
                 "Eine Lieferanten-E-Mail einfügen: Die AI füllt das Formular aus, speichern tut der Mensch.");
-        this.assistant = assistant;
-        this.form = new InvoiceForm(invoiceService);
+        var form = new InvoiceForm(invoiceService);
         // The AI sees the form's fields, but neither the status nor the button that saves
         this.scope = AgentScope.within(form).excluding(form.getAddButton(), form.getStatusField());
 
-        text.setPlaceholder("E-Mail oder Rechnungsdaten hier einfügen…");
-        text.setWidthFull();
-        text.setMinRows(3);
-        text.setId("form-filler-text");
-
-        fill.addThemeVariants(ButtonVariant.PRIMARY);
-        fill.addClickListener(e -> fillForm());
-        fill.addClickShortcut(Key.ENTER, KeyModifier.CONTROL).listenOn(text);
-        var example = new Button("Beispiel-E-Mail", e -> text.setValue(EXAMPLE));
+        var prompt = AiPromptBar.multiLine(assistant, scope, GOAL::formatted, "Formular ausfüllen");
+        prompt.getPrompt().setLabel("Lieferanten-E-Mail");
+        prompt.getPrompt().setPlaceholder("E-Mail oder Rechnungsdaten hier einfügen…");
+        prompt.getPrompt().setId("form-filler-text");
+        var example = new Button("Beispiel-E-Mail", e -> prompt.getPrompt().setValue(EXAMPLE));
         example.addThemeVariants(ButtonVariant.TERTIARY);
+        example.getElement().setAttribute("data-draiv-control", "true");
 
-        var buttons = new HorizontalLayout(fill, example);
-        buttons.setAlignItems(FlexComponent.Alignment.CENTER);
-        // Driving chrome: the AI never sees the controls that start it
-        text.getElement().setAttribute("data-draiv-control", "true");
-        buttons.getElement().setAttribute("data-draiv-control", "true");
-
-        add(text, buttons, form);
-    }
-
-    private void fillForm() {
-        if (text.isEmpty()) {
-            Notification.show("Erst eine E-Mail einfügen.");
-            return;
-        }
-        if (!assistant.isEnabled()) {
-            Notification.show(assistant.disabledReason()).addThemeVariants(NotificationVariant.ERROR);
-            return;
-        }
-        var ui = UI.getCurrent();
-        setBusy(true);
-        assistant.assist(GOAL.formatted(text.getValue().strip()), scope, null)
-                .whenComplete((result, error) -> ui.access(() -> {
-                    setBusy(false);
-                    if (error != null) {
-                        log.warn("Form filler failed", error);
-                        Notification.show("AI fehlgeschlagen: " + error.getMessage())
-                                .addThemeVariants(NotificationVariant.ERROR);
-                    } else {
-                        log.info("Form filler: {} tool call(s)", result.toolCalls().size());
-                        Notification.show(result.summary() == null || result.summary().isBlank()
-                                ? "Formular ausgefüllt. Bitte prüfen und hinzufügen." : result.summary());
-                    }
-                }));
-    }
-
-    private void setBusy(boolean busy) {
-        fill.setEnabled(!busy);
-        fill.setText(busy ? "Füllt aus…" : "Formular ausfüllen");
+        add(prompt, example, form);
     }
 
     /** What the AI may touch while it fills in the form; for the tests. */

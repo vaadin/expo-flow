@@ -5,8 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +13,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -60,8 +59,21 @@ public class InvoiceService implements ApplicationRunner {
         }
     }
 
-    public List<Invoice> find(Specification<Invoice> filter, Sort sort) {
-        return repository.findAll(filter, sort);
+    /** The invoices matching the filter, in the given order. */
+    public List<Invoice> find(InvoiceFilter filter, InvoiceSort sort) {
+        return repository.findAll(filter.specification()).stream()
+                .filter(filter::matchesGross)
+                .sorted(sort.comparator())
+                .toList();
+    }
+
+    public long count() {
+        return repository.count();
+    }
+
+    /** The suppliers so far, so the AI can match "Acme" to the right one. */
+    public List<String> suppliers() {
+        return repository.findAll().stream().map(Invoice::getSupplier).distinct().sorted().toList();
     }
 
     /** The ten most recently entered invoices, newest first. */
@@ -122,6 +134,16 @@ public class InvoiceService implements ApplicationRunner {
             invoice.setCreatedAt(invoice.getInvoiceDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
             invoices.add(invoice);
         }
+        // The concept's prompt "alle offenen Rechnungen von Acme über 1.000 €" must find something: the
+        // three latest Acme invoices are big and still open, whatever the dice said
+        invoices.stream().filter(invoice -> invoice.getSupplier().equals("Acme GmbH"))
+                .sorted(Comparator.comparing(Invoice::getInvoiceDate).reversed())
+                .limit(3)
+                .forEach(invoice -> {
+                    invoice.setDueDate(today.plusDays(5 + random.nextInt(25)));
+                    invoice.setNet(BigDecimal.valueOf(1_200 + random.nextInt(3_000)).setScale(2, RoundingMode.HALF_UP));
+                    invoice.setStatus(InvoiceStatus.OPEN);
+                });
         return invoices;
     }
 }
