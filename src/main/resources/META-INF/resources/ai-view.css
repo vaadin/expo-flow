@@ -142,3 +142,9 @@ vaadin-grid::part(new-invoice) {
         text-shadow: 0 0 12px color-mix(in srgb, var(--aura-accent-color) 60%, transparent);
     }
 }
+
+/* The result count next to a FilterDetails, as talkCount in WjaxTalksView */
+.filter-result {
+    white-space: nowrap;
+    color: var(--vaadin-text-color-secondary);
+}

@@ -13,6 +13,7 @@ import com.vaadin.draiv.session.DemoPrincipal;
 import com.vaadin.draiv.session.DemoPrincipalUiResolver;
 import com.vaadin.draiv.session.UiRegistry;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.shared.Registration;
 import org.junit.jupiter.api.AfterEach;
@@ -84,6 +85,10 @@ class AiGridDrivingTest extends SpringBrowserlessTest {
         assertTrue(results.stream().allMatch(result -> "ok".equals(result.status())), results::toString);
 
         var invoices = shownInvoices();
+        // The filters were set inside the closed block, and it stays closed
+        var details = find(FilterDetails.class).id("grid-filter-details");
+        assertFalse(details.isOpened());
+        assertEquals(3, find(Badge.class).withText("aktive Filter").single().getNumber());
         assertFalse(invoices.isEmpty());
         assertTrue(invoices.stream().allMatch(invoice -> invoice.getSupplier().equals("Acme GmbH")
                 && invoice.getStatus() == InvoiceStatus.OPEN

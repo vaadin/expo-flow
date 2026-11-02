@@ -18,6 +18,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -37,7 +38,8 @@ import java.util.stream.Collectors;
 
 /**
  * Tab 1: find invoices by asking. The AI does not query anything itself: it sets the ordinary filter bar,
- * and the grid follows every change. It may only touch the filter bar ({@link AgentScope}).
+ * and the grid follows every change. It may only touch the filter bar ({@link AgentScope}), which stays
+ * folded away in a {@link FilterDetails} while the AI works.
  */
 @PageTitle("AI Grid")
 @Route("ai/grid")
@@ -121,7 +123,17 @@ public class AiGridView extends AiTabView {
         grid.setId("invoice-grid");
         grid.setMinHeight("320px");
 
-        add(prompt, filters, summary, grid);
+        // The filters stay folded away; the summary of the result stays in sight next to them
+        var filterDetails = new FilterDetails(filters, this::activeFilters,
+                supplier, categories, statuses, from, to, minGross, sort);
+        filterDetails.setId("grid-filter-details");
+        summary.addClassName("filter-result");
+        var filterRow = new HorizontalLayout(filterDetails, summary);
+        filterRow.setAlignItems(Alignment.BASELINE);
+        filterRow.setWidthFull();
+        filterRow.setFlexGrow(1, filterDetails);
+
+        add(prompt, filterRow, grid);
         setFlexGrow(1, grid);
         setSizeFull();
         refresh();
@@ -174,6 +186,18 @@ public class AiGridView extends AiTabView {
                 request);
         previousRequest = request;
         return goal;
+    }
+
+    /** The filters that narrow the result; the order is not one. */
+    private int activeFilters() {
+        int active = 0;
+        active += supplier.getValue().isBlank() ? 0 : 1;
+        active += categories.getValue().isEmpty() ? 0 : 1;
+        active += statuses.getValue().isEmpty() ? 0 : 1;
+        active += from.getValue() == null ? 0 : 1;
+        active += to.getValue() == null ? 0 : 1;
+        active += minGross.getValue() == null ? 0 : 1;
+        return active;
     }
 
     private void reset() {
