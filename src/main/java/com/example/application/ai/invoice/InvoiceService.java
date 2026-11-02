@@ -14,10 +14,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Invoices for the AI Driven UI area: search, save, reset to the demo data, and a broadcast of new
@@ -65,6 +68,18 @@ public class InvoiceService implements ApplicationRunner {
                 .filter(filter::matchesGross)
                 .sorted(sort.comparator())
                 .toList();
+    }
+
+    /**
+     * The gross total per group of the matching invoices, in axis order; groups without invoices are left
+     * out.
+     */
+    public Map<String, BigDecimal> totals(InvoiceFilter filter, InvoiceGrouping grouping) {
+        return repository.findAll(filter.specification()).stream()
+                .filter(filter::matchesGross)
+                .sorted(grouping.order())
+                .collect(Collectors.groupingBy(grouping::groupOf, LinkedHashMap::new,
+                        Collectors.reducing(BigDecimal.ZERO, Invoice::getGross, BigDecimal::add)));
     }
 
     public long count() {

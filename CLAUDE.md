@@ -173,6 +173,9 @@ draiv wiring) and `com.example.application.ai.invoice` (entity, repository, serv
 - The AI Grid has no search button and no sortable headers for the AI: every filter change
   refreshes the grid, and the order is a `Select` (`InvoiceSort`). draiv's `sortable` only steps a
   column through none/ascending/descending like a header click, which the AI cannot do reliably.
+- AI Dashboard (`ai/dashboard`): the AI sets the control bar (`InvoiceGrouping`, chart type,
+  status and category `CheckboxGroup`s, period); every change builds a fresh `Chart`, so the
+  type can change too. draiv does not drive the chart; it is outside the scope.
 - Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
   is not split). For several labels the goal says: `set` the first, then `selectable` /
   `selectByContent` for each further one, always the complete selection. The W-JAX goal says the
