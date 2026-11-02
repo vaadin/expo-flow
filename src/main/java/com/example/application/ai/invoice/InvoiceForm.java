@@ -2,7 +2,6 @@ package com.example.application.ai.invoice;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
@@ -16,7 +15,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -29,7 +27,9 @@ public class InvoiceForm extends FormLayout {
     private static final Locale GERMAN = Locale.GERMANY;
 
     private final TextField invoiceNumber = new TextField("Rechnungsnummer");
-    private final ComboBox<String> supplier = new ComboBox<>("Lieferant");
+    // A text field, not a ComboBox: draiv only sets a ComboBox to one of its items, and an
+    // uploaded invoice often comes from a supplier that is not in the list yet
+    private final TextField supplier = new TextField("Lieferant");
     private final DatePicker invoiceDate = new DatePicker("Rechnungsdatum");
     private final DatePicker dueDate = new DatePicker("Fällig am");
     private final BigDecimalField net = new BigDecimalField("Netto (€)");
@@ -49,15 +49,6 @@ public class InvoiceForm extends FormLayout {
         this.invoiceService = invoiceService;
 
         invoiceNumber.setPlaceholder("z. B. RE-2026-114");
-        // The known suppliers as suggestions, but a new one can be typed in
-        var suppliers = new ArrayList<>(invoiceService.suppliers());
-        supplier.setItems(suppliers);
-        supplier.setAllowCustomValue(true);
-        supplier.addCustomValueSetListener(event -> {
-            suppliers.add(event.getDetail());
-            supplier.setItems(suppliers);
-            supplier.setValue(event.getDetail());
-        });
         invoiceDate.setLocale(GERMAN);
         dueDate.setLocale(GERMAN);
         vatRate.setLabel("MwSt-Satz");

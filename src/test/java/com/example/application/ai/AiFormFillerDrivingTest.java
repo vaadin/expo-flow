@@ -14,7 +14,7 @@ import com.vaadin.draiv.session.DemoPrincipalUiResolver;
 import com.vaadin.draiv.session.UiRegistry;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.shared.Registration;
 import org.junit.jupiter.api.AfterEach;
@@ -114,20 +114,16 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
         assertEquals(InvoiceCategory.OFFICE, find(Select.class).id("invoice-category").getValue());
     }
 
-    /**
-     * draiv sets a ComboBox only to one of its items: allowCustomValue does not let the AI type a new
-     * supplier. The goal therefore tells the AI to leave the field empty and say so. When this test
-     * fails, draiv has learned custom values: let the AI type new suppliers again.
-     */
+    /** Uploaded invoices often come from a new supplier, so the field takes any name. */
     @Test
-    void aNewSupplierIsNotAnOptionForTheAi() {
+    void aNewSupplierCanBeEntered() {
         String snapshot = tools.inspect(null, null, null);
 
         var result = tools.apply(selectorFor(snapshot, "invoice-supplier"), "settable", "set",
                 List.of("Neue Firma GmbH"), null);
 
-        assertEquals("error", result.status(), result::toString);
-        assertEquals(null, find(ComboBox.class).id("invoice-supplier").getValue());
+        assertEquals("ok", result.status(), result::toString);
+        assertEquals("Neue Firma GmbH", find(TextField.class).id("invoice-supplier").getValue());
     }
 
     private static ApplyStep set(String snapshot, String id, String value) {

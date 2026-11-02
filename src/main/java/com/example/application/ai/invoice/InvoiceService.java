@@ -69,11 +69,6 @@ public class InvoiceService implements ApplicationRunner {
         return repository.findTop10ByOrderByCreatedAtDesc();
     }
 
-    /** The suppliers known so far, for the form's suggestions. */
-    public List<String> suppliers() {
-        return repository.findAll().stream().map(Invoice::getSupplier).distinct().sorted().toList();
-    }
-
     /** Saves the invoice; a new one is announced to every listener. */
     public Invoice save(Invoice invoice) {
         boolean isNew = invoice.getId() == null;

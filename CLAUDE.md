@@ -169,8 +169,9 @@ draiv wiring) and `com.example.application.ai.invoice` (entity, repository, serv
 - Form Filler (`ai/form`) runs through draiv's `UiAssistant` with an `AgentScope` (the form minus
   status and Add), not `AiGoalBar`: `AiGoalBar` registers its Enter shortcut on the whole UI, so
   Enter in any form field or in the chat would start the AI as well.
-- draiv's `settable`/`set` picks a ComboBox *item* (exact label, then substring); it ignores
-  `allowCustomValue`, so the AI cannot type a new supplier. `AiFormFillerDrivingTest` pins this.
+- Lieferant is a `TextField`, not a ComboBox: draiv's `settable`/`set` picks a ComboBox *item*
+  (exact label, then substring) and ignores `allowCustomValue`, so the AI could not enter a new
+  supplier. The same goes for every ComboBox the AI should fill with a value that is not an item.
 - `AiInvoiceDrivingTest` and `AiFormFillerDrivingTest` drive the area through draiv's tools without
   a model; run them after changing a form, its ids or a scope.
 

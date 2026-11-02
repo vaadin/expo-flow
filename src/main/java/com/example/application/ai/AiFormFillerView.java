@@ -48,8 +48,7 @@ public class AiFormFillerView extends AiTabView {
             The user pasted a supplier's e-mail or described an invoice. Enter that invoice in the \
             invoice form on screen, mapping the text to the fields:
             - invoice-number (Rechnungsnummer)
-            - invoice-supplier (Lieferant): only one of the field's options. If the supplier is not \
-            among them, leave the field empty and say so in your reply
+            - invoice-supplier (Lieferant): the company name as written, with its legal form (GmbH, AG…)
             - invoice-date (Rechnungsdatum): ISO date, e.g. 2026-11-02; today if the text gives none
             - invoice-due-date (Fällig am): ISO date. A day without a year is the next such date from \
             the invoice date; "30 Tage" means 30 days after the invoice date

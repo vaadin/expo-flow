@@ -11,7 +11,7 @@ import com.vaadin.draiv.session.DemoPrincipal;
 import com.vaadin.draiv.session.DemoPrincipalUiResolver;
 import com.vaadin.draiv.session.UiRegistry;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.messages.MessageInput;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,7 +75,7 @@ class AiInvoiceDrivingTest extends SpringBrowserlessTest {
         String snapshot = tools.inspect(null, null, null);
         apply(snapshot, "invoice-supplier", "settable", "set", "Acme GmbH");
 
-        assertEquals("Acme GmbH", find(ComboBox.class).id("invoice-supplier").getValue());
+        assertEquals("Acme GmbH", find(TextField.class).id("invoice-supplier").getValue());
     }
 
     @Test
