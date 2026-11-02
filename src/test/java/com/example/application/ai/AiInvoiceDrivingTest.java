@@ -1,11 +1,14 @@
 package com.example.application.ai;
 
 import com.example.application.ai.invoice.Invoice;
+import com.example.application.ai.invoice.InvoiceCategory;
+import com.example.application.ai.invoice.InvoiceDraft;
 import com.example.application.ai.invoice.InvoiceRepository;
 import com.example.application.ai.invoice.InvoiceService;
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.draiv.ai.mcp.AliasRegistry;
 import com.vaadin.draiv.ai.mcp.CapabilityMcpTools;
+import com.vaadin.draiv.ai.mcp.CapabilityMcpTools.ApplyStep;
 import com.vaadin.draiv.ai.mcp.CatalogAccess;
 import com.vaadin.draiv.session.DemoPrincipal;
 import com.vaadin.draiv.session.DemoPrincipalUiResolver;
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -110,6 +114,53 @@ class AiInvoiceDrivingTest extends SpringBrowserlessTest {
         Invoice added = latestInvoices().getFirst();
         assertEquals("RE-2026-114", added.getInvoiceNumber());
         assertEquals(new BigDecimal("1190.00"), added.getGross());
+    }
+
+    /**
+     * After an upload the chat asks the AI to enter the draft ({@link AiChatPanel#enterDraftRequest}): reset,
+     * set the fields, but not add. Adding follows the user's yes, and the new row is highlighted.
+     */
+    @Test
+    void anUploadedDraftIsEnteredAndAddedAfterYes() {
+        var draft = new InvoiceDraft("RE-2026-200", "Neue Firma GmbH", LocalDate.of(2026, 10, 30),
+                LocalDate.of(2026, 11, 13), new BigDecimal("250.00"), 7, new BigDecimal("267.50"),
+                InvoiceCategory.TRAVEL, "Hotel München");
+        var request = AiChatPanel.enterDraftRequest(draft, "hotel.jpg");
+        assertTrue(request.contains("Lieferant (invoice-supplier): Neue Firma GmbH"), request);
+        assertTrue(request.contains("MwSt-Satz (invoice-vat-rate): \"7 %\""), request);
+        assertTrue(request.contains("Kategorie (invoice-category): \"Reise\""), request);
+        assertTrue(request.contains("Checks: all fine"), request);
+
+        navigate(AiGridView.class);
+        registry.register(DemoPrincipal.ID, UI.getCurrent());
+        assertEquals("ok", tools.navigate("ai/upload").status());
+        String snapshot = tools.inspect(null, null, null);
+        apply(snapshot, "invoice-number", "settable", "set", "RE-2026-999"); // left over from before
+        var results = tools.applyMany(List.of(
+                step(snapshot, "invoice-reset-button", "activatable", "activate"),
+                step(snapshot, "invoice-number", "settable", "set", "RE-2026-200"),
+                step(snapshot, "invoice-supplier", "settable", "set", "Neue Firma GmbH"),
+                step(snapshot, "invoice-date", "settable", "set", "2026-10-30"),
+                step(snapshot, "invoice-due-date", "settable", "set", "2026-11-13"),
+                step(snapshot, "invoice-net", "settable", "set", "250.00"),
+                step(snapshot, "invoice-vat-rate", "settable", "set", "7 %"),
+                step(snapshot, "invoice-category", "settable", "set", "Reise"),
+                step(snapshot, "invoice-receipt", "settable", "set", "hotel.jpg")));
+        assertTrue(results.stream().allMatch(result -> "ok".equals(result.status())), results::toString);
+        long before = invoices.count();
+
+        // "Ja"
+        apply(tools.inspect(null, null, null), "invoice-add-button", "activatable", "activate");
+
+        assertEquals(before + 1, invoices.count());
+        var added = latestInvoices().getFirst();
+        assertEquals("RE-2026-200", added.getInvoiceNumber());
+        assertEquals("hotel.jpg", added.getReceipt());
+        assertEquals(new BigDecimal("267.50"), added.getGross());
+    }
+
+    private static ApplyStep step(String snapshot, String id, String capability, String operation, String... args) {
+        return new ApplyStep(selectorFor(snapshot, id), capability, operation, List.of(args), null);
     }
 
     private void apply(String snapshot, String id, String capability, String operation, String... args) {

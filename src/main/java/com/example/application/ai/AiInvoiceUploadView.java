@@ -15,6 +15,7 @@ import com.vaadin.flow.shared.Registration;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * Tab 3: an invoice goes into the chat as a PDF or photo, and the AI enters it with this form. For
@@ -30,6 +31,8 @@ public class AiInvoiceUploadView extends AiTabView {
     private final InvoiceService invoiceService;
     private final Grid<Invoice> latest = new Grid<>();
     private Registration invoiceListener;
+    /** The invoice added last while this view is open; its row is highlighted. */
+    private UUID newest;
 
     public AiInvoiceUploadView(InvoiceService invoiceService) {
         super("Rechnung hochladen",
@@ -43,6 +46,7 @@ public class AiInvoiceUploadView extends AiTabView {
                 .setTextAlign(ColumnTextAlign.END).setAutoWidth(true);
         latest.addColumn(invoice -> invoice.getCategory().label()).setHeader("Kategorie").setAutoWidth(true);
         latest.addColumn(invoice -> invoice.getStatus().label()).setHeader("Status").setAutoWidth(true);
+        latest.setPartNameGenerator(invoice -> invoice.getId().equals(newest) ? "new-invoice" : null);
         latest.setAllRowsVisible(true);
         latest.setId("latest-invoices");
         showLatest();
@@ -54,12 +58,18 @@ public class AiInvoiceUploadView extends AiTabView {
         latest.setItems(invoiceService.latest());
     }
 
-    /** New invoices, from this tab or any other browser, show up here right away. */
+    /**
+     * New invoices, from this tab or any other browser (the phone at the booth), show up here right away
+     * and are highlighted.
+     */
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
         var ui = attachEvent.getUI();
-        invoiceListener = invoiceService.addInvoiceListener(invoice -> ui.access(this::showLatest));
+        invoiceListener = invoiceService.addInvoiceListener(invoice -> ui.access(() -> {
+            newest = invoice.getId();
+            showLatest();
+        }));
     }
 
     @Override

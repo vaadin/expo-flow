@@ -76,3 +76,15 @@
         height: auto;
     }
 }
+
+/* AiInvoiceUploadView: the invoice just added, whether from this browser or the phone */
+vaadin-grid::part(new-invoice) {
+    background-color: color-mix(in srgb, var(--aura-accent-color) 18%, transparent);
+    animation: new-invoice-glow 1.5s ease-out 2;
+}
+
+@keyframes new-invoice-glow {
+    from {
+        background-color: color-mix(in srgb, var(--aura-accent-color) 55%, transparent);
+    }
+}

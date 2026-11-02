@@ -172,6 +172,14 @@ draiv wiring) and `com.example.application.ai.invoice` (entity, repository, serv
 - Lieferant is a `TextField`, not a ComboBox: draiv's `settable`/`set` picks a ComboBox *item*
   (exact label, then substring) and ignores `allowCustomValue`, so the AI could not enter a new
   supplier. The same goes for every ComboBox the AI should fill with a value that is not an item.
+- Upload (`ai/upload`): `AiChatPanel` takes one PDF or photo, `InvoiceExtractionService` reads it
+  into an `InvoiceDraft` (structured output, same model as the chat, OpenAI only: the PDF goes to
+  OpenAI as a file part, no rendering). `InvoiceDraft.problems()` checks it in code; then a normal
+  chat turn (`AiChatPanel.enterDraftRequest`) has the AI reset and fill the form and ask; the user's
+  "ja" in the next turn makes it click Hinzufügen. `InvoiceService` broadcasts the new invoice and
+  every open upload view highlights it (`::part(new-invoice)`).
+- The extraction builds its `Prompt` with `OpenAiChatOptions` and calls the `ChatModel` directly
+  instead of using `ChatClient`, so model and reasoning effort reach the request as built.
 - `AiInvoiceDrivingTest` and `AiFormFillerDrivingTest` drive the area through draiv's tools without
   a model; run them after changing a form, its ids or a scope.
 
