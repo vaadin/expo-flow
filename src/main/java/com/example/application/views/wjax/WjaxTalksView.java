@@ -75,8 +75,11 @@ public class WjaxTalksView extends VerticalLayout {
 
             Be quick, every tool round costs time: inspect once, then make all changes and the Search \
             click in a single apply_many, and do not inspect again afterwards. Set fields with capability \
-            "settable", operation "set" (multi-selects take a list of option labels, Starts after / \
-            before an ISO date-time like 2026-11-04T12:00); click buttons with "activatable", "activate".
+            "settable", operation "set" (Starts after / before take an ISO date-time like \
+            2026-11-04T12:00); click buttons with "activatable", "activate". Tracks, Format and Language \
+            are multi-selects: "set" takes ONE option label and replaces the whole selection. For several \
+            labels, "set" the first, then add each further one with capability "selectable", operation \
+            "selectByContent", in the same apply_many; always send the complete selection this way.
 
             Do not invent constraints the user did not ask for. The user may write in any language. \
             Keep your final answer to one short sentence. Request: "%s"

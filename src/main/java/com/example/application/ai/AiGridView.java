@@ -74,8 +74,9 @@ public class AiGridView extends AiTabView {
             Be quick, every tool round costs time: inspect once, then make all changes in a single \
             apply_many and do not inspect again. Set fields with capability "settable", operation "set"; \
             click with "activatable", "activate". Kategorie and Status are multi-selects, and "set" takes \
-            one label and replaces the selection: for several labels, "set" the first, then add each \
-            further one with capability "selectable", operation "selectByContent". Do not invent \
+            one label and replaces the whole selection: for several labels, "set" the first, then add each \
+            further one with capability "selectable", operation "selectByContent", in the same \
+            apply_many; always send the complete selection this way. Do not invent \
             constraints the user did not ask for. Reply in one short German sentence saying what you \
             filtered. Request: "%s"
             """;

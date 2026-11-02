@@ -52,6 +52,27 @@ class WjaxTalksDrivingTest extends SpringBrowserlessTest {
                 && !talk.start().isAfter(LocalDateTime.of(2026, 11, 4, 12, 0))));
     }
 
+    /**
+     * "Java or security talks": several tracks take two steps, since draiv's set takes one label and
+     * replaces the selection. The goal tells the model to set the first and add the others.
+     */
+    @Test
+    void aiToolsCanSelectSeveralTracks() {
+        navigate(WjaxTalksView.class);
+        registry.register(DemoPrincipal.ID, UI.getCurrent());
+
+        String snapshot = tools.inspect(null, null, null);
+        apply(snapshot, "filter-tracks", "settable", "set", "Java & JVM Languages");
+        apply(snapshot, "filter-tracks", "selectable", "selectByContent", "Performance & Security");
+        apply(snapshot, "search-button", "activatable", "activate");
+
+        var talks = shownTalks();
+        assertTrue(talks.stream().anyMatch(talk -> talk.tracks().contains(Track.JAVA)));
+        assertTrue(talks.stream().anyMatch(talk -> talk.tracks().contains(Track.PERFORMANCE_SECURITY)));
+        assertTrue(talks.stream().allMatch(talk -> talk.tracks().contains(Track.JAVA)
+                || talk.tracks().contains(Track.PERFORMANCE_SECURITY)));
+    }
+
     private void apply(String snapshot, String id, String capability, String operation, String... args) {
         var result = tools.apply(selectorFor(snapshot, id), capability, operation, List.of(args), null);
         assertEquals("ok", result.status(), () -> id + ": " + result);

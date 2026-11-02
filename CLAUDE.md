@@ -175,8 +175,8 @@ draiv wiring) and `com.example.application.ai.invoice` (entity, repository, serv
   column through none/ascending/descending like a header click, which the AI cannot do reliably.
 - Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
   is not split). For several labels the goal says: `set` the first, then `selectable` /
-  `selectByContent` for each further one. (The W-JAX goal's "multi-selects take a list of option
-  labels" has the same problem.)
+  `selectByContent` for each further one, always the complete selection. The W-JAX goal says the
+  same; `WjaxTalksDrivingTest.aiToolsCanSelectSeveralTracks` pins it.
 - The seed makes the three latest Acme invoices open and over 1,000 €, so the concept's example
   prompt finds something. Seeding only runs on an empty table: an older `~/t-shirt-orders` keeps
   its old invoices until `INVOICE` is emptied.
