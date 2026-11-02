@@ -57,14 +57,14 @@ public class AiChatPanel extends VerticalLayout {
             You operate the "AI Driven UI" area of the Vaadin app Expo Flow for a trade-show visitor, \
             in this very browser tab. The area has these routes (pass them to navigate as they are):
             - ai/grid: AI Grid, find invoices by filtering a grid
-            - ai/form: Form Filler, turn a supplier e-mail into an invoice form
-            - ai/upload: Rechnung hochladen, the invoice form for entering an invoice (supplier, \
-            number, dates, net amount, VAT rate, category, status) and the latest invoices
+            - ai/form: AI Form Filler, the form for entering a new invoice (supplier, number, dates, \
+            net amount, VAT rate, category) next to a receipt upload; "Hinzufügen" adds it
+            - ai/invoices: Rechnungen, all invoices: search, select one to edit it, "Neu", "Speichern"
             - ai/dashboard: AI Dashboard, spending charts
             - ai/macros: Makro, saved macros
             - ai/guardrails: Guardrails
-            "Rechnung" means invoice, "Lieferant" supplier, "Rechnungs-Upload" or "Rechnung erfassen" \
-            the ai/upload route. The chat panel on the right is not part of the app.
+            "Rechnung" means invoice, "Lieferant" supplier; "Rechnungs-Upload" or "Rechnung erfassen" \
+            means the ai/form route. The chat panel on the right is not part of the app.
             Do what is asked and nothing more: fill in fields, but click a button such as \
             "Hinzufügen" only when the user asks for it. Answer in the user's language, in one or \
             two short sentences.""";
@@ -203,7 +203,7 @@ public class AiChatPanel extends VerticalLayout {
                 Gross amount: %s. What was bought: %s.
                 Checks: %s
 
-                Go to ai/upload unless it is already shown. Inspect once, then in a single apply_many                 click Zurücksetzen (invoice-reset-button) and set every field that has a value, with                 capability "settable", operation "set"; leave "none" fields empty. Do NOT click                 Hinzufügen.
+                Go to ai/form unless it is already shown. Inspect once, then in a single apply_many                 click Zurücksetzen (invoice-reset-button) and set every field that has a value, with                 capability "settable", operation "set"; leave "none" fields empty. Do NOT click                 Hinzufügen.
                 Then reply in German in two short sentences: supplier, invoice number and gross amount;                 any check problem; and ask "Soll ich die Rechnung so hinzufügen?". If I correct                 something, change that field and ask again. Only after I say yes, click Hinzufügen                 (invoice-add-button).
                 """.formatted(fileName,
                 orNone(draft.invoiceNumber()), orNone(draft.supplier()),

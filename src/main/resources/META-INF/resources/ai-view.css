@@ -85,7 +85,7 @@
     }
 }
 
-/* AiInvoiceUploadView: the invoice just added, whether from this browser or the phone */
+/* AiInvoiceCrudView: the invoice created or changed last, whether in this browser or on the phone */
 vaadin-grid::part(new-invoice) {
     background-color: color-mix(in srgb, var(--aura-accent-color) 18%, transparent);
     animation: new-invoice-glow 1.5s ease-out 2;
@@ -210,4 +210,28 @@ vaadin-grid::part(new-invoice) {
     width: 100%;
     height: 70vh;
     border: none;
+}
+
+/* AiInvoiceCrudView: the invoices on the left, the editor on the right; one above the other on a phone */
+.ai-crud {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: var(--vaadin-gap-l, 1.5rem);
+    align-items: start;
+}
+
+@media (max-width: 1000px) {
+    .ai-crud {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.ai-crud-master {
+    display: flex;
+    flex-direction: column;
+    gap: var(--vaadin-gap-s, 0.5rem);
+}
+
+.ai-crud-editor h3 {
+    margin-top: 0;
 }

@@ -39,7 +39,8 @@ class AiMacroDrivingTest extends SpringBrowserlessTest {
               "description": "Legt drei Testrechnungen an.",
               "inputs": [],
               "steps": [
-                { "op": "navigate", "to": "ai/upload" },
+                { "op": "navigate", "to": "ai/invoices" },
+                { "op": "click", "id": "invoice-new-button" },
                 { "op": "set", "id": "invoice-number", "value": "TEST-001" },
                 { "op": "set", "id": "invoice-supplier", "value": "Testfirma GmbH" },
                 { "op": "set", "id": "invoice-date", "value": "2026-11-02" },
@@ -47,7 +48,8 @@ class AiMacroDrivingTest extends SpringBrowserlessTest {
                 { "op": "set", "id": "invoice-net", "value": "100" },
                 { "op": "set", "id": "invoice-vat-rate", "value": "19 %" },
                 { "op": "set", "id": "invoice-category", "value": "Büro" },
-                { "op": "click", "id": "invoice-add-button" },
+                { "op": "click", "id": "invoice-save-button" },
+                { "op": "click", "id": "invoice-new-button" },
                 { "op": "set", "id": "invoice-number", "value": "TEST-002" },
                 { "op": "set", "id": "invoice-supplier", "value": "Testfirma GmbH" },
                 { "op": "set", "id": "invoice-date", "value": "2026-11-02" },
@@ -55,7 +57,8 @@ class AiMacroDrivingTest extends SpringBrowserlessTest {
                 { "op": "set", "id": "invoice-net", "value": "200" },
                 { "op": "set", "id": "invoice-vat-rate", "value": "7 %" },
                 { "op": "set", "id": "invoice-category", "value": "Reise" },
-                { "op": "click", "id": "invoice-add-button" },
+                { "op": "click", "id": "invoice-save-button" },
+                { "op": "click", "id": "invoice-new-button" },
                 { "op": "set", "id": "invoice-number", "value": "TEST-003" },
                 { "op": "set", "id": "invoice-supplier", "value": "Testfirma GmbH" },
                 { "op": "set", "id": "invoice-date", "value": "2026-11-02" },
@@ -63,7 +66,7 @@ class AiMacroDrivingTest extends SpringBrowserlessTest {
                 { "op": "set", "id": "invoice-net", "value": "300" },
                 { "op": "set", "id": "invoice-vat-rate", "value": "0 %" },
                 { "op": "set", "id": "invoice-category", "value": "Software" },
-                { "op": "click", "id": "invoice-add-button" }
+                { "op": "click", "id": "invoice-save-button" }
               ]
             }
             """;
@@ -104,7 +107,7 @@ class AiMacroDrivingTest extends SpringBrowserlessTest {
         assertEquals("ok", scriptTools.runScript("drei-testrechnungen", null).status());
 
         assertEquals(before + 3, invoices.count());
-        assertTrue(getCurrentView() instanceof AiInvoiceUploadView);
+        assertTrue(getCurrentView() instanceof AiInvoiceCrudView);
         var gross = invoices.findAll().stream().filter(invoice -> invoice.getInvoiceNumber().startsWith("TEST-"))
                 .map(Invoice::getGross).reduce(BigDecimal.ZERO, BigDecimal::add);
         assertEquals(new BigDecimal("633.00"), gross); // 119 + 214 + 300

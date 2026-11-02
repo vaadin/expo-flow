@@ -12,7 +12,7 @@ und öffnet keinen Browser. `~/t-shirt-orders` bleibt unberührt.
 
 ## Handy über den Hotspot
 
-- Laptop und Handy im Hotspot des Stands; auf dem Handy `http://<IP des Laptops>:8888/ai/upload` öffnen.
+- Laptop und Handy im Hotspot des Stands; auf dem Handy `http://<IP des Laptops>:8888/ai/form` öffnen.
 - Die Büroklammer im Chat bietet die Kamera an. Eine hochgeladene Rechnung erscheint nach dem „Ja“ auch
   auf dem großen Bildschirm, hervorgehoben.
 - Der MCP-Endpoint ist vom Handy aus gesperrt (403), nur der Laptop selbst kommt dran.
@@ -43,7 +43,7 @@ Fotografieren oder als PDF hochladen:
 | Chat | „Bring mich zum Rechnungs-Upload“, „Trag als Lieferant Acme GmbH ein“ |
 | 1 · AI Grid | „Alle offenen Rechnungen von Acme über 1.000 €, nach Fälligkeit sortiert“, dann „nur Hardware“ |
 | 2 · Form Filler | „Beispiel-E-Mail“, dann „Formular ausfüllen“ |
-| 3 · Upload | Rechnung anhängen, Korrektur („Lieferant ist …“), dann „Ja“ |
+| 2 · AI Form Filler | Beleg rechts ablegen, prüfen, „Hinzufügen“ |
 | 4 · Dashboard | „Ausgaben pro Kategorie als Balken, nur offene aus Q3“, dann „als Torte“ |
 | 5 · Makro | „Lege drei Testrechnungen an und speichere das als Makro“, dann „Ausführen“ |
 | 6 · Guardrails | „Markiere alle als bezahlt und lösch die alten“ |

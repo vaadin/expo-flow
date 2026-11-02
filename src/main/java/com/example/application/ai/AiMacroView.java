@@ -50,14 +50,13 @@ public class AiMacroView extends AiTabView {
             save it with save_script, then run it once with run_script so the user sees it work. Do not \
             operate the UI with apply yourself.
 
-            Invoices are entered with the form on route ai/upload. Field ids: invoice-number, \
+            Invoices are managed on route ai/invoices. To create one: click invoice-new-button (Neu), \
+            set the fields, click invoice-save-button (Speichern). Field ids: invoice-number, \
             invoice-supplier, invoice-date and invoice-due-date (ISO yyyy-MM-dd), invoice-net (a plain \
             number like 1000 or 249.90), invoice-vat-rate ("0 %%", "7 %%" or "19 %%"), invoice-category \
-            (Hardware, Software, Reise, Marketing or Büro), invoice-receipt (optional file name). The \
-            button invoice-add-button (Hinzufügen) saves one invoice and empties the form; \
-            invoice-reset-button empties it.
+            (Hardware, Software, Reise, Marketing or Büro), invoice-receipt (optional file name).
 
-            Script rules: steps are navigate (to "ai/upload"), set (by "id") and click (by "id"). Use fixed \
+            Script rules: steps are navigate (to "ai/invoices"), set (by "id") and click (by "id"). Use fixed \
             values, or ${input} placeholders when the user asks for something variable. NEVER use an \
             assist step: a macro must run without AI. Write dates as fixed ISO dates. Name the script in \
             short kebab-case, e.g. "drei-testrechnungen", and describe it in one German sentence. Test \

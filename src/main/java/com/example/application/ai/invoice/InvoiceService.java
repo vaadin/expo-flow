@@ -24,8 +24,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- * Invoices for the AI Driven UI area: search, save, reset to the demo data, and a broadcast of new
- * invoices to every open view (the phone uploads, the big screen shows it).
+ * Invoices for the AI Driven UI area: search, save, delete, reset to the demo data, and a broadcast of
+ * every change to the open views (the phone adds an invoice, the big screen shows it).
  */
 @Service
 public class InvoiceService implements ApplicationRunner {
@@ -48,7 +48,7 @@ public class InvoiceService implements ApplicationRunner {
     private static final int SEED_SIZE = 50;
 
     private final InvoiceRepository repository;
-    private final List<Consumer<Invoice>> listeners = new CopyOnWriteArrayList<>();
+    private final List<Consumer<InvoiceChange>> listeners = new CopyOnWriteArrayList<>();
 
     public InvoiceService(InvoiceRepository repository) {
         this.repository = repository;
@@ -92,28 +92,35 @@ public class InvoiceService implements ApplicationRunner {
         return repository.findAll().stream().map(Invoice::getSupplier).distinct().sorted().toList();
     }
 
-    /** The ten most recently entered invoices, newest first. */
-    public List<Invoice> latest() {
-        return repository.findTop10ByOrderByCreatedAtDesc();
+    /** Invoices whose number or supplier contains {@code text}, newest first; all for a blank text. */
+    public List<Invoice> search(String text) {
+        var invoices = text == null || text.isBlank() ? repository.findAll()
+                : repository.findByInvoiceNumberContainingIgnoreCaseOrSupplierContainingIgnoreCase(text.strip(),
+                text.strip());
+        return invoices.stream().sorted(InvoiceSort.NEWEST.comparator()).toList();
     }
 
-    /** Saves the invoice; a new one is announced to every listener. */
+    /** Creates or updates the invoice and tells every listener. */
     public Invoice save(Invoice invoice) {
         boolean isNew = invoice.getId() == null;
         var saved = repository.save(invoice);
-        if (isNew) {
-            listeners.forEach(listener -> listener.accept(saved));
-        }
+        fire(new InvoiceChange(isNew ? InvoiceChange.Kind.CREATED : InvoiceChange.Kind.UPDATED, saved));
         return saved;
+    }
+
+    public void delete(Invoice invoice) {
+        repository.delete(invoice);
+        fire(new InvoiceChange(InvoiceChange.Kind.DELETED, invoice));
     }
 
     public void markPaid(Collection<Invoice> invoices) {
         invoices.forEach(invoice -> invoice.setStatus(InvoiceStatus.PAID));
-        repository.saveAll(invoices);
+        repository.saveAll(invoices).forEach(saved -> fire(new InvoiceChange(InvoiceChange.Kind.UPDATED, saved)));
     }
 
     public void delete(Collection<Invoice> invoices) {
         repository.deleteAll(invoices);
+        invoices.forEach(invoice -> fire(new InvoiceChange(InvoiceChange.Kind.DELETED, invoice)));
     }
 
     /** Back to the demo data, e.g. between two trade-show visitors. */
@@ -124,12 +131,16 @@ public class InvoiceService implements ApplicationRunner {
     }
 
     /**
-     * Calls {@code listener} for every new invoice, from whichever thread saved it: a UI listener
-     * must use {@code ui.access}. Remove the registration when the view detaches.
+     * Calls {@code listener} for every invoice created, changed or deleted, from whichever thread did it: a UI
+     * listener must use {@code ui.access}. Remove the registration when the view detaches.
      */
-    public Registration addInvoiceListener(Consumer<Invoice> listener) {
+    public Registration addInvoiceListener(Consumer<InvoiceChange> listener) {
         listeners.add(listener);
         return () -> listeners.remove(listener);
+    }
+
+    private void fire(InvoiceChange change) {
+        listeners.forEach(listener -> listener.accept(change));
     }
 
     /**

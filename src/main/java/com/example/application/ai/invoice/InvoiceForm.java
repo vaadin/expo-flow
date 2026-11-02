@@ -19,12 +19,17 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * Enter a new invoice. People and the AI use the very same fields: the AI fills them in through draiv
- * and the same validation applies. The buttons are fields with getters so a view can leave them out
- * of what the AI may touch ({@code AgentScope.within(form).excluding(form.getAddButton())}).
+ * Enter a new invoice or change one. People and the AI use the very same fields: the AI fills them in
+ * through draiv and the same validation applies. The buttons are fields with getters so a view can leave
+ * them out of what the AI may touch ({@code AgentScope.within(form).excluding(form.getAddButton())}).
+ * <p>
+ * Two flavours, with the same field ids: {@code new InvoiceForm(...)} adds new invoices with its own
+ * "Hinzufügen" and "Zurücksetzen" (tab 2); {@link #editor(InvoiceService)} has no buttons, and the
+ * view around it calls {@link #edit(Invoice)}, {@link #create()} and {@link #save()} (tab 3).
  */
 public class InvoiceForm extends FormLayout {
 
@@ -49,8 +54,20 @@ public class InvoiceForm extends FormLayout {
     private final InvoiceService invoiceService;
     private final BeanValidationBinder<Invoice> binder = new BeanValidationBinder<>(Invoice.class);
     private final List<Consumer<Invoice>> addedListeners = new ArrayList<>();
+    /** The invoice the fields show: a new, unsaved one or the one being edited. */
+    private Invoice edited = new Invoice();
 
+    /** A form that adds new invoices, with "Hinzufügen" and "Zurücksetzen". */
     public InvoiceForm(InvoiceService invoiceService) {
+        this(invoiceService, true);
+    }
+
+    /** A form without buttons, for a view that edits existing invoices too. */
+    public static InvoiceForm editor(InvoiceService invoiceService) {
+        return new InvoiceForm(invoiceService, false);
+    }
+
+    private InvoiceForm(InvoiceService invoiceService, boolean withButtons) {
         this.invoiceService = invoiceService;
 
         invoiceNumber.setPlaceholder("z. B. RE-2026-114");
@@ -96,9 +113,11 @@ public class InvoiceForm extends FormLayout {
                 new ResponsiveStep("500px", 2));
         add(invoiceNumber, supplier, invoiceDate, dueDate, net, vatRate, grossDisplay, category, receipt);
         add(status, 2);
-        add(buttons, 2);
+        if (withButtons) {
+            add(buttons, 2);
+        }
 
-        clear();
+        create();
     }
 
     private void updateGross() {
@@ -110,17 +129,27 @@ public class InvoiceForm extends FormLayout {
     }
 
     private void addInvoice() {
-        var invoice = new Invoice();
-        if (!binder.writeBeanIfValid(invoice)) {
+        edited = new Invoice(); // "Hinzufügen" always adds a new invoice from what the fields show
+        save().ifPresent(saved -> {
+            Notification.show("Rechnung " + saved.getInvoiceNumber() + " hinzugefügt.")
+                    .addThemeVariants(NotificationVariant.SUCCESS);
+            create();
+            addedListeners.forEach(listener -> listener.accept(saved));
+        });
+    }
+
+    /**
+     * Writes the fields into the invoice shown and saves it: a new one is added, an edited one updated.
+     * Empty when a field is invalid; the fields show why.
+     */
+    public Optional<Invoice> save() {
+        if (!binder.writeBeanIfValid(edited)) {
             Notification.show("Bitte die markierten Felder ausfüllen.")
                     .addThemeVariants(NotificationVariant.WARNING);
-            return;
+            return Optional.empty();
         }
-        var saved = invoiceService.save(invoice);
-        Notification.show("Rechnung " + invoice.getInvoiceNumber() + " hinzugefügt.")
-                .addThemeVariants(NotificationVariant.SUCCESS);
-        clear();
-        addedListeners.forEach(listener -> listener.accept(saved));
+        edited = invoiceService.save(edited);
+        return Optional.of(edited);
     }
 
     /** Called after "Hinzufügen" saved a new invoice, e.g. to clear a receipt preview. */
@@ -129,10 +158,28 @@ public class InvoiceForm extends FormLayout {
         return () -> addedListeners.remove(listener);
     }
 
-    /** Back to an empty invoice: 19 % VAT and status open. */
-    public void clear() {
-        binder.readBean(new Invoice());
+    /** An empty new invoice: 19 % VAT and status open. */
+    public void create() {
+        edited = new Invoice();
+        binder.readBean(edited);
         updateGross();
+    }
+
+    /** Shows {@code invoice} for changing it; {@link #save()} then updates it. */
+    public void edit(Invoice invoice) {
+        edited = invoice;
+        binder.readBean(edited);
+        updateGross();
+    }
+
+    /** Same as {@link #create()}. */
+    public void clear() {
+        create();
+    }
+
+    /** The invoice shown, {@code null} id for a new one. */
+    public Invoice getEdited() {
+        return edited;
     }
 
     public Button getAddButton() {

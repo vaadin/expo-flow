@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, UUID>, JpaSpecificationExecutor<Invoice> {
 
-    List<Invoice> findTop10ByOrderByCreatedAtDesc();
+    List<Invoice> findByInvoiceNumberContainingIgnoreCaseOrSupplierContainingIgnoreCase(String number, String supplier);
 }
