@@ -162,62 +162,74 @@ the fields and clicks Search. Changed fields flash (`ChangeIndication`).
 ### AI Driven UI (draiv)
 
 The trade-show area under `/ai`: six tabs on one data type, invoices (`Invoice`), with a chat
-panel that drives the UI through draiv. Concept, tabs and implementation plan:
-`docs/ai-driven-ui.md`. Code lives in `com.example.application.ai` (layout, views, chat panel,
-draiv wiring) and `com.example.application.ai.invoice` (entity, repository, service, form).
+panel that drives the UI through draiv. Concept, tabs and flows: `docs/ai-driven-ui.md`; booth
+operation: `docs/messe-checkliste.md`. Code lives in `com.example.application.ai` (layout, views,
+chat panel, draiv wiring) and `com.example.application.ai.invoice` (entity, repository, service,
+form, extraction).
 
-- AI Grid (`ai/grid`) and Form Filler (`ai/form`) run through `AiPromptBar`: draiv's
-  `UiAssistant` with an `AgentScope` (the filter bar; the form minus status and Add). Not draiv's
-  `AiGoalBar`, which registers its Enter shortcut on the whole UI, so Enter in any form field or in
+Tabs (`AiShowcaseLayout`, `@Layout("ai")` nested in `MainLayout`):
+
+- **1 · AI Grid** (`ai/grid`): the AI sets the filter bar; every change refreshes the grid, the
+  order is a `Select` (`InvoiceSort`) because draiv's `sortable` only steps a header like a click.
+- **2 · AI Form Filler** (`ai/form`): a receipt dropped next to the form is read by
+  `InvoiceExtractionService` into an `InvoiceDraft` (structured output, same model as the chat,
+  OpenAI only: the PDF goes to OpenAI as a file part), checked by `InvoiceDraft.problems()` (shown
+  above the form), and entered by the AI (`InvoiceDraftGoal`) under `AgentScope.within(form)
+  .excluding(add, status)`. A person clicks "Hinzufügen". The extraction calls the `ChatModel` with
+  a `Prompt` and `OpenAiChatOptions`, not `ChatClient`, so model and reasoning effort arrive as built.
+- **3 · Rechnungen** (`ai/invoices`, `AiInvoiceCrudView`): master-detail from plain components, not
+  Vaadin's Crud, so draiv drives it: `invoice-search`, select a row in `invoice-crud-grid`
+  (`selectable/selectByContentMatching`), set, `invoice-save-button`; `invoice-new-button`.
+  `InvoiceForm.editor(...)` has no buttons; `edit`/`create`/`save` drive it.
+- **4 · AI Dashboard** (`ai/dashboard`): the AI sets the control bar (`InvoiceGrouping`, chart type,
+  status and category `CheckboxGroup`s, period); every change builds a fresh `Chart`. draiv does
+  not drive the chart.
+- **5 · Makro** (`ai/macros`): the AI writes a draiv script with `save_script` (no `assist` steps,
+  so it runs without a model) and runs it once with `run_script`; "Ausführen" replays it through
+  `ScriptRunner`, asking for `${input}`s. Macros create and change invoices on tab 3 (the grid row
+  via an `apply` step), never status or delete. Scripts live in `InMemoryScriptStore`. The macro bar
+  has no `AgentScope`, because a scope makes draiv refuse `navigate`.
+- **6 · Guardrails** (`ai/guardrails`): the view applies its `AgentScope` (all but "Als bezahlt
+  markieren" and "Löschen") to the UI while attached, so it binds every agent (prompt bar, chat,
+  MCP); the chat cannot `navigate` away meanwhile.
+
+Shared pieces and draiv gotchas:
+
+- Prompt bars (`AiPromptBar`, tabs 1, 4, 5, 6) run draiv's `UiAssistant` with an `AgentScope`. Not
+  draiv's `AiGoalBar`: it registers its Enter shortcut on the whole UI, so Enter in any field or in
   the chat would start the AI as well.
-- The AI Grid has no search button and no sortable headers for the AI: every filter change
-  refreshes the grid, and the order is a `Select` (`InvoiceSort`). draiv's `sortable` only steps a
-  column through none/ascending/descending like a header click, which the AI cannot do reliably.
-- AI Dashboard (`ai/dashboard`): the AI sets the control bar (`InvoiceGrouping`, chart type,
-  status and category `CheckboxGroup`s, period); every change builds a fresh `Chart`, so the
-  type can change too. draiv does not drive the chart; it is outside the scope.
-- Makro (`ai/macros`): the AI writes a draiv script with `save_script` (no `assist` steps, so it
-  runs without a model) and runs it once with `run_script`; "Ausführen" replays it through
-  `ScriptRunner`. Scripts live in `InMemoryScriptStore`, so they are gone after a restart. The
-  macro bar has no `AgentScope`, because a scope makes draiv refuse `navigate`.
-- Guardrails (`ai/guardrails`): two layers. The view applies its `AgentScope` (all but "Als bezahlt
-  markieren" and "Löschen") to the UI for as long as it is attached, so it binds every agent: prompt
-  bar, chat and MCP. While it is open the chat cannot `navigate` away. And the two handlers refuse
-  when `CurrentActor.isProgrammatic(ui)`, because draiv's script runner (`run_script`) drives through
-  `Driver`, which ignores `AgentScope`: without that check a macro could click "Löschen".
-- MCP add-on demo: profile `mcp` (`ai/mcp/McpDemoConfig`, `application-mcp.properties`, how-to in
+- `FilterDetails` (tabs 1 and 4): the filters sit in a `Details` that only a person opens, with a
+  badge counting the active filters; the summary pulses on every change (two alternating CSS
+  classes, once per round trip) because the closed block hides the fields' flash. draiv sets fields
+  in a closed `Details` fine: they stay attached and `isVisible()` server-side.
+- People-only controls: status and "Löschen" on tab 3, the buttons on tab 6, the chat panel, the
+  receipt drop zone, "Demo zurücksetzen" carry `data-draiv-control` or lie outside the scope. draiv's
+  script runner (`run_script`, "Ausführen") ignores `AgentScope` but does skip
+  `data-draiv-control`; destructive handlers also refuse when `CurrentActor.isProgrammatic(ui)`.
+- Chat (`AiChatPanel`, an `UploadDropZone`): history via `TextPresenterService.respond`; "Neuer
+  Chat" forgets it; the panel can be hidden (session attribute, `.ai-chat-hidden` on the layout).
+  Up to three attached files wait as chips and go with the next message: images and PDFs as
+  `respond` attachments, CSV/Markdown/text inlined in the message text, since Spring AI's OpenAI
+  client only sends images, audio and PDFs as media. Attaching calls no model.
+- `InvoiceService` broadcasts every create, update and delete (`InvoiceChange`); open views
+  refresh, the CRUD grid highlights the changed row (`::part(new-invoice)`).
+- Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
+  is not split). For several labels the goals say: `set` the first, then `selectable` /
+  `selectByContent` for each further one. The W-JAX goal says the same;
+  `WjaxTalksDrivingTest.aiToolsCanSelectSeveralTracks` pins it.
+- Lieferant is a `TextField`, not a ComboBox: draiv's `set` picks a ComboBox *item* and ignores
+  `allowCustomValue`, so the AI could not enter a new supplier.
+- The seed makes the three latest Acme invoices open and over 1,000 €, so the example prompt finds
+  something. Seeding only runs on an empty table.
+- MCP add-on demo: profile `mcp` (`ai/mcp/McpDemoConfig`, `application-mcp.properties`,
   `docs/mcp-demo.md`). Needs `spring.ai.mcp.server.protocol=STREAMABLE` (otherwise Spring AI 2.0.2
   serves SSE at `/sse`) and `vaadin.exclude-urls=/mcp,/mcp/**` (otherwise Vaadin answers `/mcp`).
-  Only the capability tools, and only from loopback addresses. An MCP client drives the browser
-  tab registered last.
-- Trade-show operation (`docs/messe-checkliste.md`): profile `messe` (in-memory H2, no browser
-  launch); "Demo zurücksetzen" in the tab bar reseeds the invoices, empties the macro store and
-  reloads (fresh chat).
-- Demo invoices: `docs/demo-invoices/*.pdf`, written by the dependency-free `make_invoices.py`.
-- Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
-  is not split). For several labels the goal says: `set` the first, then `selectable` /
-  `selectByContent` for each further one, always the complete selection. The W-JAX goal says the
-  same; `WjaxTalksDrivingTest.aiToolsCanSelectSeveralTracks` pins it.
-- The seed makes the three latest Acme invoices open and over 1,000 €, so the concept's example
-  prompt finds something. Seeding only runs on an empty table: an older `~/t-shirt-orders` keeps
-  its old invoices until `INVOICE` is emptied.
-- Lieferant is a `TextField`, not a ComboBox: draiv's `settable`/`set` picks a ComboBox *item*
-  (exact label, then substring) and ignores `allowCustomValue`, so the AI could not enter a new
-  supplier. The same goes for every ComboBox the AI should fill with a value that is not an item.
-- AI Form Filler (`ai/form`): a receipt dropped next to the form is read by
-  `InvoiceExtractionService` into an `InvoiceDraft` (structured output, same model as the chat,
-  OpenAI only: the PDF goes to OpenAI as a file part, no rendering), checked by
-  `InvoiceDraft.problems()`, and entered by the AI (`InvoiceDraftGoal`) under the form's scope.
-- Rechnungen (`ai/invoices`, `AiInvoiceCrudView`): master-detail from plain components, not Vaadin's
-  Crud, so draiv drives it: search, select a row (`selectable/selectByContentMatching`), set, save.
-  `InvoiceForm.editor(...)` has no buttons; `edit`/`create`/`save` drive it. Status and "Löschen"
-  carry `data-draiv-control`; the delete handler also checks `CurrentActor`. `InvoiceService`
-  broadcasts every create, update and delete (`InvoiceChange`); open views refresh, the CRUD grid
-  highlights the changed row (`::part(new-invoice)`).
-- The extraction builds its `Prompt` with `OpenAiChatOptions` and calls the `ChatModel` directly
-  instead of using `ChatClient`, so model and reasoning effort reach the request as built.
-- `AiInvoiceDrivingTest` and `AiFormFillerDrivingTest` drive the area through draiv's tools without
-  a model; run them after changing a form, its ids or a scope.
+  Only the capability tools, only from loopback addresses; it drives the tab registered last.
+- Booth: profile `messe` (in-memory H2, no browser launch); "Demo zurücksetzen" reseeds the
+  invoices, empties the macro store and reloads. Demo invoices: `docs/demo-invoices/*.pdf`, written
+  by the dependency-free `make_invoices.py`.
+- The `Ai*DrivingTest`s drive every tab through draiv's tools without a model (inspect/apply as the
+  LLM does, scripts as `run_script` does); run them after changing a form, its ids or a scope.
 
 ## Key Configuration
 
