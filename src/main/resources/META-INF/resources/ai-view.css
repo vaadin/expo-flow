@@ -148,3 +148,66 @@ vaadin-grid::part(new-invoice) {
     white-space: nowrap;
     color: var(--vaadin-text-color-secondary);
 }
+
+/* AiFormFillerView: the form on the left, the receipt on the right; one above the other on a phone */
+.ai-form-filler {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--vaadin-gap-l, 1.5rem);
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .ai-form-filler {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.ai-draft-problems {
+    margin-bottom: var(--vaadin-gap-m, 1rem);
+    padding: var(--vaadin-padding-s, 0.5rem) var(--vaadin-padding-m, 1rem);
+    border-radius: var(--vaadin-radius-m);
+    background: color-mix(in srgb, orange 18%, transparent);
+}
+
+.ai-draft-problems ul {
+    margin: 0.25em 0 0;
+}
+
+.ai-receipt {
+    display: block;
+    border: 2px dashed var(--vaadin-border-color, currentColor);
+    border-radius: var(--vaadin-radius-l);
+}
+
+.ai-receipt[dragover] {
+    border-color: var(--aura-accent-color);
+}
+
+.ai-receipt-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--vaadin-gap-m, 1rem);
+    align-items: center;
+    padding: var(--vaadin-padding-m, 1rem);
+}
+
+.ai-receipt-preview {
+    width: 100%;
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vaadin-text-color-secondary);
+}
+
+.ai-receipt-preview img {
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+.ai-receipt-pdf {
+    width: 100%;
+    height: 70vh;
+    border: none;
+}

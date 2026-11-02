@@ -1,6 +1,7 @@
 package com.example.application.ai;
 
 import com.example.application.ai.invoice.InvoiceCategory;
+import com.example.application.ai.invoice.InvoiceDraft;
 import com.example.application.ai.invoice.InvoiceRepository;
 import com.example.application.ai.invoice.InvoiceService;
 import com.example.application.ai.invoice.InvoiceStatus;
@@ -14,6 +15,8 @@ import com.vaadin.draiv.session.DemoPrincipalUiResolver;
 import com.vaadin.draiv.session.UiRegistry;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.shared.Registration;
@@ -49,11 +52,12 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
     private InvoiceService invoiceService;
 
     private Registration scope;
+    private AiFormFillerView view;
 
     @BeforeEach
     void openTheFormFillerInItsScope() {
         invoiceService.resetAndSeed();
-        var view = navigate(AiFormFillerView.class);
+        view = navigate(AiFormFillerView.class);
         registry.register(DemoPrincipal.ID, UI.getCurrent());
         scope = view.scope().applyTo(UI.getCurrent());
     }
@@ -71,16 +75,26 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
         assertTrue(snapshot.contains("invoice-net"), snapshot);
         assertFalse(snapshot.contains("invoice-add-button"), snapshot);
         assertFalse(snapshot.contains("invoice-status"), snapshot);
-        assertFalse(snapshot.contains("form-filler-text"), snapshot);
+        assertFalse(snapshot.contains("receipt-upload-button"), snapshot); // the receipt is for people
         assertFalse(snapshot.contains("AI-Assistent"), snapshot);
         assertEquals("error", tools.navigate("ai/grid").status());
     }
 
     @Test
-    void theExampleMailFillsTheFormAndAPersonSavesIt() {
+    void theReceiptFillsTheFormAndAPersonAddsIt() {
         String snapshot = tools.inspect(null, null, null);
 
-        // What the LLM sends for AiFormFillerView.EXAMPLE
+        // A receipt arrived, was read, and shows next to the form with what does not add up
+        var draft = new InvoiceDraft("RE-2026-114", "Acme GmbH", LocalDate.of(2026, 10, 28), LocalDate.of(2026, 11, 30),
+                new BigDecimal("1000.00"), 19, new BigDecimal("1200.00"), InvoiceCategory.HARDWARE, "Monitore");
+        view.showPreview("acme.pdf", "application/pdf", new byte[]{'%', 'P', 'D', 'F'});
+        view.showProblems(draft);
+        assertEquals(1, find(IFrame.class).all().size());
+        assertTrue(find(Div.class).id("draft-problems").isVisible());
+        var goal = InvoiceDraftGoal.fillForm(draft, "acme.pdf");
+        assertTrue(goal.contains("Beleg (invoice-receipt): acme.pdf") && goal.contains("\"19 %\""), goal);
+
+        // What the LLM sends for that goal
         var results = tools.applyMany(List.of(
                 set(snapshot, "invoice-number", "RE-2026-114"),
                 set(snapshot, "invoice-supplier", "Acme GmbH"),
@@ -94,6 +108,9 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
         // The person checks and clicks Add
         long before = invoices.count();
         test(find(Button.class).id("invoice-add-button")).click();
+        // Ready for the next receipt
+        assertEquals(0, find(IFrame.class).all().size());
+        assertTrue(find(Div.class).withId("draft-problems").all().isEmpty()); // hidden again
 
         assertEquals(before + 1, invoices.count());
         var added = invoices.findAll().stream()

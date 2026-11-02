@@ -13,9 +13,13 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.shared.Registration;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 /**
  * Enter a new invoice. People and the AI use the very same fields: the AI fills them in through draiv
@@ -44,6 +48,7 @@ public class InvoiceForm extends FormLayout {
 
     private final InvoiceService invoiceService;
     private final BeanValidationBinder<Invoice> binder = new BeanValidationBinder<>(Invoice.class);
+    private final List<Consumer<Invoice>> addedListeners = new ArrayList<>();
 
     public InvoiceForm(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
@@ -111,10 +116,17 @@ public class InvoiceForm extends FormLayout {
                     .addThemeVariants(NotificationVariant.WARNING);
             return;
         }
-        invoiceService.save(invoice);
+        var saved = invoiceService.save(invoice);
         Notification.show("Rechnung " + invoice.getInvoiceNumber() + " hinzugefügt.")
                 .addThemeVariants(NotificationVariant.SUCCESS);
         clear();
+        addedListeners.forEach(listener -> listener.accept(saved));
+    }
+
+    /** Called after "Hinzufügen" saved a new invoice, e.g. to clear a receipt preview. */
+    public Registration addInvoiceAddedListener(Consumer<Invoice> listener) {
+        addedListeners.add(listener);
+        return () -> addedListeners.remove(listener);
     }
 
     /** Back to an empty invoice: 19 % VAT and status open. */

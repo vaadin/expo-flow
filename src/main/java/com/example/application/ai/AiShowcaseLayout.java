@@ -48,7 +48,7 @@ public class AiShowcaseLayout extends Div implements RouterLayout {
 
         var tabs = new Nav(
                 tab("1 · AI Grid", AiGridView.class),
-                tab("2 · Form Filler", AiFormFillerView.class),
+                tab("2 · AI Form Filler", AiFormFillerView.class),
                 tab("3 · Rechnung hochladen", AiInvoiceUploadView.class),
                 tab("4 · AI Dashboard", AiDashboardView.class),
                 tab("5 · Makro", AiMacroView.class),
