@@ -63,6 +63,17 @@ class AiInvoiceDrivingTest extends SpringBrowserlessTest {
     }
 
     @Test
+    void theInvoicesTabShowsTheContactEmail() {
+        navigate(AiInvoiceCrudView.class);
+        var first = shownInvoices().getFirst();
+
+        var column = crudGrid().getColumnByKey("contactEmail");
+
+        assertEquals("Kontakt-E-Mail", column.getHeaderText());
+        assertEquals(first.getContactEmail(), test(crudGrid()).getCellText(0, crudGrid().getColumns().indexOf(column)));
+    }
+
+    @Test
     void everyTabConstructs() {
         for (var view : List.of(AiGridView.class, AiFormFillerView.class, AiInvoiceCrudView.class,
                 AiDashboardView.class, AiMacroView.class, AiGuardrailsView.class)) {

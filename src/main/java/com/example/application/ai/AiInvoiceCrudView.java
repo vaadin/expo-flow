@@ -76,6 +76,11 @@ public class AiInvoiceCrudView extends AiTabView {
                 .setAutoWidth(true);
         grid.addColumn(Invoice::getSupplier).setHeader("Lieferant").setComparator(Invoice::getSupplier)
                 .setFlexGrow(2);
+        grid.addColumn(invoice -> invoice.getContactEmail() == null ? "" : invoice.getContactEmail())
+                .setHeader("Kontakt-E-Mail").setKey("contactEmail")
+                .setComparator(Comparator.comparing(Invoice::getContactEmail,
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                .setFlexGrow(2);
         grid.addColumn(invoice -> invoice.getInvoiceDate().format(DATE)).setHeader("Datum")
                 .setComparator(Invoice::getInvoiceDate).setAutoWidth(true);
         grid.addColumn(invoice -> EURO.format(invoice.getGross())).setHeader("Brutto")
