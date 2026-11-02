@@ -185,6 +185,11 @@ draiv wiring) and `com.example.application.ai.invoice` (entity, repository, serv
   bar, chat and MCP. While it is open the chat cannot `navigate` away. And the two handlers refuse
   when `CurrentActor.isProgrammatic(ui)`, because draiv's script runner (`run_script`) drives through
   `Driver`, which ignores `AgentScope`: without that check a macro could click "Löschen".
+- MCP add-on demo: profile `mcp` (`ai/mcp/McpDemoConfig`, `application-mcp.properties`, how-to in
+  `docs/mcp-demo.md`). Needs `spring.ai.mcp.server.protocol=STREAMABLE` (otherwise Spring AI 2.0.2
+  serves SSE at `/sse`) and `vaadin.exclude-urls=/mcp,/mcp/**` (otherwise Vaadin answers `/mcp`).
+  Only the capability tools, and only from loopback addresses. An MCP client drives the browser
+  tab registered last.
 - Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
   is not split). For several labels the goal says: `set` the first, then `selectable` /
   `selectByContent` for each further one, always the complete selection. The W-JAX goal says the
