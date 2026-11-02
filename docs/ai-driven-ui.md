@@ -7,7 +7,7 @@
 | Tab | Story | Beispiel-Prompt | Draiv-Bausteine |
 | --- | --- | --- | --- |
 | 1 · AI Grid | Rechnungen finden ohne Filter-UI | „Alle offenen Rechnungen von Acme über 1.000 €, nach Fälligkeit sortiert“ | `AiPromptBar` (`UiAssistant` + `AgentScope.within(filters)`) über einer zugeklappten Filterleiste (`FilterDetails`: Badge mit aktiven Filtern, Pulsieren bei Änderung) + Grid |
-| 2 · AI Form Filler | Beleg ablegen, AI füllt das Formular | PDF oder Foto rechts ablegen | `InvoiceExtractionService` liest den Beleg, dann `UiAssistant` mit `AgentScope.within(form).excluding(add, status)`; „Hinzufügen“ klickt der Mensch |
+| 2 · AI Form Filler | Beleg ablegen, AI füllt das Formular; pro Feld sieht man, wie sicher der Wert ist und woher er im Beleg stammt | PDF oder Foto rechts ablegen | `InvoiceExtractionService` liest den Beleg samt Sicherheit und Herkunft je Feld, dann `UiAssistant` mit `AgentScope.within(form).excluding(add, status)`; „Hinzufügen“ klickt der Mensch |
 | 3 · Rechnungen | Alle Rechnungen pflegen | im Chat: „Ändere bei RE-2026-101 die Kategorie auf Büro“ | Master-Detail aus Suchfeld, Grid und `InvoiceForm.editor`; draiv wählt die Zeile per `selectable/selectByContentMatching`. Status und Löschen nur für Menschen |
 | 4 · AI Dashboard | Ausgaben per Satz auswerten | „Ausgaben pro Kategorie als Balken, nur offene aus Q3“ | `AiPromptBar` auf die zugeklappte Steuerleiste (`FilterDetails`: Select, CheckboxGroup, DatePicker); **Vaadin Charts** hören auf Value-Changes (Charts selbst steuert Draiv nicht) |
 | 5 · Makro | AI einmal, danach ohne AI | „Lege drei Testrechnungen an und speichere das als Makro“; „Erstelle ein Makro, das die Kategorie einer Rechnung ändert; Rechnungsnummer und neue Kategorie als Eingabe“ | `DraivScriptTools` (`save_script`, `run_script`), `ScriptRunner`; Makros legen über Tab 3 an und ändern, löschen nie |
@@ -17,8 +17,8 @@
 
 **Ablauf Beleg (Tab 2).** Draiv bedient keine Upload-Komponente, deshalb sind Lesen und Bedienen getrennt:
 1. PDF oder Foto rechts ablegen oder wählen; die Vorschau erscheint (PDF eingebettet, Bild als Bild).
-2. `InvoiceExtractionService` schickt die Datei außerhalb des UI-Threads an das Modell (PDFs direkt als Datei-Part, ohne Rendern) und bekommt per Structured Output einen `InvoiceDraft`.
-3. Plausibilitätscheck im Code (Netto + MwSt = Brutto, Pflichtfelder, Fälligkeit); Probleme stehen über dem Formular.
+2. `InvoiceExtractionService` schickt die Datei außerhalb des UI-Threads an das Modell (PDFs direkt als Datei-Part, ohne Rendern) und bekommt per Structured Output einen `InvoiceDraft`, pro Feld mit **Sicherheit** (hoch, mittel, niedrig) und der **Herkunft im Beleg** (das Zitat, aus dem der Wert stammt).
+3. Plausibilitätscheck im Code (Netto + MwSt = Brutto, Pflichtfelder, Fälligkeit); was er widerlegt, sinkt auf „niedrig“. Probleme und unsicher gelesene Felder stehen über dem Formular, Sicherheit und Zitat unter jedem Feld.
 4. Der `UiAssistant` füllt das Formular mit dem Draft, beschränkt auf die Formularfelder. Die Felder leuchten auf.
 5. Der Mensch prüft und klickt „Hinzufügen“. Formular und Vorschau leeren sich, `InvoiceService` meldet die neue Rechnung an alle offenen Tabs.
 
@@ -49,7 +49,7 @@ com.example.application.ai
 com.example.application.ai.invoice
   Invoice, InvoiceRepository, InvoiceService (Suche, Aggregation, Speichern, Löschen, Reset + Seed,
   Broadcast als InvoiceChange), InvoiceForm (Anlegen und Bearbeiten), InvoiceFilter, InvoiceSort,
-  InvoiceGrouping, InvoiceExtractionService (Datei -> InvoiceDraft)
+  InvoiceGrouping, InvoiceExtractionService (Datei -> InvoiceDraft mit FieldEvidence: Certainty + Zitat)
 com.example.application.ai.mcp
   McpDemoConfig        Profil mcp: UI-Tools per MCP, nur von localhost
 ```

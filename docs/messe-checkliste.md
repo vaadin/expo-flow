@@ -45,7 +45,7 @@ Fotografieren oder als PDF in Tab 2 ablegen (oder in den Chat ziehen):
 | --- | --- |
 | Chat | „Bring mich zum Rechnungs-Upload“, „Trag als Lieferant Acme GmbH ein“; eine CSV hineinziehen und „Wie viele Zeilen hat die Datei?“; ein Rechnungsfoto hineinziehen und „Erfasse diese Rechnung“ |
 | 1 · AI Grid | „Alle offenen Rechnungen von Acme über 1.000 €, nach Fälligkeit sortiert“, dann „nur Hardware“. Der Filterblock bleibt zu, das Badge zählt die Filter |
-| 2 · AI Form Filler | Beleg rechts ablegen, prüfen, „Hinzufügen“ |
+| 2 · AI Form Filler | Beleg rechts ablegen, prüfen (unter jedem Feld: Sicherheit und Zitat aus dem Beleg; `4-pixelwerk-zahlendreher.pdf` zeigt „niedrig“), „Hinzufügen“ |
 | 3 · Rechnungen | im Chat: „Ändere bei RE-2026-101 die Kategorie auf Büro“ |
 | 4 · Dashboard | „Ausgaben pro Kategorie als Balken, nur offene aus Q3“, dann „als Torte“ |
 | 5 · Makro | „Lege drei Testrechnungen an und speichere das als Makro“, dann „Ausführen“; „Erstelle ein Makro, das die Kategorie einer Rechnung ändert; Rechnungsnummer und neue Kategorie als Eingabe“ |

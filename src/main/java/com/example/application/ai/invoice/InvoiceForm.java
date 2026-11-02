@@ -1,9 +1,15 @@
 package com.example.application.ai.invoice;
 
+import com.vaadin.flow.component.HasHelper;
+import com.vaadin.flow.component.HasLabel;
+import com.vaadin.flow.component.badge.Badge;
+import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -17,8 +23,10 @@ import com.vaadin.flow.shared.Registration;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -163,6 +171,7 @@ public class InvoiceForm extends FormLayout {
         edited = new Invoice();
         binder.readBean(edited);
         updateGross();
+        clearEvidence();
     }
 
     /** Shows {@code invoice} for changing it; {@link #save()} then updates it. */
@@ -170,6 +179,63 @@ public class InvoiceForm extends FormLayout {
         edited = invoice;
         binder.readBean(edited);
         updateGross();
+        clearEvidence();
+    }
+
+    /**
+     * Under each field the draft has a value for: how sure the extraction is (a badge) and the text on the
+     * receipt the value comes from. It stays until the form is cleared, also when a person corrects the
+     * value: it describes what was read, not what is entered now.
+     */
+    public void showEvidence(InvoiceDraft draft) {
+        evidenceFields().forEach((field, component) -> component.setHelperComponent(
+                draft.evidenceFor(field).map(InvoiceForm::evidenceView).orElse(null)));
+    }
+
+    private void clearEvidence() {
+        evidenceFields().values().forEach(component -> component.setHelperComponent(null));
+    }
+
+    /** The form label of a draft field, e.g. "Fällig am" for dueDate. */
+    public String labelOf(String field) {
+        var component = evidenceFields().get(field);
+        return component instanceof HasLabel labelled ? labelled.getLabel() : field;
+    }
+
+    /** The fields that show evidence, by {@link InvoiceDraft} field name. */
+    private Map<String, HasHelper> evidenceFields() {
+        var fields = new LinkedHashMap<String, HasHelper>();
+        fields.put("invoiceNumber", invoiceNumber);
+        fields.put("supplier", supplier);
+        fields.put("invoiceDate", invoiceDate);
+        fields.put("dueDate", dueDate);
+        fields.put("net", net);
+        fields.put("vatRatePercent", vatRate);
+        fields.put("category", category);
+        return fields;
+    }
+
+    private static Div evidenceView(FieldEvidence evidence) {
+        var badge = new Badge(evidence.certainty().label());
+        badge.addThemeVariants(BadgeVariant.SMALL, switch (evidence.certainty()) {
+            case HIGH -> BadgeVariant.SUCCESS;
+            case MEDIUM -> BadgeVariant.WARNING;
+            case LOW -> BadgeVariant.ERROR;
+        });
+        badge.addClassName("evidence-certainty");
+        var view = new Div(badge);
+        if (evidence.source() != null) {
+            var source = new Span("← „" + evidence.source() + "“");
+            source.addClassName("evidence-source");
+            source.setTitle("So steht es auf dem Beleg");
+            view.add(source);
+        }
+        view.addClassName("evidence");
+        view.addClassName("evidence-" + evidence.certainty().name().toLowerCase(Locale.ROOT));
+        view.setId("evidence-" + evidence.field());
+        // For people: the AI fills in values, it has no use for what the extraction thought of them
+        view.getElement().setAttribute("data-draiv-control", "true");
+        return view;
     }
 
     /** Same as {@link #create()}. */

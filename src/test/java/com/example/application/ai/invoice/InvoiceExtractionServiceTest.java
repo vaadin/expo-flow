@@ -28,7 +28,11 @@ class InvoiceExtractionServiceTest {
         return new ChatResponse(List.of(new Generation(new AssistantMessage("""
                 {"invoiceNumber": "RE-2026-114", "supplier": "Acme GmbH", "invoiceDate": "2026-10-28",
                  "dueDate": "2026-11-30", "net": null, "vatRatePercent": 19, "gross": 1190.00,
-                 "category": "HARDWARE", "description": "Drei Monitore"}
+                 "category": "HARDWARE", "description": "Drei Monitore",
+                 "evidence": [
+                   {"field": "dueDate", "certainty": "MEDIUM", "source": "Zahlbar innerhalb 30 Tagen"},
+                   {"field": "gross", "certainty": "HIGH", "source": "Rechnungsbetrag 1.190,00 €"},
+                   {"field": "category", "certainty": "LOW", "source": "3x Monitor 27 Zoll"}]}
                 """))));
     };
 
@@ -45,10 +49,14 @@ class InvoiceExtractionServiceTest {
         assertEquals(InvoiceCategory.HARDWARE, draft.category());
         assertEquals(new BigDecimal("1000.00"), draft.net()); // computed back from the gross
         assertEquals(List.of(), draft.problems());
+        assertEquals(Certainty.MEDIUM, draft.evidenceFor("dueDate").orElseThrow().certainty());
+        assertEquals("Rechnungsbetrag 1.190,00 €", draft.evidenceFor("net").orElseThrow().source()); // from gross
+        assertEquals(List.of("category"), draft.uncertainFields());
 
         UserMessage user = (UserMessage) sent.getInstructions().getLast();
         // The JSON schema asks for the record's fields only, not its computed helpers
-        assertTrue(user.getText().contains("\"vatRatePercent\""), user.getText());
+        assertTrue(user.getText().contains("\"vatRatePercent\"") && user.getText().contains("\"certainty\""),
+                user.getText());
         assertFalse(user.getText().contains("computedGross") || user.getText().contains("problems"), user.getText());
         assertEquals("application/pdf", user.getMedia().getFirst().getMimeType().toString());
         assertEquals("acme.pdf", user.getMedia().getFirst().getName());

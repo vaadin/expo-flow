@@ -29,16 +29,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.stream.Collectors;
 
 /**
  * Tab 2: drop a receipt (PDF or photo) next to the invoice form, and the AI fills in the form from it. The
  * file is read into an {@link InvoiceDraft} first ({@link InvoiceExtractionService}, off the UI thread);
  * then the AI enters the draft field by field through draiv, so the fields flash and the same validation
  * applies. It may only touch the form's fields ({@link AgentScope}): the status and "Hinzufügen" are out
- * of its reach, so a person checks the result and adds the invoice.
+ * of its reach, so a person checks the result and adds the invoice. Under each field the person sees how
+ * sure the extraction was and the text on the receipt the value comes from.
  */
 @PageTitle("AI Form Filler")
 @Route("ai/form")
@@ -129,6 +131,7 @@ public class AiFormFillerView extends AiTabView {
     /** On the UI thread: the AI enters the draft, limited to the form. */
     void fillForm(UI ui, InvoiceDraft draft, String fileName) {
         showProblems(draft);
+        form.showEvidence(draft);
         assistant.assist(InvoiceDraftGoal.fillForm(draft, fileName), scope, null)
                 .whenComplete((result, error) -> ui.access(() -> {
                     if (error != null) {
@@ -148,10 +151,21 @@ public class AiFormFillerView extends AiTabView {
         Notification.show(what + ": " + cause.getMessage()).addThemeVariants(NotificationVariant.ERROR);
     }
 
-    /** What does not add up on the receipt, above the form; hidden when nothing is wrong. */
+    /**
+     * What does not add up on the receipt and which values were read with low certainty, above the form;
+     * hidden when nothing needs a second look.
+     */
     void showProblems(InvoiceDraft draft) {
         problems.removeAll();
-        var list = draft == null ? List.<String>of() : draft.problems();
+        var list = new ArrayList<String>();
+        if (draft != null) {
+            list.addAll(draft.problems());
+            var uncertain = draft.uncertainFields();
+            if (!uncertain.isEmpty()) {
+                list.add("Unsicher gelesen: " + uncertain.stream().map(form::labelOf)
+                        .collect(Collectors.joining(", ")) + ".");
+            }
+        }
         problems.setVisible(!list.isEmpty());
         if (!list.isEmpty()) {
             problems.add(new Span("Bitte prüfen:"),

@@ -175,7 +175,11 @@ Tabs (`AiShowcaseLayout`, `@Layout("ai")` nested in `MainLayout`):
   `InvoiceExtractionService` into an `InvoiceDraft` (structured output, same model as the chat,
   OpenAI only: the PDF goes to OpenAI as a file part), checked by `InvoiceDraft.problems()` (shown
   above the form), and entered by the AI (`InvoiceDraftGoal`) under `AgentScope.within(form)
-  .excluding(add, status)`. A person clicks "Hinzufügen". The extraction calls the `ChatModel` with
+  .excluding(add, status)`. A person clicks "Hinzufügen". Under each field the form shows the
+  certainty (`Certainty` HIGH/MEDIUM/LOW, as a badge) and the receipt text the value comes from
+  (`FieldEvidence`, the model quotes it); `InvoiceDraft.evidenceFor` lowers the model's certainty to
+  LOW where the plausibility check contradicts it, and LOW fields are listed above the form. The
+  evidence is `data-draiv-control`: the AI never reads it. The extraction calls the `ChatModel` with
   a `Prompt` and `OpenAiChatOptions`, not `ChatClient`, so model and reasoning effort arrive as built.
 - **3 · Rechnungen** (`ai/invoices`, `AiInvoiceCrudView`): master-detail from plain components, not
   Vaadin's Crud, so draiv drives it: `invoice-search`, select a row in `invoice-crud-grid`

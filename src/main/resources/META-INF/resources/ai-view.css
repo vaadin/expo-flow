@@ -276,3 +276,18 @@ vaadin-grid::part(new-invoice) {
     background: var(--vaadin-background-container-strong, var(--vaadin-background-container));
     font-size: var(--aura-font-size-s, 0.875em);
 }
+
+/* InvoiceForm evidence: certainty badge and the receipt text a value comes from, under the field */
+.evidence {
+    display: flex;
+    align-items: baseline;
+    gap: var(--vaadin-gap-xs, 0.25rem);
+    min-width: 0;
+}
+
+.evidence-source {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-style: italic;
+}

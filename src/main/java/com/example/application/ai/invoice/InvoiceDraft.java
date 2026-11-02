@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * What the model read off an uploaded invoice. Any field may be missing ({@code null}); {@link #problems()}
@@ -16,10 +17,16 @@ import java.util.Locale;
  * @param vatRatePercent 0, 7 or 19 for a German invoice; anything else is reported as a problem
  * @param gross          the total payable as printed, to check net plus VAT against
  * @param description    what was bought, in a few words
+ * @param evidence       per field, how sure the value is and where on the receipt it comes from; see
+ *                       {@link #evidenceFor(String)}
  */
 public record InvoiceDraft(String invoiceNumber, String supplier, LocalDate invoiceDate, LocalDate dueDate,
                            BigDecimal net, Integer vatRatePercent, BigDecimal gross,
-                           InvoiceCategory category, String description) {
+                           InvoiceCategory category, String description, List<FieldEvidence> evidence) {
+
+    /** The fields {@link #evidenceFor(String)} answers for, in form order. */
+    public static final List<String> FIELDS = List.of("invoiceNumber", "supplier", "invoiceDate", "dueDate",
+            "net", "vatRatePercent", "category");
 
     /** A cent of rounding per line adds up; more than this is a real mismatch. */
     private static final BigDecimal TOLERANCE = new BigDecimal("0.05");
@@ -40,8 +47,64 @@ public record InvoiceDraft(String invoiceNumber, String supplier, LocalDate invo
             return this;
         }
         var computedNet = gross.divide(BigDecimal.ONE.add(vatRate().factor()), 2, RoundingMode.HALF_UP);
+        var grossSource = evidenceFor("gross").map(FieldEvidence::source).orElse(null);
+        var evidenceWithNet = new ArrayList<>(evidence == null ? List.<FieldEvidence>of() : evidence);
+        evidenceWithNet.removeIf(item -> "net".equals(item.field()));
+        evidenceWithNet.add(new FieldEvidence("net", Certainty.MEDIUM, grossSource));
         return new InvoiceDraft(invoiceNumber, supplier, invoiceDate, dueDate, computedNet, vatRatePercent,
-                gross, category, description);
+                gross, category, description, evidenceWithNet);
+    }
+
+    /**
+     * How sure the value of {@code field} is and where it comes from, empty when the field has no value. The
+     * model's own certainty is lowered where the code knows better: a value the plausibility check
+     * contradicts is LOW, a value the model gave without a certainty is MEDIUM.
+     */
+    public Optional<FieldEvidence> evidenceFor(String field) {
+        if (!"gross".equals(field) && valueOf(field) == null) {
+            return Optional.empty();
+        }
+        var given = evidence == null ? null : evidence.stream()
+                .filter(item -> item != null && field.equals(item.field())).findFirst().orElse(null);
+        var certainty = given == null || given.certainty() == null ? Certainty.MEDIUM : given.certainty();
+        if (contradicted(field)) {
+            certainty = certainty.atMost(Certainty.LOW);
+        }
+        var source = given == null || given.source() == null || given.source().isBlank() ? null : given.source();
+        return Optional.of(new FieldEvidence(field, certainty, source));
+    }
+
+    /** The fields with a value whose certainty is LOW, for a person to look at first. */
+    public List<String> uncertainFields() {
+        return FIELDS.stream().filter(field -> evidenceFor(field)
+                .filter(item -> item.certainty() == Certainty.LOW).isPresent()).toList();
+    }
+
+    private Object valueOf(String field) {
+        return switch (field) {
+            case "invoiceNumber" -> invoiceNumber;
+            case "supplier" -> supplier;
+            case "invoiceDate" -> invoiceDate;
+            case "dueDate" -> dueDate;
+            case "net" -> net;
+            case "vatRatePercent" -> vatRatePercent;
+            case "category" -> category;
+            default -> null;
+        };
+    }
+
+    /** What the plausibility check speaks against: net + VAT not the gross, or a due date before the date. */
+    private boolean contradicted(String field) {
+        return switch (field) {
+            case "net", "vatRatePercent" -> grossMismatch() || ("vatRatePercent".equals(field) && vatRate() == null);
+            case "dueDate" -> invoiceDate != null && dueDate != null && dueDate.isBefore(invoiceDate);
+            default -> false;
+        };
+    }
+
+    private boolean grossMismatch() {
+        var computed = computedGross();
+        return computed != null && gross != null && computed.subtract(gross).abs().compareTo(TOLERANCE) > 0;
     }
 
     /** Net plus VAT, or {@code null} if either is missing. */
@@ -75,9 +138,8 @@ public record InvoiceDraft(String invoiceNumber, String supplier, LocalDate invo
         } else if (vatRate() == null) {
             problems.add("Unbekannter MwSt-Satz: " + vatRatePercent + " %.");
         }
-        var computed = computedGross();
-        if (computed != null && gross != null && computed.subtract(gross).abs().compareTo(TOLERANCE) > 0) {
-            problems.add("Netto + MwSt ergibt " + EURO.format(computed) + ", auf der Rechnung stehen "
+        if (grossMismatch()) {
+            problems.add("Netto + MwSt ergibt " + EURO.format(computedGross()) + ", auf der Rechnung stehen "
                     + EURO.format(gross) + ".");
         }
         if (category == null) {

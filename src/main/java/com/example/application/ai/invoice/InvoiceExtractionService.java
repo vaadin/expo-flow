@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * Reads an uploaded invoice — a PDF or a photo — into an {@link InvoiceDraft} with Spring AI structured
- * output. Reading is separate from entering: draiv cannot operate an upload, so this hands the draft to
+ * output, with a certainty and the source text on the receipt for every value ({@link FieldEvidence}). Reading is separate from entering: draiv cannot operate an upload, so this hands the draft to
  * the chat, and the AI then enters it in the form on screen, where the person sees each field.
  * <p>
  * Uses the same model as the chat ({@code openai.text.model}). OpenAI only: Spring AI sends a PDF to
@@ -43,7 +43,16 @@ public class InvoiceExtractionService {
             subscriptions, cloud), TRAVEL (hotel, train, flights, taxi), MARKETING (ads, print, \
             agency, trade shows), OFFICE (office supplies, furniture, everything else).
             - description: what was bought, in at most five German words.
-            Use null for anything that is not on the invoice. Never guess a number.""";
+            Use null for anything that is not on the invoice. Never guess a number.
+            - evidence: one entry for each of invoiceNumber, supplier, invoiceDate, dueDate, net, \
+            vatRatePercent, gross and category that has a value, with
+              field: the field name as above;
+              certainty: HIGH if printed plainly and read as is, MEDIUM if hard to read or derived from \
+              what is printed (e.g. dueDate from a payment term), LOW if guessed or inferred (e.g. a \
+              category judged from the items);
+              source: the text on the invoice the value comes from, copied verbatim, at most 80 \
+              characters, e.g. "Zahlbar bis 26.11.2026 ohne Abzug." (for a derived value, the text it is \
+              derived from).""";
 
     private final ChatModel chatModel;
     private final TextPresenterProperties presenterProperties;

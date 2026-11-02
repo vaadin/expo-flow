@@ -1,7 +1,10 @@
 package com.example.application.ai;
 
+import com.example.application.ai.invoice.Certainty;
+import com.example.application.ai.invoice.FieldEvidence;
 import com.example.application.ai.invoice.InvoiceCategory;
 import com.example.application.ai.invoice.InvoiceDraft;
+import com.example.application.ai.invoice.InvoiceForm;
 import com.example.application.ai.invoice.InvoiceRepository;
 import com.example.application.ai.invoice.InvoiceService;
 import com.example.application.ai.invoice.InvoiceStatus;
@@ -86,11 +89,23 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
 
         // A receipt arrived, was read, and shows next to the form with what does not add up
         var draft = new InvoiceDraft("RE-2026-114", "Acme GmbH", LocalDate.of(2026, 10, 28), LocalDate.of(2026, 11, 30),
-                new BigDecimal("1000.00"), 19, new BigDecimal("1200.00"), InvoiceCategory.HARDWARE, "Monitore");
+                new BigDecimal("1000.00"), 19, new BigDecimal("1200.00"), InvoiceCategory.HARDWARE, "Monitore",
+                List.of(new FieldEvidence("dueDate", Certainty.MEDIUM, "fällig am 30.11."),
+                        new FieldEvidence("net", Certainty.HIGH, "1.000,00 € netto"),
+                        new FieldEvidence("category", Certainty.LOW, "drei 27-Zoll-Monitore")));
         view.showPreview("acme.pdf", "application/pdf", new byte[]{'%', 'P', 'D', 'F'});
         view.showProblems(draft);
+        find(InvoiceForm.class).single().showEvidence(draft);
         assertEquals(1, find(IFrame.class).all().size());
-        assertTrue(find(Div.class).id("draft-problems").isVisible());
+        var problems = find(Div.class).id("draft-problems");
+        assertTrue(problems.isVisible());
+        assertTrue(problems.getElement().getTextRecursively().contains("Unsicher gelesen: Netto (€), MwSt-Satz, Kategorie."),
+                problems.getElement().getTextRecursively());
+        // Under each field: certainty and the receipt text, for people only
+        var dueDate = find(Div.class).id("evidence-dueDate").getElement().getTextRecursively();
+        assertTrue(dueDate.contains("mittel") && dueDate.contains("„fällig am 30.11.“"), dueDate);
+        assertTrue(find(Div.class).id("evidence-net").getElement().getTextRecursively().contains("niedrig"));
+        assertFalse(tools.inspect(null, null, null).contains("evidence-"));
         var goal = InvoiceDraftGoal.fillForm(draft, "acme.pdf");
         assertTrue(goal.contains("Beleg (invoice-receipt): acme.pdf") && goal.contains("\"19 %\""), goal);
 
@@ -111,6 +126,7 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
         // Ready for the next receipt
         assertEquals(0, find(IFrame.class).all().size());
         assertTrue(find(Div.class).withId("draft-problems").all().isEmpty()); // hidden again
+        assertTrue(find(Div.class).withId("evidence-dueDate").all().isEmpty());
 
         assertEquals(before + 1, invoices.count());
         var added = invoices.findAll().stream()
