@@ -1,6 +1,5 @@
 package com.example.application.ai;
 
-import com.example.application.ai.invoice.InvoiceExtractionService;
 import com.example.application.ai.invoice.InvoiceService;
 import com.example.application.views.MainLayout;
 import com.vaadin.draiv.ai.presenter.TextPresenterProperties;
@@ -46,10 +45,10 @@ public class AiShowcaseLayout extends Div implements RouterLayout {
     private final Button showChat;
 
     public AiShowcaseLayout(TextPresenterService presenter, TextPresenterProperties presenterProperties,
-                            AssistPrincipal assistPrincipal, InvoiceExtractionService extraction,
+                            AssistPrincipal assistPrincipal,
                             InvoiceService invoiceService, ScriptStore scripts) {
         addClassName("ai-showcase");
-        var chatPanel = new AiChatPanel(presenter, presenterProperties, assistPrincipal, extraction);
+        var chatPanel = new AiChatPanel(presenter, presenterProperties, assistPrincipal);
 
         var tabs = new Nav(
                 tab("1 · AI Grid", AiGridView.class),

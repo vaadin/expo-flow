@@ -2,12 +2,14 @@ package com.example.application.ai;
 
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +35,36 @@ class AiChatPanelTest extends SpringBrowserlessTest {
         test(find(Button.class).id("chat-show-button")).click();
         assertFalse(find(AiChatPanel.class).all().isEmpty());
         assertFalse(find(AiShowcaseLayout.class).single().hasClassName("ai-chat-hidden"));
+    }
+
+    /** Dropping files only attaches them: chips, a confirmation, no model call. */
+    @Test
+    void attachedFilesWaitAsChipsForTheNextMessage() {
+        navigate(AiGridView.class);
+        var panel = find(AiChatPanel.class).single();
+        int before = find(MessageList.class).single().getItems().size();
+
+        panel.attach("umsatz.csv", "application/vnd.ms-excel", "a;b\n1;2\n3;4\n".getBytes(StandardCharsets.UTF_8));
+        panel.attach("beleg.png", "image/png", new byte[]{1, 2, 3});
+
+        var items = find(MessageList.class).single().getItems();
+        assertEquals(before + 2, items.size());
+        assertEquals("Angehängt: beleg.png. Was möchtest du dazu wissen?", items.getLast().getText());
+        assertEquals(1, panel.conversation().size()); // no turn yet
+        assertEquals(2, find(Div.class).id("chat-attachments").getChildren().count()); // two chips
+    }
+
+    /** CSV and Markdown go into the message as text; images and PDFs as media, named in the text. */
+    @Test
+    void textFilesGoIntoTheMessage() {
+        var csv = new AiChatPanel.Pending("umsatz.csv", "text/csv", "a;b\n1;2\n".getBytes(StandardCharsets.UTF_8));
+        var photo = new AiChatPanel.Pending("beleg.jpg", "image/jpeg", new byte[]{1});
+
+        var message = AiChatPanel.messageWithTextFiles("Wie viele Zeilen hat die Datei?", List.of(csv, photo));
+
+        assertTrue(message.contains("Attached file \"umsatz.csv\":\n```\na;b\n1;2\n"), message);
+        assertTrue(message.contains("(Attached: beleg.jpg)"), message);
+        assertTrue(photo.isMedia() && !csv.isMedia());
     }
 
     @Test

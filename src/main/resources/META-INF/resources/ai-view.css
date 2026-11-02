@@ -58,6 +58,7 @@
 
 .ai-chat-panel {
     grid-area: chat;
+    display: block;
     min-height: 0;
     height: 100%;
     border-radius: var(--vaadin-radius-l);
@@ -246,4 +247,32 @@ vaadin-grid::part(new-invoice) {
 
 .ai-chat-header h3 {
     margin: 0;
+}
+
+/* AiChatPanel is a drop zone: the content fills it, and it lights up while a file is dragged over it */
+.ai-chat-content {
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.ai-chat-panel[dragover] {
+    outline: 2px dashed var(--aura-accent-color);
+    outline-offset: -4px;
+}
+
+.ai-chat-attachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vaadin-gap-xs, 0.25rem);
+    width: 100%;
+}
+
+.ai-chat-attachment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    padding: 0 0 0 0.6em;
+    border-radius: 999px;
+    background: var(--vaadin-background-container-strong, var(--vaadin-background-container));
+    font-size: var(--aura-font-size-s, 0.875em);
 }
