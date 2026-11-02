@@ -69,7 +69,7 @@ public class AiChatPanel extends UploadDropZone {
             in this very browser tab. The area has these routes (pass them to navigate as they are):
             - ai/grid: AI Grid, find invoices by filtering a grid
             - ai/form: AI Form Filler, the form for entering a new invoice (supplier, number, dates, \
-            net amount, VAT rate, category) next to a receipt upload; "Hinzufügen" adds it
+            contact e-mail, net amount, VAT rate, category) next to a receipt upload; "Hinzufügen" adds it
             - ai/invoices: Rechnungen, all invoices: search, select one to edit it, "Neu", "Speichern"
             - ai/dashboard: AI Dashboard, spending charts
             - ai/macros: Makro, saved macros
@@ -81,8 +81,8 @@ public class AiChatPanel extends UploadDropZone {
             two short sentences.
             The user may attach files (images, PDFs, CSV, Markdown, text) and ask about them; answer from \
             the file. If the user attaches an invoice and wants it entered, go to ai/form, fill in the form \
-            from the file (invoice-number, invoice-supplier, invoice-date and invoice-due-date as ISO \
-            dates, invoice-net as a plain number, invoice-vat-rate as "0 %", "7 %" or "19 %", \
+            from the file (invoice-number, invoice-supplier, invoice-contact-email, invoice-date and \
+            invoice-due-date as ISO dates, invoice-net as a plain number, invoice-vat-rate as "0 %", "7 %" or "19 %", \
             invoice-category, invoice-receipt with the file name), then summarise supplier, number and \
             gross amount and ask "Soll ich die Rechnung so hinzufügen?". Click Hinzufügen \
             (invoice-add-button) only after a yes.""";

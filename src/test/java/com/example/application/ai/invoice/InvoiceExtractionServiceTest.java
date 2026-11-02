@@ -26,7 +26,8 @@ class InvoiceExtractionServiceTest {
     private final ChatModel model = prompt -> {
         sent = prompt;
         return new ChatResponse(List.of(new Generation(new AssistantMessage("""
-                {"invoiceNumber": "RE-2026-114", "supplier": "Acme GmbH", "invoiceDate": "2026-10-28",
+                {"invoiceNumber": "RE-2026-114", "supplier": "Acme GmbH", "contactEmail": "rechnung@acme.example",
+                 "invoiceDate": "2026-10-28",
                  "dueDate": "2026-11-30", "net": null, "vatRatePercent": 19, "gross": 1190.00,
                  "category": "HARDWARE", "description": "Drei Monitore",
                  "evidence": [
@@ -45,6 +46,7 @@ class InvoiceExtractionServiceTest {
                 .extract(new byte[]{'%', 'P', 'D', 'F'}, "application/pdf", "acme.pdf");
 
         assertEquals("RE-2026-114", draft.invoiceNumber());
+        assertEquals("rechnung@acme.example", draft.contactEmail());
         assertEquals(LocalDate.of(2026, 11, 30), draft.dueDate());
         assertEquals(InvoiceCategory.HARDWARE, draft.category());
         assertEquals(new BigDecimal("1000.00"), draft.net()); // computed back from the gross

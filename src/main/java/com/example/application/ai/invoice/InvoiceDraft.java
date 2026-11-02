@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * What the model read off an uploaded invoice. Any field may be missing ({@code null}); {@link #problems()}
@@ -20,13 +21,17 @@ import java.util.Optional;
  * @param evidence       per field, how sure the value is and where on the receipt it comes from; see
  *                       {@link #evidenceFor(String)}
  */
-public record InvoiceDraft(String invoiceNumber, String supplier, LocalDate invoiceDate, LocalDate dueDate,
+public record InvoiceDraft(String invoiceNumber, String supplier, String contactEmail, LocalDate invoiceDate,
+                           LocalDate dueDate,
                            BigDecimal net, Integer vatRatePercent, BigDecimal gross,
                            InvoiceCategory category, String description, List<FieldEvidence> evidence) {
 
     /** The fields {@link #evidenceFor(String)} answers for, in form order. */
-    public static final List<String> FIELDS = List.of("invoiceNumber", "supplier", "invoiceDate", "dueDate",
-            "net", "vatRatePercent", "category");
+    public static final List<String> FIELDS = List.of("invoiceNumber", "supplier", "contactEmail", "invoiceDate",
+            "dueDate", "net", "vatRatePercent", "category");
+
+    /** Good enough to tell an address from a misread; the form's EmailField checks it properly. */
+    private static final Pattern EMAIL = Pattern.compile("[^@\\s]+@[^@\\s]+\\.[^@\\s]+");
 
     /** A cent of rounding per line adds up; more than this is a real mismatch. */
     private static final BigDecimal TOLERANCE = new BigDecimal("0.05");
@@ -51,7 +56,7 @@ public record InvoiceDraft(String invoiceNumber, String supplier, LocalDate invo
         var evidenceWithNet = new ArrayList<>(evidence == null ? List.<FieldEvidence>of() : evidence);
         evidenceWithNet.removeIf(item -> "net".equals(item.field()));
         evidenceWithNet.add(new FieldEvidence("net", Certainty.MEDIUM, grossSource));
-        return new InvoiceDraft(invoiceNumber, supplier, invoiceDate, dueDate, computedNet, vatRatePercent,
+        return new InvoiceDraft(invoiceNumber, supplier, contactEmail, invoiceDate, dueDate, computedNet, vatRatePercent,
                 gross, category, description, evidenceWithNet);
     }
 
@@ -84,6 +89,7 @@ public record InvoiceDraft(String invoiceNumber, String supplier, LocalDate invo
         return switch (field) {
             case "invoiceNumber" -> invoiceNumber;
             case "supplier" -> supplier;
+            case "contactEmail" -> isBlank(contactEmail) ? null : contactEmail;
             case "invoiceDate" -> invoiceDate;
             case "dueDate" -> dueDate;
             case "net" -> net;
@@ -98,6 +104,7 @@ public record InvoiceDraft(String invoiceNumber, String supplier, LocalDate invo
         return switch (field) {
             case "net", "vatRatePercent" -> grossMismatch() || ("vatRatePercent".equals(field) && vatRate() == null);
             case "dueDate" -> invoiceDate != null && dueDate != null && dueDate.isBefore(invoiceDate);
+            case "contactEmail" -> !validEmail();
             default -> false;
         };
     }
@@ -145,7 +152,15 @@ public record InvoiceDraft(String invoiceNumber, String supplier, LocalDate invo
         if (category == null) {
             problems.add("Kategorie unklar.");
         }
+        if (!validEmail()) {
+            problems.add("Kontakt-E-Mail sieht ungültig aus: " + contactEmail);
+        }
         return problems;
+    }
+
+    /** No address is fine; a misread one is not. */
+    private boolean validEmail() {
+        return isBlank(contactEmail) || EMAIL.matcher(contactEmail.strip()).matches();
     }
 
     private static boolean isBlank(String value) {

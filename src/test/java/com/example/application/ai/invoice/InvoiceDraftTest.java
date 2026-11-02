@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class InvoiceDraftTest {
 
     private static InvoiceDraft draft(String net, Integer rate, String gross) {
-        return new InvoiceDraft("RE-2026-114", "Acme GmbH", LocalDate.of(2026, 10, 28), LocalDate.of(2026, 11, 30),
+        return new InvoiceDraft("RE-2026-114", "Acme GmbH", "rechnung@acme.example", LocalDate.of(2026, 10, 28),
+                LocalDate.of(2026, 11, 30),
                 net == null ? null : new BigDecimal(net), rate, gross == null ? null : new BigDecimal(gross),
                 InvoiceCategory.HARDWARE, "Drei Monitore", List.of(
                         new FieldEvidence("dueDate", Certainty.MEDIUM, "Zahlbar innerhalb 30 Tagen"),
@@ -45,7 +46,7 @@ class InvoiceDraftTest {
 
     @Test
     void anUnknownVatRateAndMissingFieldsAreReported() {
-        var draft = new InvoiceDraft(null, " ", null, null, new BigDecimal("10"), 16, null, null, null, null);
+        var draft = new InvoiceDraft(null, " ", null, null, null, new BigDecimal("10"), 16, null, null, null, null);
 
         assertEquals(6, draft.problems().size(), draft.problems()::toString);
         assertTrue(draft.problems().contains("Unbekannter MwSt-Satz: 16 %."));
@@ -83,5 +84,26 @@ class InvoiceDraftTest {
 
         assertEquals(Certainty.MEDIUM, evidence.certainty());
         assertEquals("Rechnungsbetrag 1.190,00 €", evidence.source());
+    }
+
+    @Test
+    void aMisreadContactEmailIsReportedAndUncertain() {
+        var draft = new InvoiceDraft("RE-1", "Acme GmbH", "rechnung(at)acme.example", LocalDate.of(2026, 10, 28),
+                LocalDate.of(2026, 11, 30), new BigDecimal("100.00"), 19, new BigDecimal("119.00"),
+                InvoiceCategory.OFFICE, "Papier", List.of(new FieldEvidence("contactEmail", Certainty.HIGH,
+                "rechnung(at)acme.example")));
+
+        assertEquals(List.of("Kontakt-E-Mail sieht ungültig aus: rechnung(at)acme.example"), draft.problems());
+        assertEquals(List.of("contactEmail"), draft.uncertainFields());
+    }
+
+    @Test
+    void noContactEmailIsFine() {
+        var draft = new InvoiceDraft("RE-1", "Acme GmbH", null, LocalDate.of(2026, 10, 28),
+                LocalDate.of(2026, 11, 30), new BigDecimal("100.00"), 19, new BigDecimal("119.00"),
+                InvoiceCategory.OFFICE, "Papier", List.of());
+
+        assertEquals(List.of(), draft.problems());
+        assertTrue(draft.evidenceFor("contactEmail").isEmpty());
     }
 }

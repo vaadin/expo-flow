@@ -88,7 +88,8 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
         String snapshot = tools.inspect(null, null, null);
 
         // A receipt arrived, was read, and shows next to the form with what does not add up
-        var draft = new InvoiceDraft("RE-2026-114", "Acme GmbH", LocalDate.of(2026, 10, 28), LocalDate.of(2026, 11, 30),
+        var draft = new InvoiceDraft("RE-2026-114", "Acme GmbH", "rechnung@acme.example", LocalDate.of(2026, 10, 28),
+                LocalDate.of(2026, 11, 30),
                 new BigDecimal("1000.00"), 19, new BigDecimal("1200.00"), InvoiceCategory.HARDWARE, "Monitore",
                 List.of(new FieldEvidence("dueDate", Certainty.MEDIUM, "fällig am 30.11."),
                         new FieldEvidence("net", Certainty.HIGH, "1.000,00 € netto"),
@@ -107,12 +108,14 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
         assertTrue(find(Div.class).id("evidence-net").getElement().getTextRecursively().contains("niedrig"));
         assertFalse(tools.inspect(null, null, null).contains("evidence-"));
         var goal = InvoiceDraftGoal.fillForm(draft, "acme.pdf");
-        assertTrue(goal.contains("Beleg (invoice-receipt): acme.pdf") && goal.contains("\"19 %\""), goal);
+        assertTrue(goal.contains("Beleg (invoice-receipt): acme.pdf") && goal.contains("\"19 %\"")
+                && goal.contains("Kontakt-E-Mail (invoice-contact-email): rechnung@acme.example"), goal);
 
         // What the LLM sends for that goal
         var results = tools.applyMany(List.of(
                 set(snapshot, "invoice-number", "RE-2026-114"),
                 set(snapshot, "invoice-supplier", "Acme GmbH"),
+                set(snapshot, "invoice-contact-email", "rechnung@acme.example"),
                 set(snapshot, "invoice-date", "2026-10-28"),
                 set(snapshot, "invoice-due-date", "2026-11-30"),
                 set(snapshot, "invoice-net", "1000"),
@@ -132,6 +135,7 @@ class AiFormFillerDrivingTest extends SpringBrowserlessTest {
         var added = invoices.findAll().stream()
                 .max(Comparator.comparing(invoice -> invoice.getCreatedAt())).orElseThrow();
         assertEquals("RE-2026-114", added.getInvoiceNumber());
+        assertEquals("rechnung@acme.example", added.getContactEmail());
         assertEquals(LocalDate.of(2026, 11, 30), added.getDueDate());
         assertEquals(new BigDecimal("1190.00"), added.getGross());
         assertEquals(InvoiceStatus.OPEN, added.getStatus());

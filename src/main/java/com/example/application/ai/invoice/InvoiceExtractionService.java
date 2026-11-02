@@ -34,6 +34,8 @@ public class InvoiceExtractionService {
             - invoiceNumber: as printed.
             - supplier: the company that issued the invoice, not the recipient, with its legal form \
             (GmbH, AG, KG…).
+            - contactEmail: the supplier's e-mail address for questions about the invoice, as printed; \
+            null if there is none.
             - invoiceDate, dueDate: ISO dates. If only a payment term is printed ("zahlbar innerhalb \
             30 Tagen"), dueDate is that many days after invoiceDate.
             - net: the total net amount before VAT. gross: the total payable. Plain numbers, e.g. 1234.50.
@@ -44,7 +46,7 @@ public class InvoiceExtractionService {
             agency, trade shows), OFFICE (office supplies, furniture, everything else).
             - description: what was bought, in at most five German words.
             Use null for anything that is not on the invoice. Never guess a number.
-            - evidence: one entry for each of invoiceNumber, supplier, invoiceDate, dueDate, net, \
+            - evidence: one entry for each of invoiceNumber, supplier, contactEmail, invoiceDate, dueDate, net, \
             vatRatePercent, gross and category that has a value, with
               field: the field name as above;
               certainty: HIGH if printed plainly and read as is, MEDIUM if hard to read or derived from \

@@ -65,9 +65,11 @@ def invoice(path, sender, number, date, due_line, items, vat_percent, gross_prin
     """items: (quantity, description, unit price). gross_printed overrides the total, for a typo."""
     page = Page()
     page.text(50, 790, sender[0], 16, bold=True)
-    for i, line in enumerate(sender[1:]):
+    for i, line in enumerate(sender[1:3]):
         page.text(50, 772 - i * 13, line, 9)
     page.text(50, 700, f"{sender[0]} · {sender[1]} · {sender[2]}", 7)
+    page.text(400, 646, "Fragen zur Rechnung:", 9)
+    page.text(400, 633, sender[3], 9)
     for i, line in enumerate(RECIPIENT):
         page.text(50, 685 - i * 13, line)
     page.text(400, 685, "Rechnungsnummer:", 9)
@@ -113,25 +115,25 @@ if __name__ == "__main__":
     here = Path(__file__).parent
     # 1: a known supplier, hardware, a due date
     invoice(here / "1-acme-notebooks.pdf",
-            ["Acme GmbH", "Industriestraße 12", "70565 Stuttgart"],
+            ["Acme GmbH", "Industriestraße 12", "70565 Stuttgart", "rechnung@acme.example"],
             "RE-2026-131", "27.10.2026", "Zahlbar bis 26.11.2026 ohne Abzug.",
             [(2, 'Notebook 14", 32 GB RAM', Decimal("1149.00")), (2, "Dockingstation USB-C", Decimal("189.00"))],
             19)
     # 2: a payment term instead of a due date, and the reduced rate
     invoice(here / "2-isarhotel-uebernachtung.pdf",
-            ["Isarhotel München", "Am Isarkanal 3", "81379 München"],
+            ["Isarhotel München", "Am Isarkanal 3", "81379 München", "rezeption@isarhotel.example"],
             "2026-0871", "30.10.2026", "Zahlbar innerhalb von 14 Tagen nach Rechnungsdatum.",
             [(3, "Übernachtung Einzelzimmer, W-JAX", Decimal("129.00"))],
             7)
     # 3: a supplier the app does not know yet
     invoice(here / "3-nordsee-druckerei.pdf",
-            ["Nordsee Druckerei GmbH", "Hafenstraße 40", "26382 Wilhelmshaven"],
+            ["Nordsee Druckerei GmbH", "Hafenstraße 40", "26382 Wilhelmshaven", "auftrag@nordsee-druck.example"],
             "ND-44817", "29.10.2026", "Fällig am 28.11.2026.",
             [(5, "Messeflyer DIN A5, 4/4-farbig, Paket à 1.000 Stück", Decimal("96.00")), (2, "Roll-up Display 85 x 200 cm", Decimal("95.00"))],
             19)
     # 4: a typo in the total (1.482,00 instead of 1.428,00): the plausibility check reports it
     invoice(here / "4-pixelwerk-zahlendreher.pdf",
-            ["Pixelwerk Agentur", "Kreativkai 7", "20457 Hamburg"],
+            ["Pixelwerk Agentur", "Kreativkai 7", "20457 Hamburg", "hallo@pixelwerk.example"],
             "PW-2026-58", "31.10.2026", "Zahlbar bis 30.11.2026.",
             [(1, "Landingpage W-JAX-Kampagne", Decimal("1200.00"))],
             19, gross_printed=Decimal("1482.00"))

@@ -55,7 +55,7 @@ public class AiMacroView extends AiTabView {
             operate the UI with apply yourself.
 
             Invoices are managed on route ai/invoices. Field ids: invoice-number, invoice-supplier, \
-            invoice-date and invoice-due-date (ISO yyyy-MM-dd), invoice-net (a plain number like 1000 or \
+            invoice-contact-email (optional), invoice-date and invoice-due-date (ISO yyyy-MM-dd), invoice-net (a plain number like 1000 or \
             249.90), invoice-vat-rate ("0 %%", "7 %%" or "19 %%"), invoice-category (Hardware, Software, \
             Reise, Marketing or Büro), invoice-receipt (optional file name).
             - Create an invoice: click invoice-new-button (Neu), set the fields, click invoice-save-button \

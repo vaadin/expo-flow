@@ -15,12 +15,14 @@ endobj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
 endobj
 6 0 obj
-<< /Length 1969 >>
+<< /Length 2082 >>
 stream
 BT /F2 16 Tf 50.0 790.0 Td (Acme GmbH) Tj ET
 BT /F1 9 Tf 50.0 772.0 Td (Industriestraﬂe 12) Tj ET
 BT /F1 9 Tf 50.0 759.0 Td (70565 Stuttgart) Tj ET
 BT /F1 7 Tf 50.0 700.0 Td (Acme GmbH ∑ Industriestraﬂe 12 ∑ 70565 Stuttgart) Tj ET
+BT /F1 9 Tf 400.0 646.0 Td (Fragen zur Rechnung:) Tj ET
+BT /F1 9 Tf 400.0 633.0 Td (rechnung@acme.example) Tj ET
 BT /F1 10 Tf 50.0 685.0 Td (Expo Flow Demo GmbH) Tj ET
 BT /F1 10 Tf 50.0 672.0 Td (Buchhaltung) Tj ET
 BT /F1 10 Tf 50.0 659.0 Td (Messeweg 1) Tj ET
@@ -71,5 +73,5 @@ xref
 trailer
 << /Size 7 /Root 1 0 R >>
 startxref
-2471
+2584
 %%EOF

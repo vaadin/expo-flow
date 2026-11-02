@@ -58,6 +58,11 @@ class AiInvoiceDrivingTest extends SpringBrowserlessTest {
     }
 
     @Test
+    void demoInvoicesHaveAContactEmail() {
+        assertTrue(invoices.findAll().stream().allMatch(invoice -> invoice.getContactEmail().endsWith(".example")));
+    }
+
+    @Test
     void everyTabConstructs() {
         for (var view : List.of(AiGridView.class, AiFormFillerView.class, AiInvoiceCrudView.class,
                 AiDashboardView.class, AiMacroView.class, AiGuardrailsView.class)) {
@@ -112,12 +117,14 @@ class AiInvoiceDrivingTest extends SpringBrowserlessTest {
         snapshot = tools.inspect(null, null, null);
         results = tools.applyMany(List.of(
                 step(snapshot, "invoice-category", "settable", "set", "Büro"),
+                step(snapshot, "invoice-contact-email", "settable", "set", "neu@acme.example"),
                 step(snapshot, "invoice-save-button", "activatable", "activate")));
         assertTrue(results.stream().allMatch(result -> "ok".equals(result.status())), results::toString);
 
         var edited = invoices.findAll().stream()
                 .filter(invoice -> invoice.getInvoiceNumber().equals("RE-2026-101")).findFirst().orElseThrow();
         assertEquals(InvoiceCategory.OFFICE, edited.getCategory());
+        assertEquals("neu@acme.example", edited.getContactEmail());
         assertEquals(50, invoices.count()); // changed, not added
     }
 

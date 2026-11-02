@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -25,6 +26,10 @@ public class Invoice extends AbstractEntity {
 
     @NotBlank
     private String supplier;
+
+    /** Whom to ask about this invoice at the supplier; optional. */
+    @Email
+    private String contactEmail;
 
     @NotNull
     private LocalDate invoiceDate;
@@ -85,6 +90,14 @@ public class Invoice extends AbstractEntity {
 
     public void setSupplier(String supplier) {
         this.supplier = supplier;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
     }
 
     public LocalDate getInvoiceDate() {

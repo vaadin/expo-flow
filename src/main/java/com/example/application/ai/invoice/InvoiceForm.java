@@ -17,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.BigDecimalField;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
@@ -47,6 +48,7 @@ public class InvoiceForm extends FormLayout {
     // A text field, not a ComboBox: draiv only sets a ComboBox to one of its items, and an
     // uploaded invoice often comes from a supplier that is not in the list yet
     private final TextField supplier = new TextField("Lieferant");
+    private final EmailField contactEmail = new EmailField("Kontakt-E-Mail");
     private final DatePicker invoiceDate = new DatePicker("Rechnungsdatum");
     private final DatePicker dueDate = new DatePicker("Fällig am");
     private final BigDecimalField net = new BigDecimalField("Netto (€)");
@@ -79,6 +81,7 @@ public class InvoiceForm extends FormLayout {
         this.invoiceService = invoiceService;
 
         invoiceNumber.setPlaceholder("z. B. RE-2026-114");
+        contactEmail.setPlaceholder("optional, z. B. rechnung@lieferant.de");
         invoiceDate.setLocale(GERMAN);
         dueDate.setLocale(GERMAN);
         vatRate.setLabel("MwSt-Satz");
@@ -95,6 +98,7 @@ public class InvoiceForm extends FormLayout {
         // Stable ids, so the AI (and the tests) can target each field precisely
         invoiceNumber.setId("invoice-number");
         supplier.setId("invoice-supplier");
+        contactEmail.setId("invoice-contact-email");
         invoiceDate.setId("invoice-date");
         dueDate.setId("invoice-due-date");
         net.setId("invoice-net");
@@ -119,7 +123,7 @@ public class InvoiceForm extends FormLayout {
         setResponsiveSteps(
                 new ResponsiveStep("0", 1),
                 new ResponsiveStep("500px", 2));
-        add(invoiceNumber, supplier, invoiceDate, dueDate, net, vatRate, grossDisplay, category, receipt);
+        add(invoiceNumber, supplier, contactEmail, invoiceDate, dueDate, net, vatRate, grossDisplay, category, receipt);
         add(status, 2);
         if (withButtons) {
             add(buttons, 2);
@@ -207,6 +211,7 @@ public class InvoiceForm extends FormLayout {
         var fields = new LinkedHashMap<String, HasHelper>();
         fields.put("invoiceNumber", invoiceNumber);
         fields.put("supplier", supplier);
+        fields.put("contactEmail", contactEmail);
         fields.put("invoiceDate", invoiceDate);
         fields.put("dueDate", dueDate);
         fields.put("net", net);

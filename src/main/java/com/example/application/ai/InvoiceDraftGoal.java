@@ -16,6 +16,7 @@ final class InvoiceDraftGoal {
                 Enter this invoice in the invoice form on screen. It was read from the uploaded file "%s":
                 - Rechnungsnummer (invoice-number): %s
                 - Lieferant (invoice-supplier): %s
+                - Kontakt-E-Mail (invoice-contact-email): %s
                 - Rechnungsdatum (invoice-date): %s
                 - Fällig am (invoice-due-date): %s
                 - Netto (invoice-net): %s
@@ -27,7 +28,7 @@ final class InvoiceDraftGoal {
                 "settable", operation "set"; leave the "none" fields alone. Do not click any button: a person \
                 checks the form and adds the invoice. Reply in one short German sentence.
                 """.formatted(fileName,
-                orNone(draft.invoiceNumber()), orNone(draft.supplier()),
+                orNone(draft.invoiceNumber()), orNone(draft.supplier()), orNone(draft.contactEmail()),
                 orNone(draft.invoiceDate()), orNone(draft.dueDate()),
                 draft.net() == null ? "none" : draft.net().toPlainString(),
                 draft.vatRate() == null ? "none" : "\"" + draft.vatRate().label() + "\"",

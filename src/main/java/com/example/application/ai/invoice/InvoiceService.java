@@ -33,17 +33,18 @@ public class InvoiceService implements ApplicationRunner {
     private static final Logger log = LoggerFactory.getLogger(InvoiceService.class);
 
     /** The suppliers of the demo data, each with what it typically bills for. */
-    private record Supplier(String name, InvoiceCategory category, VatRate vatRate, int minNet, int maxNet) {
+    private record Supplier(String name, String email, InvoiceCategory category, VatRate vatRate, int minNet,
+                            int maxNet) {
     }
 
     private static final List<Supplier> SUPPLIERS = List.of(
-            new Supplier("Acme GmbH", InvoiceCategory.HARDWARE, VatRate.STANDARD, 300, 4_800),
-            new Supplier("Bavaria IT-Systeme GmbH", InvoiceCategory.HARDWARE, VatRate.STANDARD, 150, 2_500),
-            new Supplier("Nordlicht Software AG", InvoiceCategory.SOFTWARE, VatRate.STANDARD, 49, 1_900),
-            new Supplier("CloudNine Ltd.", InvoiceCategory.SOFTWARE, VatRate.ZERO, 99, 1_200),
-            new Supplier("Isarhotel München", InvoiceCategory.TRAVEL, VatRate.REDUCED, 120, 980),
-            new Supplier("Pixelwerk Agentur", InvoiceCategory.MARKETING, VatRate.STANDARD, 500, 6_500),
-            new Supplier("Müller Bürobedarf KG", InvoiceCategory.OFFICE, VatRate.STANDARD, 25, 650));
+            new Supplier("Acme GmbH", "rechnung@acme.example", InvoiceCategory.HARDWARE, VatRate.STANDARD, 300, 4_800),
+            new Supplier("Bavaria IT-Systeme GmbH", "buchhaltung@bavaria-it.example", InvoiceCategory.HARDWARE, VatRate.STANDARD, 150, 2_500),
+            new Supplier("Nordlicht Software AG", "billing@nordlicht.example", InvoiceCategory.SOFTWARE, VatRate.STANDARD, 49, 1_900),
+            new Supplier("CloudNine Ltd.", "invoices@cloudnine.example", InvoiceCategory.SOFTWARE, VatRate.ZERO, 99, 1_200),
+            new Supplier("Isarhotel München", "rezeption@isarhotel.example", InvoiceCategory.TRAVEL, VatRate.REDUCED, 120, 980),
+            new Supplier("Pixelwerk Agentur", "hallo@pixelwerk.example", InvoiceCategory.MARKETING, VatRate.STANDARD, 500, 6_500),
+            new Supplier("Müller Bürobedarf KG", "service@mueller-buero.example", InvoiceCategory.OFFICE, VatRate.STANDARD, 25, 650));
 
     private static final int SEED_SIZE = 50;
 
@@ -157,6 +158,7 @@ public class InvoiceService implements ApplicationRunner {
             invoice.setInvoiceDate(today.minusDays(random.nextInt(183)));
             invoice.setInvoiceNumber("RE-%d-%03d".formatted(invoice.getInvoiceDate().getYear(), 101 + i));
             invoice.setSupplier(supplier.name());
+            invoice.setContactEmail(supplier.email());
             invoice.setDueDate(invoice.getInvoiceDate().plusDays(random.nextBoolean() ? 14 : 30));
             invoice.setNet(BigDecimal.valueOf(supplier.minNet()
                             + random.nextDouble() * (supplier.maxNet() - supplier.minNet()))
