@@ -180,6 +180,11 @@ draiv wiring) and `com.example.application.ai.invoice` (entity, repository, serv
   runs without a model) and runs it once with `run_script`; "Ausführen" replays it through
   `ScriptRunner`. Scripts live in `InMemoryScriptStore`, so they are gone after a restart. The
   macro bar has no `AgentScope`, because a scope makes draiv refuse `navigate`.
+- Guardrails (`ai/guardrails`): two layers. The view applies its `AgentScope` (all but "Als bezahlt
+  markieren" and "Löschen") to the UI for as long as it is attached, so it binds every agent: prompt
+  bar, chat and MCP. While it is open the chat cannot `navigate` away. And the two handlers refuse
+  when `CurrentActor.isProgrammatic(ui)`, because draiv's script runner (`run_script`) drives through
+  `Driver`, which ignores `AgentScope`: without that check a macro could click "Löschen".
 - Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
   is not split). For several labels the goal says: `set` the first, then `selectable` /
   `selectByContent` for each further one, always the complete selection. The W-JAX goal says the

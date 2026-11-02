@@ -88,3 +88,26 @@ vaadin-grid::part(new-invoice) {
         background-color: color-mix(in srgb, var(--aura-accent-color) 55%, transparent);
     }
 }
+
+/* AiGuardrailsView: the buttons the AI cannot reach, and the rules for visitors */
+.ai-off-limits {
+    outline: 2px dashed var(--vaadin-border-color, currentColor);
+    outline-offset: 3px;
+}
+
+.ai-guardrail-rules {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: var(--vaadin-gap-m, 1rem);
+    align-items: baseline;
+    color: var(--vaadin-text-color-secondary);
+}
+
+.ai-guardrail-rules ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--vaadin-gap-m, 1rem);
+}

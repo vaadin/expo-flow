@@ -13,6 +13,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -104,6 +105,15 @@ public class InvoiceService implements ApplicationRunner {
             listeners.forEach(listener -> listener.accept(saved));
         }
         return saved;
+    }
+
+    public void markPaid(Collection<Invoice> invoices) {
+        invoices.forEach(invoice -> invoice.setStatus(InvoiceStatus.PAID));
+        repository.saveAll(invoices);
+    }
+
+    public void delete(Collection<Invoice> invoices) {
+        repository.deleteAll(invoices);
     }
 
     /** Back to the demo data, e.g. between two trade-show visitors. */
