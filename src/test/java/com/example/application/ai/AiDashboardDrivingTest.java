@@ -13,6 +13,7 @@ import com.vaadin.draiv.session.DemoPrincipal;
 import com.vaadin.draiv.session.DemoPrincipalUiResolver;
 import com.vaadin.draiv.session.UiRegistry;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.charts.model.ChartType;
 import com.vaadin.flow.shared.Registration;
 import org.junit.jupiter.api.AfterEach;
@@ -87,6 +88,9 @@ class AiDashboardDrivingTest extends SpringBrowserlessTest {
         assertTrue(results.stream().allMatch(result -> "ok".equals(result.status())), results::toString);
 
         assertEquals(ChartType.BAR, view.shownType());
+        // Set inside the closed block, which stays closed; the badge counts status, from and to
+        assertFalse(find(FilterDetails.class).id("dashboard-filter-details").isOpened());
+        assertEquals(3, find(Badge.class).withText("aktive Filter").single().getNumber());
         assertEquals(expectedPerCategory(invoice -> invoice.getStatus() == InvoiceStatus.OPEN
                 && !invoice.getInvoiceDate().isBefore(LocalDate.of(2026, 7, 1))
                 && !invoice.getInvoiceDate().isAfter(LocalDate.of(2026, 9, 30))), shownAsDecimals());

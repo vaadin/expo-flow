@@ -21,6 +21,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -37,7 +38,8 @@ import java.util.stream.Collectors;
 /**
  * Tab 4: analyse spending by saying what you want to see. The AI sets the ordinary control bar (what to
  * add up, chart type, status, categories, period); the chart listens to the bar's value changes. draiv
- * does not drive the chart itself, and the AI may only touch the control bar ({@link AgentScope}).
+ * does not drive the chart itself, and the AI may only touch the control bar ({@link AgentScope}), which
+ * stays folded away in a {@link FilterDetails}.
  */
 @PageTitle("AI Dashboard")
 @Route("ai/dashboard")
@@ -123,7 +125,17 @@ public class AiDashboardView extends AiTabView {
         chartArea.setId("dashboard-chart");
         chartArea.setWidthFull();
 
-        add(prompt, controls, summary, chartArea);
+        // The controls stay folded away; the key figures stay in sight next to them
+        var controlDetails = new FilterDetails(controls, this::activeFilters,
+                grouping, kind, statuses, categories, from, to);
+        controlDetails.setId("dashboard-filter-details");
+        summary.addClassName("filter-result");
+        var controlRow = new HorizontalLayout(controlDetails, summary);
+        controlRow.setAlignItems(Alignment.BASELINE);
+        controlRow.setWidthFull();
+        controlRow.setFlexGrow(1, controlDetails);
+
+        add(prompt, controlRow, chartArea);
         refresh();
     }
 
@@ -179,6 +191,16 @@ public class AiDashboardView extends AiTabView {
                 request);
         previousRequest = request;
         return goal;
+    }
+
+    /** The filters that narrow the invoices; what is added up and the chart type are not filters. */
+    private int activeFilters() {
+        int active = 0;
+        active += statuses.getValue().isEmpty() ? 0 : 1;
+        active += categories.getValue().isEmpty() ? 0 : 1;
+        active += from.getValue() == null ? 0 : 1;
+        active += to.getValue() == null ? 0 : 1;
+        return active;
     }
 
     private void reset() {
