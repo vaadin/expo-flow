@@ -75,7 +75,7 @@ class AiInvoiceDrivingTest extends SpringBrowserlessTest {
         String snapshot = tools.inspect(null, null, null);
         apply(snapshot, "invoice-supplier", "settable", "set", "Acme GmbH");
 
-        assertEquals("Acme GmbH", $(ComboBox.class).id("invoice-supplier").getValue());
+        assertEquals("Acme GmbH", find(ComboBox.class).id("invoice-supplier").getValue());
     }
 
     @Test
@@ -87,7 +87,7 @@ class AiInvoiceDrivingTest extends SpringBrowserlessTest {
 
         assertTrue(snapshot.contains("invoice-supplier"), snapshot);
         assertFalse(snapshot.contains("MessageInput") || snapshot.contains("AI-Assistent"), snapshot);
-        assertEquals(1, $(MessageInput.class).all().size()); // it is there, just not for the AI
+        assertEquals(1, find(MessageInput.class).all().size()); // it is there, just not for the AI
     }
 
     @Test
@@ -128,7 +128,7 @@ class AiInvoiceDrivingTest extends SpringBrowserlessTest {
 
     @SuppressWarnings("unchecked")
     private List<Invoice> latestInvoices() {
-        Grid<Invoice> grid = $(Grid.class).id("latest-invoices");
+        Grid<Invoice> grid = find(Grid.class).id("latest-invoices");
         return grid.getListDataView().getItems().toList();
     }
 }
