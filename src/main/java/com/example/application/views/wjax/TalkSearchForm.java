@@ -1,6 +1,7 @@
 package com.example.application.views.wjax;
 
 import com.example.application.wjax.TalkFilter;
+import com.example.application.wjax.Track;
 import com.example.application.wjax.WjaxTalkService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -23,7 +24,7 @@ public class TalkSearchForm extends FormLayout {
     private final TextField topics = new TextField("Topics");
     private final TextField excludedTopics = new TextField("Exclude topics");
     private final TextField speaker = new TextField("Speaker");
-    private final MultiSelectComboBox<String> tracks = new MultiSelectComboBox<>("Tracks");
+    private final MultiSelectComboBox<Track> tracks = new MultiSelectComboBox<>("Tracks");
     private final MultiSelectComboBox<String> formats = new MultiSelectComboBox<>("Format");
     private final MultiSelectComboBox<String> languages = new MultiSelectComboBox<>("Language");
     private final DateTimePicker startsAfter = new DateTimePicker("Starts after");
@@ -37,6 +38,7 @@ public class TalkSearchForm extends FormLayout {
         topics.setPlaceholder("e.g. java, security");
         excludedTopics.setPlaceholder("e.g. AI, LLM");
         tracks.setItems(talkService.tracks());
+        tracks.setItemLabelGenerator(Track::displayName); // the full names the AI goal lists
         formats.setItems(talkService.formats());
         languages.setItems(talkService.languages());
 

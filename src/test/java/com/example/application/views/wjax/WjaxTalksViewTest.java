@@ -1,11 +1,13 @@
 package com.example.application.views.wjax;
 
 import com.example.application.wjax.Talk;
+import com.example.application.wjax.Track;
 import com.example.application.wjax.WjaxTalkService;
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.textfield.TextField;
 import org.junit.jupiter.api.Test;
@@ -45,7 +47,7 @@ class WjaxTalksViewTest extends SpringBrowserlessTest {
         var talks = shownTalks();
         assertFalse(talks.isEmpty());
         assertTrue(talks.stream().allMatch(talk ->
-                talk.tracks().contains("Performance & Security") && talk.language().equals("English")));
+                talk.tracks().contains(Track.PERFORMANCE_SECURITY) && talk.language().equals("English")));
     }
 
     @Test
@@ -87,6 +89,20 @@ class WjaxTalksViewTest extends SpringBrowserlessTest {
 
         assertEquals(talkService.countTalks(), shownTalks().size());
         assertTrue($(TextField.class).id("filter-topics").isEmpty());
+    }
+
+    @Test
+    void filtersOpenOnlyWhileTheyAreUsed() {
+        navigate(WjaxTalksView.class);
+        var filters = $(Details.class).single();
+        assertFalse(filters.isOpened());
+
+        test($(TextField.class).id("filter-topics")).setValue("java");
+        test($(Button.class).id("search-button")).click();
+        assertTrue(filters.isOpened());
+
+        test($(Button.class).id("reset-button")).click();
+        assertFalse(filters.isOpened());
     }
 
     @SuppressWarnings("unchecked")

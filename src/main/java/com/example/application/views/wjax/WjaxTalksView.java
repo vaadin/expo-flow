@@ -2,16 +2,23 @@ package com.example.application.views.wjax;
 
 import com.example.application.wjax.Talk;
 import com.example.application.wjax.TalkFilter;
+import com.example.application.wjax.Track;
 import com.example.application.wjax.WjaxTalkService;
 import com.vaadin.draiv.ai.presenter.TextPresenterProperties;
 import com.vaadin.draiv.ai.presenter.TextPresenterService;
 import com.vaadin.flow.automation.indication.ChangeIndication;
 import com.vaadin.flow.automation.indication.ChangeIndication.IndicationStyle;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.badge.Badge;
+import com.vaadin.flow.component.badge.BadgeVariant;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -20,6 +27,8 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Find talks at W-JAX 2026 by asking in plain language: the AI fills in the search form
@@ -32,6 +41,7 @@ public class WjaxTalksView extends VerticalLayout {
 
     private static final DateTimeFormatter DAY_AND_TIME = DateTimeFormatter.ofPattern("EEE HH:mm", Locale.ENGLISH);
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm");
+    private static final Map<String, String> FLAGS = Map.of("English", "gb", "German", "de");
     private static final DateTimeFormatter NOW = DateTimeFormatter.ofPattern("EEEE yyyy-MM-dd HH:mm", Locale.ENGLISH);
 
     /**
@@ -75,6 +85,8 @@ public class WjaxTalksView extends VerticalLayout {
     private final WjaxTalkService talkService;
     private final Grid<Talk> grid = new Grid<>();
     private final Span talkCount = new Span();
+    private final Details filters = new Details();
+    private final Badge activeFilters = new Badge("active filters", 0);
     // Each AI run starts without memory, so pass on the previous request to allow "only for beginners"
     private String previousRequest = "";
 
@@ -88,21 +100,29 @@ public class WjaxTalksView extends VerticalLayout {
         grid.addColumn(talk -> talk.start().format(DAY_AND_TIME) + "–" + talk.end().format(TIME))
                 .setHeader("When").setComparator(Talk::start).setAutoWidth(true).setFlexGrow(0);
         grid.addColumn(Talk::title).setHeader("Title").setFlexGrow(4);
-        grid.addColumn(Talk::trackNames).setHeader("Tracks").setSortable(true).setFlexGrow(1);
+        grid.addColumn(new ComponentRenderer<>(this::trackBadges))
+                .setHeader("Tracks").setComparator(Talk::trackNames).setFlexGrow(1);
+        grid.addColumn(Talk::speakers).setHeader("Speakers").setFlexGrow(1);
+        // The language as a flag (images/flags), the name as alt text and tooltip
+        grid.addColumn(LitRenderer.<Talk>of("""
+                        <img class="language-flag" src="images/flags/${item.flag}.svg"
+                             alt="${item.language}" title="${item.language}" ?hidden=${!item.flag}>
+                        """)
+                        .withProperty("flag", talk -> FLAGS.getOrDefault(talk.language(), ""))
+                        .withProperty("language", Talk::language))
+                .setHeader("Language").setComparator(Talk::language).setAutoWidth(true).setFlexGrow(0);
         // Click a row to read the abstract. A template renderer: no server-side component per row.
-        // talk-facts (wjax-view.css) gives Author, Format, Language and Room equal columns in every talk
+        // talk-facts (wjax-view.css) gives Author, Format and Room equal columns in every talk
         grid.setItemDetailsRenderer(LitRenderer.<Talk>of("""
                         <div class="talk-facts">
                             <span><b>Author:</b> ${item.speakers}</span>
                             <span><b>Format:</b> ${item.format}</span>
-                            <span><b>Language:</b> ${item.language}</span>
                             <span><b>Room:</b> ${item.room}</span>
                         </div>
                         <p>${item.description}</p>
                         """)
                 .withProperty("speakers", Talk::speakers)
                 .withProperty("format", Talk::format)
-                .withProperty("language", Talk::language)
                 .withProperty("room", Talk::room)
                 .withProperty("description", Talk::description));
         // The details follow the selection: a click opens a talk, a second click closes it
@@ -135,9 +155,19 @@ public class WjaxTalksView extends VerticalLayout {
         grid.addThemeVariants(GridVariant.WRAP_CELL_CONTENT);
         grid.setSizeFull();
 
+        // The filters stay folded away until a search uses them; the summary counts the active ones
+        activeFilters.addThemeVariants(BadgeVariant.NUMBER_ONLY, BadgeVariant.SMALL);
+        activeFilters.setVisible(false);
+        filters.setSummary(new HorizontalLayout(new Span("Filters"), activeFilters));
+        filters.add(new TalkSearchForm(talkService, this::showTalks));
+        filters.setWidthFull();
+
+        var filterLayout = new HorizontalLayout(filters, talkCount);
+        filterLayout.setAlignItems(Alignment.BASELINE);
+        filterLayout.setWidthFull();
+
         add(new AiSearchBar(presenter, presenterProperties, this::aiGoal),
-                new TalkSearchForm(talkService, this::showTalks),
-                talkCount,
+                filterLayout,
                 grid);
         setSizeFull();
 
@@ -145,9 +175,12 @@ public class WjaxTalksView extends VerticalLayout {
     }
 
     private String aiGoal(String request) {
+        // Show the form while the AI fills it in, so the changed fields can be seen flashing
+        filters.setOpened(true);
         var goal = AI_GOAL.formatted(talkService.conferenceTime().format(NOW),
                 previousRequest.isEmpty() ? "none" : previousRequest,
-                String.join("; ", talkService.tracks()), // track names contain commas
+                talkService.tracks().stream().map(Track::displayName)
+                        .collect(Collectors.joining("; ")), // track names contain commas
                 String.join(", ", talkService.formats()),
                 String.join(", ", talkService.languages()),
                 request);
@@ -159,5 +192,28 @@ public class WjaxTalksView extends VerticalLayout {
         var talks = talkService.findTalks(filter);
         grid.setItems(talks);
         talkCount.setText(talks.size() + " of " + talkService.countTalks() + " talks");
+        talkCount.getStyle().setWidth("100px");
+        int active = filter.activeCriteria();
+        activeFilters.setNumber(active);
+        activeFilters.setVisible(active > 0);
+        filters.setOpened(active > 0);
+    }
+
+    /**
+     * One badge per track: the short name, the full name as tooltip. --track-hue (wjax-view.css) gives
+     * each track its own colour.
+     */
+    private Div trackBadges(Talk talk) {
+        var badges = new Div();
+        badges.addClassName("track-badges");
+        for (var track : talk.tracks()) {
+            var badge = new Badge(track.shortName());
+            badge.addClassName("track-badge");
+            badge.getElement().setAttribute("title", track.displayName());
+            // The golden angle spreads neighbouring tracks far apart on the colour wheel
+            badge.getStyle().set("--track-hue", String.valueOf(Math.round(track.ordinal() * 137.5 % 360)));
+            badges.add(badge);
+        }
+        return badges;
     }
 }

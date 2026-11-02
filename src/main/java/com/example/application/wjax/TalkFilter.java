@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * What the talk search form asks for. Every criterion is optional: a blank text, an empty set or a
@@ -13,11 +14,20 @@ import java.util.regex.Pattern;
  * @param excludedTopics comma-separated words; a talk is left out if it contains any of them
  */
 public record TalkFilter(String topics, String excludedTopics, String speaker,
-                         Set<String> tracks, Set<String> formats, Set<String> languages,
+                         Set<Track> tracks, Set<String> formats, Set<String> languages,
                          LocalDateTime startsAfter, LocalDateTime startsBefore) {
 
     public static TalkFilter empty() {
         return new TalkFilter("", "", "", Set.of(), Set.of(), Set.of(), null, null);
+    }
+
+    /** How many criteria constrain the search, 0 for {@link #empty()}. */
+    public int activeCriteria() {
+        return (int) Stream.of(!topics.isBlank(), !excludedTopics.isBlank(), !speaker.isBlank(),
+                        !tracks.isEmpty(), !formats.isEmpty(), !languages.isEmpty(),
+                        startsAfter != null, startsBefore != null)
+                .filter(active -> active)
+                .count();
     }
 
     public boolean matches(Talk talk) {

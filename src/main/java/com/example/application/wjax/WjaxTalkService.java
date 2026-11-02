@@ -46,6 +46,8 @@ public class WjaxTalkService {
             // Sessions refer to their type, tracks and speakers by uniqueId
             var types = namesById(root, "sessionTypes", "sessiontype", e -> text(e, "name"));
             var tracks = namesById(root, "tracks", "track", e -> text(e, "name"));
+            // Fail on startup, not in the UI, when the export has a track the Track enum does not know
+            tracks.values().forEach(Track::fromDisplayName);
             var speakers = namesById(root, "speakers", "speaker",
                     e -> (text(e, "firstName") + " " + text(e, "lastName")).strip());
 
@@ -66,7 +68,7 @@ public class WjaxTalkService {
         return talks.size();
     }
 
-    public List<String> tracks() {
+    public List<Track> tracks() {
         return talks.stream().flatMap(talk -> talk.tracks().stream()).distinct().sorted().toList();
     }
 
@@ -99,7 +101,7 @@ public class WjaxTalkService {
                         .map(speaker -> speakers.getOrDefault(text(speaker, "speakerId"), ""))
                         .filter(name -> !name.isEmpty())
                         .collect(Collectors.joining(", ")),
-                trackIds.stream().filter(tracks::containsKey).map(tracks::get).toList(),
+                trackIds.stream().filter(tracks::containsKey).map(id -> Track.fromDisplayName(tracks.get(id))).toList(),
                 types.get(text(session, "type")),
                 LANGUAGES.getOrDefault(text(session, "language"), ""),
                 text(session, "roomName"),

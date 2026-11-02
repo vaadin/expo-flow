@@ -1,7 +1,33 @@
 /* WjaxTalksView: the row details under a talk */
 .talk-facts {
     display: grid;
-    /* Four equal columns, so Author, Format, Language and Room line up from talk to talk */
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* Three equal columns, so Author, Format and Room line up from talk to talk */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--vaadin-gap-m);
+}
+
+/* The Tracks column: one badge per track, coloured by the --track-hue the view sets on each */
+.track-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vaadin-gap-xs);
+}
+
+.track-badge {
+    --vaadin-badge-background: light-dark(hsl(var(--track-hue) 75% 92%), hsl(var(--track-hue) 40% 25%));
+    --vaadin-badge-text-color: light-dark(hsl(var(--track-hue) 70% 28%), hsl(var(--track-hue) 80% 85%));
+}
+
+/* The Lang column */
+.language-flag {
+    display: block;
+    width: 1.5em;
+    height: 1em;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.15);
+}
+
+.language-flag[hidden] {
+    display: none;
 }

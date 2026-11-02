@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class TalkFilterTest {
 
     private final Talk talk = new Talk("Maintaining Java apps", "Duke",
-            List.of("Java & JVM Languages", "Java Backend Engineering"), "Session", "English", "Ballsaal",
+            List.of(Track.JAVA, Track.JAVA_BACKEND), "Session", "English", "Ballsaal",
             LocalDateTime.of(2026, 11, 4, 10, 0), LocalDateTime.of(2026, 11, 4, 11, 0),
             "How to keep a big JVM codebase healthy.");
 
@@ -31,8 +31,8 @@ class TalkFilterTest {
 
     @Test
     void matchesAnyOfTheTalksTracks() {
-        assertTrue(tracks("Java Backend Engineering", "Frontend & Web Applications").matches(talk));
-        assertFalse(tracks("Frontend & Web Applications").matches(talk));
+        assertTrue(tracks(Track.JAVA_BACKEND, Track.FRONTEND).matches(talk));
+        assertFalse(tracks(Track.FRONTEND).matches(talk));
     }
 
     @Test
@@ -46,7 +46,7 @@ class TalkFilterTest {
         return new TalkFilter(topics, "", "", Set.of(), Set.of(), Set.of(), null, null);
     }
 
-    private static TalkFilter tracks(String... tracks) {
+    private static TalkFilter tracks(Track... tracks) {
         return new TalkFilter("", "", "", Set.of(tracks), Set.of(), Set.of(), null, null);
     }
 }

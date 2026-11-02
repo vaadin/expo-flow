@@ -1,6 +1,7 @@
 package com.example.application.views.wjax;
 
 import com.example.application.wjax.Talk;
+import com.example.application.wjax.Track;
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.draiv.ai.mcp.AliasRegistry;
 import com.vaadin.draiv.ai.mcp.CapabilityMcpTools;
@@ -46,7 +47,7 @@ class WjaxTalksDrivingTest extends SpringBrowserlessTest {
 
         var talks = shownTalks();
         assertFalse(talks.isEmpty());
-        assertTrue(talks.stream().allMatch(talk -> talk.tracks().contains("Performance & Security")
+        assertTrue(talks.stream().allMatch(talk -> talk.tracks().contains(Track.PERFORMANCE_SECURITY)
                 && !talk.start().isBefore(LocalDateTime.of(2026, 11, 4, 9, 0))
                 && !talk.start().isAfter(LocalDateTime.of(2026, 11, 4, 12, 0))));
     }
