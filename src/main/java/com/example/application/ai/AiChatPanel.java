@@ -8,6 +8,8 @@ import com.vaadin.draiv.ai.presenter.TextPresenterService.TurnEvent;
 import com.vaadin.draiv.ai.presenter.TextPresenterService.TurnResult;
 import com.vaadin.draiv.session.AssistPrincipal;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.messages.MessageInput;
@@ -79,6 +81,8 @@ public class AiChatPanel extends VerticalLayout {
     private final MessageList messages = new MessageList();
     private final MessageInput input = new MessageInput();
     private final UploadManager uploadManager = new UploadManager(this);
+    private final Button newChat = new Button(VaadinIcon.PLUS_CIRCLE_O.create());
+    private final Button hide = new Button(VaadinIcon.ANGLE_DOUBLE_RIGHT.create());
     /** The conversation the model sees, carried from turn to turn. */
     private List<Message> conversation = List.of(new UserMessage(APP_CONTEXT));
 
@@ -93,8 +97,7 @@ public class AiChatPanel extends VerticalLayout {
 
         messages.setMarkdown(true);
         messages.addClassName("ai-chat-messages");
-        show(AI, "Hallo! Sag mir, was ich in der App tun soll, z. B. „Bring mich zum Rechnungs-Upload“, "
-                + "oder häng mit der Büroklammer eine Rechnung an.");
+        greet();
         input.addSubmitListener(event -> send(event.getValue()));
 
         // Invoices as PDF or photo; on a phone the browser offers the camera
@@ -120,8 +123,45 @@ public class AiChatPanel extends VerticalLayout {
         inputRow.setAlignItems(FlexComponent.Alignment.BASELINE);
         inputRow.setSpacing(false);
 
-        add(new H3("AI-Assistent"), messages, uploadFileList, inputRow);
+        newChat.addThemeVariants(ButtonVariant.TERTIARY, ButtonVariant.SMALL);
+        newChat.setAriaLabel("Neuer Chat");
+        newChat.setTooltipText("Neuer Chat: Verlauf und Anhänge vergessen");
+        newChat.setId("chat-new-button");
+        newChat.addClickListener(e -> startNewChat());
+        hide.addThemeVariants(ButtonVariant.TERTIARY, ButtonVariant.SMALL);
+        hide.setAriaLabel("Chat ausblenden");
+        hide.setTooltipText("Chat ausblenden");
+        hide.setId("chat-hide-button");
+        var header = new HorizontalLayout(new H3("AI-Assistent"), newChat, hide);
+        header.setWidthFull();
+        header.setAlignItems(FlexComponent.Alignment.CENTER);
+        header.setFlexGrow(1, header.getComponentAt(0));
+        header.addClassName("ai-chat-header");
+
+        add(header, messages, uploadFileList, inputRow);
         setFlexGrow(1, messages);
+    }
+
+    /** The conversation the model sees next; for the tests. */
+    List<Message> conversation() {
+        return conversation;
+    }
+
+    /** The button that hides the panel; the layout around it decides what hiding means. */
+    public Button getHideButton() {
+        return hide;
+    }
+
+    private void greet() {
+        show(AI, "Hallo! Sag mir, was ich in der App tun soll, z. B. „Bring mich zum Rechnungs-Upload“, "
+                + "oder häng mit der Büroklammer eine Rechnung an.");
+    }
+
+    /** Forgets the conversation: the model starts from the app context again. */
+    private void startNewChat() {
+        conversation = List.of(new UserMessage(APP_CONTEXT));
+        messages.setItems(List.of());
+        greet();
     }
 
     private void send(String text) {
@@ -181,6 +221,7 @@ public class AiChatPanel extends VerticalLayout {
     /** One turn at a time: a second message or upload would drive the same UI concurrently. */
     private void setBusy(boolean busy) {
         input.setEnabled(!busy);
+        newChat.setEnabled(!busy);
         uploadManager.setEnabled(!busy);
     }
 

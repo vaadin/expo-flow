@@ -25,6 +25,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.ParentLayout;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 /**
@@ -38,7 +39,11 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @PageTitle("AI Driven UI")
 public class AiShowcaseLayout extends Div implements RouterLayout {
 
+    private static final String CHAT_HIDDEN = AiShowcaseLayout.class.getName() + ".chatHidden";
+
     private final Div content = new Div();
+    private final AiChatPanel chatPanel;
+    private final Button showChat;
 
     public AiShowcaseLayout(TextPresenterService presenter, TextPresenterProperties presenterProperties,
                             AssistPrincipal assistPrincipal, InvoiceExtractionService extraction,
@@ -56,10 +61,32 @@ public class AiShowcaseLayout extends Div implements RouterLayout {
         tabs.addClassName("ai-tabs");
         content.addClassName("ai-tab-content");
 
-        var tabBar = new Div(tabs, resetButton(invoiceService, scripts));
+        // Hiding the chat gives the tab the full width; the conversation stays, and so does the choice
+        // for the rest of the session
+        var showChat = new Button("Chat", VaadinIcon.COMMENTS_O.create(), e -> setChatHidden(true, false));
+        showChat.addThemeVariants(ButtonVariant.TERTIARY);
+        showChat.setTooltipText("Chat einblenden");
+        showChat.setId("chat-show-button");
+        showChat.getElement().setAttribute("data-draiv-control", "true");
+        this.showChat = showChat;
+        this.chatPanel = chatPanel;
+        chatPanel.getHideButton().addClickListener(e -> setChatHidden(true, true));
+
+        var tabBar = new Div(tabs, new Div(showChat, resetButton(invoiceService, scripts)));
         tabBar.addClassName("ai-tab-bar");
 
         add(tabBar, content, chatPanel);
+        setChatHidden(false, Boolean.TRUE.equals(VaadinSession.getCurrent().getAttribute(CHAT_HIDDEN)));
+    }
+
+    /** Shows or hides the chat; {@code remember} keeps the choice in the session. */
+    private void setChatHidden(boolean remember, boolean hidden) {
+        chatPanel.setVisible(!hidden);
+        showChat.setVisible(hidden);
+        setClassName("ai-chat-hidden", hidden);
+        if (remember) {
+            VaadinSession.getCurrent().setAttribute(CHAT_HIDDEN, hidden);
+        }
     }
 
     /**

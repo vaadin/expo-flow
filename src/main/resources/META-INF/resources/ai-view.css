@@ -235,3 +235,15 @@ vaadin-grid::part(new-invoice) {
 .ai-crud-editor h3 {
     margin-top: 0;
 }
+
+/* Chat hidden (AiShowcaseLayout): the tab gets the full width */
+.ai-showcase.ai-chat-hidden {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "tabs"
+        "content";
+}
+
+.ai-chat-header h3 {
+    margin: 0;
+}
