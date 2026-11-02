@@ -176,6 +176,10 @@ draiv wiring) and `com.example.application.ai.invoice` (entity, repository, serv
 - AI Dashboard (`ai/dashboard`): the AI sets the control bar (`InvoiceGrouping`, chart type,
   status and category `CheckboxGroup`s, period); every change builds a fresh `Chart`, so the
   type can change too. draiv does not drive the chart; it is outside the scope.
+- Makro (`ai/macros`): the AI writes a draiv script with `save_script` (no `assist` steps, so it
+  runs without a model) and runs it once with `run_script`; "Ausführen" replays it through
+  `ScriptRunner`. Scripts live in `InMemoryScriptStore`, so they are gone after a restart. The
+  macro bar has no `AgentScope`, because a scope makes draiv refuse `navigate`.
 - Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
   is not split). For several labels the goal says: `set` the first, then `selectable` /
   `selectByContent` for each further one, always the complete selection. The W-JAX goal says the
