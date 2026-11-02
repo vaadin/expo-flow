@@ -1,0 +1,78 @@
+/* AI Driven UI (AiShowcaseLayout): tab bar on top, the tab on the left, the chat on the right */
+.ai-showcase {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+        "tabs tabs"
+        "content chat";
+    gap: var(--vaadin-gap-m, 1rem);
+    height: 100%;
+    box-sizing: border-box;
+    padding: var(--vaadin-padding-m, 1rem);
+}
+
+.ai-tabs {
+    grid-area: tabs;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vaadin-gap-s, 0.5rem);
+}
+
+.ai-tabs a {
+    padding: 0.4em 0.9em;
+    border-radius: var(--vaadin-radius-l);
+    color: var(--vaadin-text-color-secondary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.ai-tabs a:hover {
+    color: var(--vaadin-text-color);
+    background: var(--vaadin-background-container);
+}
+
+.ai-tabs a[highlight] {
+    color: var(--aura-accent-contrast-color, white);
+    background: var(--aura-accent-color, var(--vaadin-text-color));
+}
+
+.ai-tab-content {
+    grid-area: content;
+    overflow: auto;
+    min-height: 0;
+}
+
+.ai-tab-story {
+    margin-top: 0;
+    color: var(--vaadin-text-color-secondary);
+}
+
+.ai-chat-panel {
+    grid-area: chat;
+    min-height: 0;
+    height: 100%;
+    border-radius: var(--vaadin-radius-l);
+    background: var(--vaadin-background-container);
+    box-sizing: border-box;
+}
+
+.ai-chat-panel h3 {
+    margin: 0;
+}
+
+.ai-chat-messages {
+    width: 100%;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Phones (the trade-show hotspot): the chat goes below the tab */
+@media (max-width: 800px) {
+    .ai-showcase {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(420px, auto);
+        grid-template-areas: "tabs" "content" "chat";
+        height: auto;
+    }
+}
