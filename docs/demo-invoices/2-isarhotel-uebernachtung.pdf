@@ -1,0 +1,70 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 1777 >>
+stream
+BT /F2 16 Tf 50.0 790.0 Td (Isarhotel München) Tj ET
+BT /F1 9 Tf 50.0 772.0 Td (Am Isarkanal 3) Tj ET
+BT /F1 9 Tf 50.0 759.0 Td (81379 München) Tj ET
+BT /F1 7 Tf 50.0 700.0 Td (Isarhotel München · Am Isarkanal 3 · 81379 München) Tj ET
+BT /F1 10 Tf 50.0 685.0 Td (Expo Flow Demo GmbH) Tj ET
+BT /F1 10 Tf 50.0 672.0 Td (Buchhaltung) Tj ET
+BT /F1 10 Tf 50.0 659.0 Td (Messeweg 1) Tj ET
+BT /F1 10 Tf 50.0 646.0 Td (80331 München) Tj ET
+BT /F1 9 Tf 400.0 685.0 Td (Rechnungsnummer:) Tj ET
+BT /F2 9 Tf 499.6 685.0 Td (2026-0871) Tj ET
+BT /F1 9 Tf 400.0 672.0 Td (Rechnungsdatum:) Tj ET
+BT /F1 9 Tf 498.2 672.0 Td (30.10.2026) Tj ET
+BT /F2 14 Tf 50.0 590.0 Td (Rechnung 2026-0871) Tj ET
+BT /F2 9 Tf 50.0 560.0 Td (Pos.) Tj ET
+BT /F2 9 Tf 85.0 560.0 Td (Menge) Tj ET
+BT /F2 9 Tf 130.0 560.0 Td (Beschreibung) Tj ET
+BT /F2 9 Tf 404.6 560.0 Td (Einzelpreis) Tj ET
+BT /F2 9 Tf 514.8 560.0 Td (Betrag) Tj ET
+50 553 m 545 553 l S
+BT /F1 9 Tf 50.0 538.0 Td (1) Tj ET
+BT /F1 9 Tf 85.0 538.0 Td (3) Tj ET
+BT /F1 9 Tf 130.0 538.0 Td (Übernachtung Einzelzimmer, W-JAX) Tj ET
+BT /F1 9 Tf 422.6 538.0 Td (129,00 €) Tj ET
+BT /F1 9 Tf 507.6 538.0 Td (387,00 €) Tj ET
+330 526 m 545 526 l S
+BT /F1 10 Tf 340.0 508.0 Td (Nettobetrag) Tj ET
+BT /F1 10 Tf 503.4 508.0 Td (387,00 €) Tj ET
+BT /F1 10 Tf 340.0 494.0 Td (zzgl. 7 % MwSt.) Tj ET
+BT /F1 10 Tf 508.6 494.0 Td (27,09 €) Tj ET
+BT /F2 10 Tf 340.0 480.0 Td (Rechnungsbetrag) Tj ET
+BT /F2 10 Tf 500.2 480.0 Td (414,09 €) Tj ET
+BT /F1 10 Tf 50.0 430.0 Td (Zahlbar innerhalb von 14 Tagen nach Rechnungsdatum.) Tj ET
+BT /F1 9 Tf 50.0 414.0 Td (Bitte überweisen Sie den Betrag unter Angabe der Rechnungsnummer.) Tj ET
+50 80 m 545 80 l S
+BT /F1 7 Tf 50.0 66.0 Td (Isarhotel München · IBAN DE00 0000 0000 0000 0000 00 · USt-IdNr. DE000000000 \(Demo\)) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000000348 00000 n 
+0000000450 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+2279
+%%EOF
