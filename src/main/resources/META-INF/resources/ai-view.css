@@ -12,8 +12,16 @@
     padding: var(--vaadin-padding-m, 1rem);
 }
 
-.ai-tabs {
+.ai-tab-bar {
     grid-area: tabs;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--vaadin-gap-s, 0.5rem);
+}
+
+.ai-tabs {
     display: flex;
     flex-wrap: wrap;
     gap: var(--vaadin-gap-s, 0.5rem);

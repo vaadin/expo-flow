@@ -51,7 +51,8 @@ public class AiInvoiceUploadView extends AiTabView {
         latest.setId("latest-invoices");
         showLatest();
 
-        add(new InvoiceForm(invoiceService), new H3("Neueste Rechnungen"), latest);
+        add(new FallbackButton(FallbackMacros.UPLOAD), new InvoiceForm(invoiceService),
+                new H3("Neueste Rechnungen"), latest);
     }
 
     private void showLatest() {

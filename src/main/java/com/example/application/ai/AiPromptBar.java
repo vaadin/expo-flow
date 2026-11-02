@@ -2,6 +2,7 @@ package com.example.application.ai;
 
 import com.vaadin.draiv.ai.ui.AgentScope;
 import com.vaadin.draiv.ai.ui.UiAssistant;
+import com.vaadin.draiv.script.Script;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
@@ -76,6 +77,11 @@ public class AiPromptBar extends Composite<HorizontalLayout> {
         var bar = new AiPromptBar(assistant, scope, goalForRequest, area, buttonText);
         bar.button.addClickShortcut(Key.ENTER, KeyModifier.CONTROL).listenOn(area);
         return bar;
+    }
+
+    /** Adds "Ohne AI vorführen", which replays the tab's fallback macro. */
+    public void addFallback(Script fallback) {
+        getContent().add(new FallbackButton(fallback));
     }
 
     public TextFieldBase<?, String> getPrompt() {

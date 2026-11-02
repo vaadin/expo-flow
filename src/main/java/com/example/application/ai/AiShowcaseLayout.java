@@ -1,6 +1,7 @@
 package com.example.application.ai;
 
 import com.example.application.ai.invoice.InvoiceExtractionService;
+import com.example.application.ai.invoice.InvoiceService;
 import com.example.application.views.MainLayout;
 import com.vaadin.draiv.ai.presenter.TextPresenterProperties;
 import com.vaadin.draiv.ai.presenter.TextPresenterService;
@@ -10,8 +11,13 @@ import com.vaadin.flow.automation.indication.ChangeIndication.IndicationStyle;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Nav;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.Layout;
 import com.vaadin.flow.router.PageTitle;
@@ -34,7 +40,8 @@ public class AiShowcaseLayout extends Div implements RouterLayout {
     private final Div content = new Div();
 
     public AiShowcaseLayout(TextPresenterService presenter, TextPresenterProperties presenterProperties,
-                            AssistPrincipal assistPrincipal, InvoiceExtractionService extraction) {
+                            AssistPrincipal assistPrincipal, InvoiceExtractionService extraction,
+                            InvoiceService invoiceService, FallbackMacros fallbackMacros) {
         addClassName("ai-showcase");
         var chatPanel = new AiChatPanel(presenter, presenterProperties, assistPrincipal, extraction);
 
@@ -48,7 +55,34 @@ public class AiShowcaseLayout extends Div implements RouterLayout {
         tabs.addClassName("ai-tabs");
         content.addClassName("ai-tab-content");
 
-        add(tabs, content, chatPanel);
+        var tabBar = new Div(tabs, resetButton(invoiceService, fallbackMacros));
+        tabBar.addClassName("ai-tab-bar");
+
+        add(tabBar, content, chatPanel);
+    }
+
+    /**
+     * "Demo zurücksetzen", between two visitors: the demo invoices, only the fallback macros, and a
+     * reload, which also starts a fresh chat.
+     */
+    private static Button resetButton(InvoiceService invoiceService, FallbackMacros fallbackMacros) {
+        var reset = new Button("Demo zurücksetzen", VaadinIcon.REFRESH.create(), e -> {
+            var confirm = new ConfirmDialog("Demo zurücksetzen?",
+                    "Rechnungen und Makros gehen auf den Ausgangsstand zurück, der Chat beginnt neu.",
+                    "Zurücksetzen", confirmed -> {
+                        invoiceService.resetAndSeed();
+                        fallbackMacros.reset();
+                        UI.getCurrent().getPage().reload();
+                    });
+            confirm.setCancelable(true);
+            confirm.setCancelText("Abbrechen");
+            confirm.open();
+        });
+        reset.addThemeVariants(ButtonVariant.TERTIARY);
+        reset.setId("demo-reset-button");
+        // Booth staff only: the AI never resets the demo
+        reset.getElement().setAttribute("data-draiv-control", "true");
+        return reset;
     }
 
     private static RouterLink tab(String text, Class<? extends Component> view) {

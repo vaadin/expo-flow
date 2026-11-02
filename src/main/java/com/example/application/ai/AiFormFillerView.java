@@ -64,6 +64,7 @@ public class AiFormFillerView extends AiTabView {
         prompt.getPrompt().setLabel("Lieferanten-E-Mail");
         prompt.getPrompt().setPlaceholder("E-Mail oder Rechnungsdaten hier einfügen…");
         prompt.getPrompt().setId("form-filler-text");
+        prompt.addFallback(FallbackMacros.FORM_FILLER);
         var example = new Button("Beispiel-E-Mail", e -> prompt.getPrompt().setValue(EXAMPLE));
         example.addThemeVariants(ButtonVariant.TERTIARY);
         example.getElement().setAttribute("data-draiv-control", "true");

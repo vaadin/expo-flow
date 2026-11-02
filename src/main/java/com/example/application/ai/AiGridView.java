@@ -109,6 +109,7 @@ public class AiGridView extends AiTabView {
 
         var prompt = AiPromptBar.singleLine(assistant, scope, this::aiGoal, "Suchen");
         prompt.getPrompt().setPlaceholder("z. B. „Alle offenen Rechnungen von Acme über 1.000 €, nach Fälligkeit sortiert“");
+        prompt.addFallback(FallbackMacros.GRID);
 
         grid.addColumn(Invoice::getInvoiceNumber).setHeader("Nr.").setAutoWidth(true).setFlexGrow(0);
         grid.addColumn(Invoice::getSupplier).setHeader("Lieferant").setFlexGrow(2);

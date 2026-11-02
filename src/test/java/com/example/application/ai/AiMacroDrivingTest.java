@@ -5,6 +5,7 @@ import com.example.application.ai.invoice.InvoiceRepository;
 import com.example.application.ai.invoice.InvoiceService;
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.draiv.ai.script.DraivScriptTools;
+import com.vaadin.draiv.script.Script;
 import com.vaadin.draiv.script.ScriptStore;
 import com.vaadin.draiv.session.DemoPrincipal;
 import com.vaadin.draiv.session.DemoPrincipalUiResolver;
@@ -97,7 +98,9 @@ class AiMacroDrivingTest extends SpringBrowserlessTest {
 
         // The AI's two tool calls
         scriptTools.saveScript("drei-testrechnungen", THREE_TEST_INVOICES);
-        assertEquals(1, macroGrid().getListDataView().getItems().count()); // the tab lists it right away
+        // The tab lists it right away, first by name, before the fallback macros
+        assertEquals("drei-testrechnungen",
+                ((Script) macroGrid().getListDataView().getItems().findFirst().orElseThrow()).name());
         assertEquals("ok", scriptTools.runScript("drei-testrechnungen", null).status());
 
         assertEquals(before + 3, invoices.count());

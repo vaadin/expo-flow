@@ -190,6 +190,13 @@ draiv wiring) and `com.example.application.ai.invoice` (entity, repository, serv
   serves SSE at `/sse`) and `vaadin.exclude-urls=/mcp,/mcp/**` (otherwise Vaadin answers `/mcp`).
   Only the capability tools, and only from loopback addresses. An MCP client drives the browser
   tab registered last.
+- Trade-show operation (`docs/messe-checkliste.md`): profile `messe` (in-memory H2, no browser
+  launch); `FallbackMacros` defines one deterministic macro per tab in code, loads them into the
+  store at startup and on reset, and every tab has "Ohne AI vorführen" (`FallbackButton`) for it;
+  "Demo zurücksetzen" in the tab bar reseeds, resets the macros and reloads (fresh chat).
+  `FallbackMacrosTest` runs every fallback against the current views: run it after changing ids.
+- Demo invoices: `docs/demo-invoices/*.pdf`, written by the dependency-free `make_invoices.py`.
+  `FallbackMacros.UPLOAD` enters the values of `1-acme-notebooks.pdf`; keep the two in step.
 - Multi-selects: draiv's `set` takes ONE label and replaces the selection (a list in one argument
   is not split). For several labels the goal says: `set` the first, then `selectable` /
   `selectByContent` for each further one, always the complete selection. The W-JAX goal says the
