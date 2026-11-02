@@ -111,7 +111,7 @@ def invoice(path, sender, number, date, due_line, items, vat_percent, gross_prin
 
 if __name__ == "__main__":
     here = Path(__file__).parent
-    # 1: a known supplier, hardware, a due date; the upload tab's fallback macro enters the same values
+    # 1: a known supplier, hardware, a due date
     invoice(here / "1-acme-notebooks.pdf",
             ["Acme GmbH", "Industriestraße 12", "70565 Stuttgart"],
             "RE-2026-131", "27.10.2026", "Zahlbar bis 26.11.2026 ohne Abzug.",

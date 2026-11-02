@@ -5,6 +5,7 @@ import com.example.application.ai.invoice.InvoiceService;
 import com.example.application.views.MainLayout;
 import com.vaadin.draiv.ai.presenter.TextPresenterProperties;
 import com.vaadin.draiv.ai.presenter.TextPresenterService;
+import com.vaadin.draiv.script.ScriptStore;
 import com.vaadin.draiv.session.AssistPrincipal;
 import com.vaadin.flow.automation.indication.ChangeIndication;
 import com.vaadin.flow.automation.indication.ChangeIndication.IndicationStyle;
@@ -41,7 +42,7 @@ public class AiShowcaseLayout extends Div implements RouterLayout {
 
     public AiShowcaseLayout(TextPresenterService presenter, TextPresenterProperties presenterProperties,
                             AssistPrincipal assistPrincipal, InvoiceExtractionService extraction,
-                            InvoiceService invoiceService, FallbackMacros fallbackMacros) {
+                            InvoiceService invoiceService, ScriptStore scripts) {
         addClassName("ai-showcase");
         var chatPanel = new AiChatPanel(presenter, presenterProperties, assistPrincipal, extraction);
 
@@ -55,23 +56,23 @@ public class AiShowcaseLayout extends Div implements RouterLayout {
         tabs.addClassName("ai-tabs");
         content.addClassName("ai-tab-content");
 
-        var tabBar = new Div(tabs, resetButton(invoiceService, fallbackMacros));
+        var tabBar = new Div(tabs, resetButton(invoiceService, scripts));
         tabBar.addClassName("ai-tab-bar");
 
         add(tabBar, content, chatPanel);
     }
 
     /**
-     * "Demo zurücksetzen", between two visitors: the demo invoices, only the fallback macros, and a
-     * reload, which also starts a fresh chat.
+     * "Demo zurücksetzen", between two visitors: the demo invoices, no macros, and a reload, which also
+     * starts a fresh chat.
      */
-    private static Button resetButton(InvoiceService invoiceService, FallbackMacros fallbackMacros) {
+    private static Button resetButton(InvoiceService invoiceService, ScriptStore scripts) {
         var reset = new Button("Demo zurücksetzen", VaadinIcon.REFRESH.create(), e -> {
             var confirm = new ConfirmDialog("Demo zurücksetzen?",
                     "Rechnungen und Makros gehen auf den Ausgangsstand zurück, der Chat beginnt neu.",
                     "Zurücksetzen", confirmed -> {
                         invoiceService.resetAndSeed();
-                        fallbackMacros.reset();
+                        scripts.list().forEach(scripts::delete);
                         UI.getCurrent().getPage().reload();
                     });
             confirm.setCancelable(true);

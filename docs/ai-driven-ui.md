@@ -1,6 +1,6 @@
 # AI Driven UI – Konzept
 
-**Ziel.** Expo Flow bekommt unter `/ai` einen Bereich mit sechs Tabs, einem durchgehenden Chat-Panel und einer MCP-Zusatz-Demo. Alle Tabs arbeiten auf demselben Datentyp **Rechnung** (`Invoice`). Kernbotschaft: „Deine bestehende Vaadin-App wird AI-fähig, ohne dass du sie umbaust. Die AI klickt, tippt und navigiert serverseitig in deiner eigenen Session.“ Jeder Use Case: eine Eingabe, sichtbare Wirkung in unter 10 s, Felder leuchten bei AI-Änderungen auf, deterministischer Fallback (Makro) pro Tab. Das Standpersonal führt durch die Demo, Besucher tippen nicht selbst.
+**Ziel.** Expo Flow bekommt unter `/ai` einen Bereich mit sechs Tabs, einem durchgehenden Chat-Panel und einer MCP-Zusatz-Demo. Alle Tabs arbeiten auf demselben Datentyp **Rechnung** (`Invoice`). Kernbotschaft: „Deine bestehende Vaadin-App wird AI-fähig, ohne dass du sie umbaust. Die AI klickt, tippt und navigiert serverseitig in deiner eigenen Session.“ Jeder Use Case: eine Eingabe, sichtbare Wirkung in unter 10 s, Felder leuchten bei AI-Änderungen auf. Das Standpersonal führt durch die Demo, Besucher tippen nicht selbst.
 
 **Tabs** (Reihenfolge = Demo-Ablauf):
 
@@ -54,7 +54,7 @@ com.example.application.ai.invoice
 6. Tab 1 AI Grid
 7. Tab 4 Dashboard mit Vaadin Charts
 8. Tab 5 Makro, Tab 6 Guardrails, MCP-Zusatz-Demo
-9. Fallback-Makros pro Tab, Reset-Button, Messe-Profil (In-Memory-H2), Demo-Rechnungen als PDF
+9. Reset-Button, Messe-Profil (In-Memory-H2), Demo-Rechnungen als PDF
 10. Probelauf: jeden Prompt und jede Demo-Rechnung 10× über Hotspot
 
 **Messe-Risiken, die schon im Code berücksichtigt werden sollen:** MCP-Endpoint nur lokal; `AgentScope` je Tab ohne destruktive Buttons; Ausgabelimit im OpenAI-Account; später ein Messe-Profil mit In-Memory-H2 und „Demo zurücksetzen“-Button.

@@ -7,7 +7,7 @@ export OPENAI_API_KEY=…          # Ausgabelimit im OpenAI-Account vorher setze
 ./mvnw -Dspring-boot.run.profiles=messe       # ,mcp dazu für die Claude-Desktop-Demo (docs/mcp-demo.md)
 ```
 
-`messe` startet mit einer frischen In-Memory-Datenbank (50 Demo-Rechnungen, die sechs Fallback-Makros)
+`messe` startet mit einer frischen In-Memory-Datenbank (50 Demo-Rechnungen, keine Makros)
 und öffnet keinen Browser. `~/t-shirt-orders` bleibt unberührt.
 
 ## Handy über den Hotspot
@@ -24,17 +24,15 @@ Fotografieren oder als PDF hochladen:
 
 | Datei | Zeigt |
 | --- | --- |
-| `1-acme-notebooks.pdf` | bekannter Lieferant, Hardware, 3.184,44 €; deckt sich mit „Ohne AI vorführen“ auf Tab 3 |
+| `1-acme-notebooks.pdf` | bekannter Lieferant, Hardware, 3.184,44 € |
 | `2-isarhotel-uebernachtung.pdf` | Zahlungsziel statt Datum (14 Tage), 7 % MwSt, Reise |
 | `3-nordsee-druckerei.pdf` | neuer Lieferant, Marketing |
 | `4-pixelwerk-zahlendreher.pdf` | Zahlendreher im Rechnungsbetrag: die Plausibilitätsprüfung meldet ihn |
 
 ## Wenn etwas hakt
 
-- **AI langsam oder offline:** auf jedem Tab „Ohne AI vorführen“. Das spielt das Fallback-Makro des Tabs ab,
-  dasselbe Ergebnis wie der Beispiel-Prompt, ohne Modell.
-- **Zwischen zwei Besuchern:** „Demo zurücksetzen“ rechts in der Tab-Leiste. Rechnungen und Makros gehen auf
-  den Ausgangsstand, der Chat beginnt neu.
+- **Zwischen zwei Besuchern:** „Demo zurücksetzen“ rechts in der Tab-Leiste. Rechnungen gehen auf
+  den Ausgangsstand, Makros werden gelöscht, der Chat beginnt neu.
 - **Chat navigiert nicht weg von Guardrails:** gewollt, der Scope des Tabs gilt für jeden Agenten; einen Tab
   anklicken.
 

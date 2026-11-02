@@ -79,7 +79,6 @@ public class AiMacroView extends AiTabView {
         // No scope: the AI's run_script navigates to the form, which a scope would refuse
         var prompt = AiPromptBar.singleLine(assistant, null, this::aiGoal, "Makro erstellen");
         prompt.getPrompt().setPlaceholder("z. B. „Lege drei Testrechnungen an und speichere das als Makro“");
-        prompt.addFallback(FallbackMacros.MACRO);
 
         grid.addColumn(Script::name).setHeader("Makro").setAutoWidth(true).setFlexGrow(0);
         grid.addColumn(Script::description).setHeader("Beschreibung").setFlexGrow(1);

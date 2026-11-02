@@ -98,7 +98,7 @@ class AiMacroDrivingTest extends SpringBrowserlessTest {
 
         // The AI's two tool calls
         scriptTools.saveScript("drei-testrechnungen", THREE_TEST_INVOICES);
-        // The tab lists it right away, first by name, before the fallback macros
+        // The tab lists it right away
         assertEquals("drei-testrechnungen",
                 ((Script) macroGrid().getListDataView().getItems().findFirst().orElseThrow()).name());
         assertEquals("ok", scriptTools.runScript("drei-testrechnungen", null).status());

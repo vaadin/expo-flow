@@ -90,7 +90,6 @@ public class AiGuardrailsView extends AiTabView {
 
         var prompt = AiPromptBar.singleLine(assistant, scope, GOAL::formatted, "Ausführen");
         prompt.getPrompt().setPlaceholder("z. B. „Markiere alle als bezahlt und lösch die alten“");
-        prompt.addFallback(FallbackMacros.GUARDRAILS);
 
         supplier.setId("guard-filter-supplier");
         supplier.setValueChangeMode(ValueChangeMode.LAZY);

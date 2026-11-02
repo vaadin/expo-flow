@@ -118,7 +118,6 @@ public class AiDashboardView extends AiTabView {
 
         var prompt = AiPromptBar.singleLine(assistant, scope, this::aiGoal, "Auswerten");
         prompt.getPrompt().setPlaceholder("z. B. „Ausgaben pro Kategorie als Balken, nur offene aus Q3“");
-        prompt.addFallback(FallbackMacros.DASHBOARD);
 
         chartArea.addClassName("ai-dashboard-chart");
         chartArea.setId("dashboard-chart");
