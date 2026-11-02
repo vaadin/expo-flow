@@ -159,6 +159,13 @@ the fields and clicks Search. Changed fields flash (`ChangeIndication`).
   `application.properties` gives the unused providers placeholder keys and disables the
   MCP server and voice (the MCP server would let anyone on the network drive the UI).
 
+### AI Driven UI (draiv)
+
+The trade-show area under `/ai`: six tabs on one data type, invoices (`Invoice`), with a chat
+panel that drives the UI through draiv. Concept, tabs and implementation plan:
+`docs/ai-driven-ui.md`. Code lives in `com.example.application.ai` (layout, views, chat panel,
+draiv wiring) and `com.example.application.ai.invoice` (entity, repository, service, form).
+
 ## Key Configuration
 
 - **Port**: `server.port=${PORT:8888}` in `application.properties`
