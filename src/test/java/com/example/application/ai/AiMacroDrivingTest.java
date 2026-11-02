@@ -1,12 +1,15 @@
 package com.example.application.ai;
 
 import com.example.application.ai.invoice.Invoice;
+import com.example.application.ai.invoice.InvoiceCategory;
 import com.example.application.ai.invoice.InvoiceRepository;
 import com.example.application.ai.invoice.InvoiceService;
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.draiv.ai.script.DraivScriptTools;
 import com.vaadin.draiv.script.Script;
+import com.vaadin.draiv.script.ScriptRunner;
 import com.vaadin.draiv.script.ScriptStore;
+import com.vaadin.draiv.script.Step;
 import com.vaadin.draiv.session.DemoPrincipal;
 import com.vaadin.draiv.session.DemoPrincipalUiResolver;
 import com.vaadin.draiv.session.UiRegistry;
@@ -21,8 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -118,6 +124,67 @@ class AiMacroDrivingTest extends SpringBrowserlessTest {
         test((Button) actions.getComponentAt(0)).click();
 
         assertEquals(before + 6, invoices.count());
+    }
+
+    /**
+     * "Erstelle ein Makro, das die Kategorie einer Rechnung ändert; Rechnungsnummer und neue Kategorie als
+     * Eingabe": what the AI saves, run with inputs and no model.
+     */
+    @Test
+    void aMacroWithInputsChangesTheCategoryOfAnInvoice() {
+        scriptTools.saveScript("kategorie-aendern", """
+                {
+                  "name": "kategorie-aendern",
+                  "description": "Ändert die Kategorie einer Rechnung.",
+                  "inputs": [
+                    { "name": "rechnungsnummer", "type": "string" },
+                    { "name": "kategorie", "type": "select",
+                      "choices": ["Hardware", "Software", "Reise", "Marketing", "Büro"] }
+                  ],
+                  "steps": [
+                    { "op": "navigate", "to": "ai/invoices" },
+                    { "op": "set", "id": "invoice-search", "value": "${rechnungsnummer}" },
+                    { "op": "apply", "id": "invoice-crud-grid", "capability": "selectable",
+                      "operation": "selectByContentMatching", "args": ["${rechnungsnummer}"] },
+                    { "op": "set", "id": "invoice-category", "value": "${kategorie}" },
+                    { "op": "click", "id": "invoice-save-button" }
+                  ]
+                }
+                """);
+        long before = invoices.count();
+
+        ScriptRunner.run(scripts.load("kategorie-aendern"),
+                Map.of("rechnungsnummer", "RE-2026-102", "kategorie", "Marketing"), UI.getCurrent());
+
+        assertEquals(InvoiceCategory.MARKETING, invoice("RE-2026-102").getCategory());
+        assertEquals(before, invoices.count()); // changed, not added
+        scripts.delete("kategorie-aendern");
+    }
+
+    /** Status and delete are for people: a macro cannot reach them, the data stays as it is. */
+    @Test
+    void aMacroCannotChangeTheStatusOrDelete() {
+        var invoice = invoice("RE-2026-103");
+        var selectRow = new Script("zeile-waehlen", "Wählt die Rechnung aus.", List.of(), List.of(
+                new Step.Navigate("ai/invoices"),
+                new Step.Set("invoice-search", null, "RE-2026-103"),
+                new Step.Apply("invoice-crud-grid", null, "selectable", "selectByContentMatching",
+                        List.of("RE-2026-103"), null)));
+        ScriptRunner.run(selectRow, Map.of(), UI.getCurrent());
+
+        for (var forbidden : List.<Step>of(new Step.Set("invoice-status", null, "Bezahlt"),
+                new Step.Click("invoice-delete-button", null))) {
+            assertThrows(RuntimeException.class, () -> ScriptRunner.run(
+                    new Script("verboten", "", List.of(), List.of(forbidden)), Map.of(), UI.getCurrent()));
+        }
+
+        assertEquals(invoice.getStatus(), invoice("RE-2026-103").getStatus());
+        assertTrue(invoices.existsById(invoice.getId()));
+    }
+
+    private Invoice invoice(String number) {
+        return invoices.findAll().stream().filter(invoice -> invoice.getInvoiceNumber().equals(number))
+                .findFirst().orElseThrow();
     }
 
     @SuppressWarnings("unchecked")

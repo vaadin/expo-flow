@@ -7,7 +7,9 @@ import com.vaadin.draiv.script.ScriptRunner;
 import com.vaadin.draiv.script.ScriptStore;
 import com.vaadin.draiv.script.Step;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -19,6 +21,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
@@ -31,7 +34,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Tab 5: the AI once, then without it. Asked for a macro, the AI writes a draiv script with
+ * Tab 5: the AI once, then without it. Asked for a macro that creates or changes invoices on the invoices
+ * tab, the AI writes a draiv script with
  * {@code save_script} and runs it once with {@code run_script}; from then on "Ausführen" replays it
  * through draiv's {@link ScriptRunner}, with no model involved.
  */
@@ -50,17 +54,26 @@ public class AiMacroView extends AiTabView {
             save it with save_script, then run it once with run_script so the user sees it work. Do not \
             operate the UI with apply yourself.
 
-            Invoices are managed on route ai/invoices. To create one: click invoice-new-button (Neu), \
-            set the fields, click invoice-save-button (Speichern). Field ids: invoice-number, \
-            invoice-supplier, invoice-date and invoice-due-date (ISO yyyy-MM-dd), invoice-net (a plain \
-            number like 1000 or 249.90), invoice-vat-rate ("0 %%", "7 %%" or "19 %%"), invoice-category \
-            (Hardware, Software, Reise, Marketing or Büro), invoice-receipt (optional file name).
+            Invoices are managed on route ai/invoices. Field ids: invoice-number, invoice-supplier, \
+            invoice-date and invoice-due-date (ISO yyyy-MM-dd), invoice-net (a plain number like 1000 or \
+            249.90), invoice-vat-rate ("0 %%", "7 %%" or "19 %%"), invoice-category (Hardware, Software, \
+            Reise, Marketing or Büro), invoice-receipt (optional file name).
+            - Create an invoice: click invoice-new-button (Neu), set the fields, click invoice-save-button \
+            (Speichern).
+            - Change an invoice: set invoice-search to its invoice number, select its row with \
+            { "op": "apply", "id": "invoice-crud-grid", "capability": "selectable", \
+            "operation": "selectByContentMatching", "args": ["<invoice number>"] }, set the fields to \
+            change, click invoice-save-button.
+            Macros may create and change invoices, but not change the status and not delete: those \
+            controls are for people and not available to scripts.
 
-            Script rules: steps are navigate (to "ai/invoices"), set (by "id") and click (by "id"). Use fixed \
-            values, or ${input} placeholders when the user asks for something variable. NEVER use an \
-            assist step: a macro must run without AI. Write dates as fixed ISO dates. Name the script in \
-            short kebab-case, e.g. "drei-testrechnungen", and describe it in one German sentence. Test \
-            data should look like test data, e.g. invoice numbers TEST-001, TEST-002.
+            Script rules: steps are navigate (to "ai/invoices"), set (by "id"), click (by "id") and the \
+            apply step above. Use fixed values, or ${input} placeholders with declared inputs when the \
+            user asks for something variable (e.g. an input "rechnungsnummer" of type string and \
+            "kategorie" of type select with the five categories as choices). NEVER use an assist step: a \
+            macro must run without AI. Write dates as fixed ISO dates. Name the script in short \
+            kebab-case, e.g. "drei-testrechnungen", and describe it in one German sentence. Test data \
+            should look like test data, e.g. invoice numbers TEST-001, TEST-002.
 
             Macros stored so far: %s. Reply in one short German sentence. Request: "%s"
             """;
@@ -77,7 +90,9 @@ public class AiMacroView extends AiTabView {
 
         // No scope: the AI's run_script navigates to the form, which a scope would refuse
         var prompt = AiPromptBar.singleLine(assistant, null, this::aiGoal, "Makro erstellen");
-        prompt.getPrompt().setPlaceholder("z. B. „Lege drei Testrechnungen an und speichere das als Makro“");
+        prompt.getPrompt().setPlaceholder("z. B. „Lege drei Testrechnungen an und speichere das als Makro“ oder "
+                + "„Erstelle ein Makro, das die Kategorie einer Rechnung ändert; Rechnungsnummer und neue Kategorie "
+                + "als Eingabe“");
 
         grid.addColumn(Script::name).setHeader("Makro").setAutoWidth(true).setFlexGrow(0);
         grid.addColumn(Script::description).setHeader("Beschreibung").setFlexGrow(1);
@@ -116,24 +131,36 @@ public class AiMacroView extends AiTabView {
         }
         var dialog = new Dialog("Makro „" + script.name() + "“");
         var form = new FormLayout();
-        var fields = new LinkedHashMap<String, TextField>();
+        var fields = new LinkedHashMap<String, HasValue<?, String>>();
         for (Input input : script.inputs()) {
-            var field = new TextField(input.name());
+            HasValue<?, String> field;
+            if (input.choices() != null && !input.choices().isEmpty()) {
+                var select = new Select<String>();
+                select.setLabel(input.name());
+                select.setItems(input.choices());
+                field = select;
+            } else {
+                field = new TextField(input.name());
+            }
             if (input.defaultValue() != null) {
                 field.setValue(input.defaultValue());
             }
             fields.put(input.name(), field);
-            form.add(field);
+            form.add((Component) field);
         }
         var run = new Button("Ausführen", e -> {
             dialog.close();
             run(script, fields.entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue())));
+                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> valueOf(entry.getValue()))));
         });
         run.addThemeVariants(ButtonVariant.PRIMARY);
         dialog.add(form);
         dialog.getFooter().add(new Button("Abbrechen", e -> dialog.close()), run);
         dialog.open();
+    }
+
+    private static Object valueOf(HasValue<?, String> field) {
+        return field.getValue() == null ? "" : field.getValue();
     }
 
     /** Replays the macro on this UI, step by step, without a model. */
