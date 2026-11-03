@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
+import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
 /**
@@ -27,7 +28,7 @@ public class TalkSearchForm extends FormLayout {
     private final MultiSelectComboBox<Track> tracks = new MultiSelectComboBox<>("Tracks");
     private final MultiSelectComboBox<String> formats = new MultiSelectComboBox<>("Format");
     private final MultiSelectComboBox<String> languages = new MultiSelectComboBox<>("Language");
-    private final DateTimePicker startsAfter = new DateTimePicker("Starts after");
+    private final DateTimePicker startsAfter = new DateTimePicker("Starts after", LocalDateTime.now());
     private final DateTimePicker startsBefore = new DateTimePicker("Starts before");
 
     private final Consumer<TalkFilter> onSearch;

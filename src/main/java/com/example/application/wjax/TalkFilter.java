@@ -18,7 +18,7 @@ public record TalkFilter(String topics, String excludedTopics, String speaker,
                          LocalDateTime startsAfter, LocalDateTime startsBefore) {
 
     public static TalkFilter empty() {
-        return new TalkFilter("", "", "", Set.of(), Set.of(), Set.of(), null, null);
+        return new TalkFilter("", "", "", Set.of(), Set.of(), Set.of(), LocalDateTime.now(), null);
     }
 
     /** How many criteria constrain the search, 0 for {@link #empty()}. */

@@ -179,7 +179,6 @@ public class WjaxTalksView extends VerticalLayout {
 
     private String aiGoal(String request) {
         // Show the form while the AI fills it in, so the changed fields can be seen flashing
-        filters.setOpened(true);
         var goal = AI_GOAL.formatted(talkService.conferenceTime().format(NOW),
                 previousRequest.isEmpty() ? "none" : previousRequest,
                 talkService.tracks().stream().map(Track::displayName)
@@ -199,7 +198,6 @@ public class WjaxTalksView extends VerticalLayout {
         int active = filter.activeCriteria();
         activeFilters.setNumber(active);
         activeFilters.setVisible(active > 0);
-        filters.setOpened(active > 0);
     }
 
     /**
