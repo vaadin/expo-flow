@@ -98,12 +98,6 @@ vaadin-grid::part(new-invoice) {
     }
 }
 
-/* AiGuardrailsView: the buttons the AI cannot reach, and the rules for visitors */
-.ai-off-limits {
-    outline: 2px dashed var(--vaadin-border-color, currentColor);
-    outline-offset: 3px;
-}
-
 .ai-guardrail-rules {
     display: grid;
     grid-template-columns: auto 1fr;

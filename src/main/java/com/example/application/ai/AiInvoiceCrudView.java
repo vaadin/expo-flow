@@ -26,12 +26,12 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.UUID;
+
 
 /**
  * Tab 3: all invoices, master-detail. Search, pick a row to edit it, "Neu" for a new one. Built from plain
@@ -102,6 +102,7 @@ public class AiInvoiceCrudView extends AiTabView {
         grid.setMinHeight("360px");
 
         // The status is for people: no agent sees or sets it here
+        form.getStatusField().getElement().getStyle().set("margin-top", "var(--lumo-space-m)");
         form.getStatusField().getElement().setAttribute("data-draiv-control", "true");
 
         var newButton = new Button("Neu", VaadinIcon.PLUS.create(), e -> grid.asSingleSelect().clear());
@@ -112,10 +113,15 @@ public class AiInvoiceCrudView extends AiTabView {
         delete.setId("invoice-delete-button");
         delete.addThemeVariants(ButtonVariant.ERROR, ButtonVariant.TERTIARY);
         delete.addClickListener(e -> confirmDelete());
-        delete.addClassName("ai-off-limits");
         delete.setTooltipText("Nur für Menschen");
         delete.getElement().setAttribute("data-draiv-control", "true");
+
         var buttons = new HorizontalLayout(save, newButton, delete);
+        buttons.getStyle()
+                .setPaddingTop("var(--vaadin-padding-m)")
+                .setPaddingRight("unset")
+                .setPaddingBottom("var(--vaadin-padding-m)")
+                .setPaddingLeft("unset");
 
         var master = new Div(search, grid);
         master.addClassName("ai-crud-master");

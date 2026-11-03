@@ -1,6 +1,7 @@
 package com.example.application.views;
 
 import com.example.application.data.repository.PersonRepository;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,6 +19,7 @@ public class PlaygroundView extends VerticalLayout {
     public PlaygroundView(PersonRepository repository) {
         var name = new TextField("Your name");
         var button = new Button("Click me");
+        button.addClickShortcut(Key.ENTER);
 
         button.addClickListener(e -> {
             add(new Paragraph("Hello, " + name.getValue()));

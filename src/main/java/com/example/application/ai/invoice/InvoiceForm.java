@@ -2,6 +2,7 @@ package com.example.application.ai.invoice;
 
 import com.vaadin.flow.component.HasHelper;
 import com.vaadin.flow.component.HasLabel;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.badge.Badge;
 import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
@@ -125,6 +126,7 @@ public class InvoiceForm extends FormLayout {
                 new ResponsiveStep("500px", 2));
         add(invoiceNumber, supplier, contactEmail, invoiceDate, dueDate, net, vatRate, grossDisplay, category, receipt);
         add(status, 2);
+
         if (withButtons) {
             add(buttons, 2);
         }

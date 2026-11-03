@@ -158,7 +158,7 @@ public class AiChatPanel extends UploadDropZone {
         var inputRow = new HorizontalLayout(uploadButton, input);
         inputRow.setWidthFull();
         inputRow.setFlexGrow(1, input);
-        inputRow.setAlignItems(FlexComponent.Alignment.BASELINE);
+        inputRow.setAlignItems(FlexComponent.Alignment.CENTER);
         inputRow.setSpacing(false);
 
         newChat.addThemeVariants(ButtonVariant.TERTIARY, ButtonVariant.SMALL);

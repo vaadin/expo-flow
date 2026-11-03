@@ -99,7 +99,7 @@ public class AiShowcaseLayout extends Div implements RouterLayout {
                     "Zurücksetzen", confirmed -> {
                         invoiceService.resetAndSeed();
                         scripts.list().forEach(scripts::delete);
-                        UI.getCurrent().getPage().reload();
+                        UI.getCurrent().navigate(AiGridView.class);
                     });
             confirm.setCancelable(true);
             confirm.setCancelText("Abbrechen");
