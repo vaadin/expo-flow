@@ -59,7 +59,7 @@
     "rollup-plugin-visualizer": "7.1.1",
     "strip-css-comments": "5.0.0",
     "transform-ast": "2.4.4",
-    "typescript": "7.0.2",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
     "vite": "8.3.0",
     "vite-plugin-checker": "0.14.5"
   },
@@ -226,6 +226,6 @@
       "vite": "8.3.0",
       "vite-plugin-checker": "0.14.5"
     },
-    "hash": "746cda775f05b2b83dfe49c1d75e979be2df90a70f40c70a0387142c9f1a1cd4"
+    "hash": "5b1c01521366a62ed0b8ec5faf28cd40449a1f2ab9010c21d5de661ac6d9c13f"
   }
 }
