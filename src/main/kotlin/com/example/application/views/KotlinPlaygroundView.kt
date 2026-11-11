@@ -1,7 +1,5 @@
 package com.example.application.views
 
-import com.example.application.data.repository.PersonRepository
-import com.example.application.data.repository.TShirtOrderRepository
 import com.vaadin.flow.component.Key
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.html.Paragraph
@@ -16,7 +14,7 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl
 @PageTitle("Kotlin Playground")
 @Route("kotlin-playground")
 @Menu(title = "Kotlin Playground", icon = LineAwesomeIconUrl.FILE_CODE_SOLID, order = 8.0)
-class KotlinPlaygroundView(repository: PersonRepository) : VerticalLayout() {
+class KotlinPlaygroundView : VerticalLayout() {
 
     init {
         val name = TextField().apply {
