@@ -51,7 +51,6 @@ public class ChatView extends UploadDropZone {
         var inputLayout = new HorizontalLayout(uploadButton, messageInput);
         inputLayout.setWidthFull();
         inputLayout.setFlexGrow(1, messageInput);
-        inputLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
         inputLayout.setSpacing(false);
 
         var uploadFileList = new UploadFileList(uploadManager);
