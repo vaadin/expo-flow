@@ -1,0 +1,447 @@
+/* ================================================================
+   Material Design 3 Theme für Vaadin Aura
+   Basierend auf dem M3 Baseline Farbschema
+   https://m3.material.io/
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap');
+
+html {
+    /* ================================================================
+       M3 Referenz-Farbpalette (Tonal Palette)
+       Primärfarbe: Purple #6750A4
+       ================================================================ */
+
+    /* Primary Tonal Palette */
+    --md-ref-palette-primary10: #21005D;
+    --md-ref-palette-primary20: #381E72;
+    --md-ref-palette-primary30: #4F378B;
+    --md-ref-palette-primary40: #6750A4;
+    --md-ref-palette-primary80: #D0BCFF;
+    --md-ref-palette-primary90: #EADDFF;
+    --md-ref-palette-primary95: #F6EDFF;
+    --md-ref-palette-primary99: #FFFBFE;
+
+    /* Secondary Tonal Palette */
+    --md-ref-palette-secondary10: #1D192B;
+    --md-ref-palette-secondary20: #332D41;
+    --md-ref-palette-secondary40: #625B71;
+    --md-ref-palette-secondary80: #CCC2DC;
+    --md-ref-palette-secondary90: #E8DEF8;
+
+    /* Tertiary Tonal Palette */
+    --md-ref-palette-tertiary10: #31111D;
+    --md-ref-palette-tertiary20: #492532;
+    --md-ref-palette-tertiary40: #7D5260;
+    --md-ref-palette-tertiary80: #EFB8C8;
+    --md-ref-palette-tertiary90: #FFD8E4;
+
+    /* Neutral Tonal Palette */
+    --md-ref-palette-neutral4:  #0F0D13;
+    --md-ref-palette-neutral6:  #141218;
+    --md-ref-palette-neutral10: #1C1B1F;
+    --md-ref-palette-neutral12: #201F24;
+    --md-ref-palette-neutral17: #2B2930;
+    --md-ref-palette-neutral20: #313033;
+    --md-ref-palette-neutral22: #36343B;
+    --md-ref-palette-neutral24: #3B383E;
+    --md-ref-palette-neutral87: #DED8E1;
+    --md-ref-palette-neutral90: #E6E1E5;
+    --md-ref-palette-neutral92: #EAE7EC;
+    --md-ref-palette-neutral94: #ECE6F0;
+    --md-ref-palette-neutral95: #F4EFF4;
+    --md-ref-palette-neutral96: #F7F2FA;
+    --md-ref-palette-neutral98: #FEF7FF;
+    --md-ref-palette-neutral99: #FFFBFE;
+
+    /* Neutral Variant Tonal Palette */
+    --md-ref-palette-neutral-variant30: #49454F;
+    --md-ref-palette-neutral-variant50: #79747E;
+    --md-ref-palette-neutral-variant60: #938F99;
+    --md-ref-palette-neutral-variant80: #CAC4D0;
+    --md-ref-palette-neutral-variant90: #E7E0EC;
+
+    /* Error Tonal Palette */
+    --md-ref-palette-error10: #410E0B;
+    --md-ref-palette-error40: #B3261E;
+    --md-ref-palette-error80: #F2B8B5;
+    --md-ref-palette-error90: #F9DEDC;
+    --md-ref-palette-error20: #601410;
+    --md-ref-palette-error30: #8C1D18;
+
+    /* ================================================================
+       M3 System Color Tokens — adaptieren automatisch zu Dark Mode
+       ================================================================ */
+
+    --md-sys-color-primary:                 light-dark(#6750A4, #D0BCFF);
+    --md-sys-color-on-primary:              light-dark(#FFFFFF, #381E72);
+    --md-sys-color-primary-container:       light-dark(#EADDFF, #4F378B);
+    --md-sys-color-on-primary-container:    light-dark(#21005D, #EADDFF);
+
+    --md-sys-color-secondary:               light-dark(#625B71, #CCC2DC);
+    --md-sys-color-on-secondary:            light-dark(#FFFFFF, #332D41);
+    --md-sys-color-secondary-container:     light-dark(#E8DEF8, #4A4458);
+    --md-sys-color-on-secondary-container:  light-dark(#1D192B, #E8DEF8);
+
+    --md-sys-color-tertiary:                light-dark(#7D5260, #EFB8C8);
+    --md-sys-color-on-tertiary:             light-dark(#FFFFFF, #492532);
+    --md-sys-color-tertiary-container:      light-dark(#FFD8E4, #633B48);
+    --md-sys-color-on-tertiary-container:   light-dark(#31111D, #FFD8E4);
+
+    --md-sys-color-error:                   light-dark(#B3261E, #F2B8B5);
+    --md-sys-color-on-error:                light-dark(#FFFFFF, #601410);
+    --md-sys-color-error-container:         light-dark(#F9DEDC, #8C1D18);
+    --md-sys-color-on-error-container:      light-dark(#410E0B, #F9DEDC);
+
+    --md-sys-color-surface:                 light-dark(#FFFBFE, #1C1B1F);
+    --md-sys-color-on-surface:              light-dark(#1C1B1F, #E6E1E5);
+    --md-sys-color-surface-variant:         light-dark(#E7E0EC, #49454F);
+    --md-sys-color-on-surface-variant:      light-dark(#49454F, #CAC4D0);
+
+    --md-sys-color-surface-container-lowest:  light-dark(#FFFFFF,   #0F0D13);
+    --md-sys-color-surface-container-low:     light-dark(#F7F2FA,   #1D1B20);
+    --md-sys-color-surface-container:         light-dark(#F3EDF7,   #211F26);
+    --md-sys-color-surface-container-high:    light-dark(#ECE6F0,   #2B2930);
+    --md-sys-color-surface-container-highest: light-dark(#E6E0E9,   #36343B);
+
+    --md-sys-color-outline:                 light-dark(#79747E, #938F99);
+    --md-sys-color-outline-variant:         light-dark(#CAC4D0, #49454F);
+
+    --md-sys-color-inverse-surface:         light-dark(#313033, #E6E1E5);
+    --md-sys-color-inverse-on-surface:      light-dark(#F4EFF4, #313033);
+    --md-sys-color-inverse-primary:         light-dark(#D0BCFF, #6750A4);
+
+    --md-sys-color-scrim:                   #000000;
+
+    /* ================================================================
+       Aura Variablen-Mapping
+       ================================================================ */
+
+    /* Hintergrundfarbe → M3 Surface */
+    --aura-background-color-light: #FFFBFE;
+    --aura-background-color-dark:  #1C1B1F;
+
+    /* Akzentfarbe → M3 Primary */
+    --aura-accent-color-light: #6750A4;
+    --aura-accent-color-dark:  #D0BCFF;
+
+    /* Fehlerfarbe */
+    --aura-red: light-dark(#B3261E, #F2B8B5);
+
+    /* Schrift: Roboto (M3 Standard) */
+    --aura-font-family: 'Roboto', var(--aura-font-family-system);
+    --aura-base-font-size: 14;
+    --aura-base-line-height: 1.43;
+    --aura-font-weight-regular:  400;
+    --aura-font-weight-medium:   500;
+    --aura-font-weight-semibold: 700;
+
+    /* Form: M3 Medium Shape = 12dp → Aura-Radius ~8 */
+    --aura-base-radius: 8;
+
+    /* Abstände: M3 4px-Grid → base-size 16 */
+    --aura-base-size: 16;
+
+    /* Elevation / Schatten (M3 Tinted Surface) */
+    --aura-shadow-m: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --aura-overlay-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+
+    /* Surface: M3 Tonal Elevation */
+    --aura-surface-level:          1;
+    --aura-surface-opacity:        0.5;
+    --aura-overlay-surface-opacity: 1;
+
+    /* App Layout: kein Rand-Abstand */
+    --aura-app-layout-inset: 0px;
+
+    /* Fokus-Ring */
+    --vaadin-focus-ring-color: var(--md-sys-color-primary);
+    --vaadin-focus-ring-width: 3px;
+
+    /* Rahmenfarben → M3 Outline */
+    --vaadin-border-color:           var(--md-sys-color-outline);
+    --vaadin-border-color-secondary: var(--md-sys-color-outline-variant);
+
+    /* Cursor */
+    --vaadin-clickable-cursor: pointer;
+}
+
+/* ================================================================
+   M3 Typografie-Skala
+   Roboto-Schriftschnitte für Überschriften, Labels, Body-Text
+   ================================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--aura-font-family);
+}
+
+/* Display / Headline */
+h1 { font-size: 57px; line-height: 64px; font-weight: 400; letter-spacing: -0.25px; }
+h2 { font-size: 45px; line-height: 52px; font-weight: 400; letter-spacing: 0px; }
+h3 { font-size: 36px; line-height: 44px; font-weight: 400; letter-spacing: 0px; }
+h4 { font-size: 32px; line-height: 40px; font-weight: 400; letter-spacing: 0px; }
+h5 { font-size: 28px; line-height: 36px; font-weight: 400; letter-spacing: 0px; }
+h6 { font-size: 24px; line-height: 32px; font-weight: 400; letter-spacing: 0px; }
+
+/* Body / Label */
+body {
+    font-family: var(--aura-font-family);
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+}
+
+/* ================================================================
+   Buttons (M3 Button-Varianten)
+
+   Vaadin primary  → M3 Filled Button      (Primary-Farbe, kein Rand)
+   Vaadin default  → M3 Tonal Button       (Secondary Container, kein Rand)
+   Vaadin tertiary → M3 Text Button        (kein Hintergrund, kein Rand)
+   Vaadin error    → M3 Error Button
+   ================================================================ */
+
+vaadin-button {
+    --vaadin-button-border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    min-height: 40px;
+}
+
+/* Filled Button */
+vaadin-button[theme~="primary"] {
+    --vaadin-button-background: var(--md-sys-color-primary);
+    --vaadin-button-text-color: var(--md-sys-color-on-primary);
+}
+
+/* Tonal Button (M3-spezifisch: Secondary Container Hintergrund) */
+vaadin-button:not([theme~="primary"], [theme~="tertiary"]) {
+    --vaadin-button-background: var(--md-sys-color-secondary-container);
+    --vaadin-button-text-color: var(--md-sys-color-on-secondary-container);
+}
+
+/* Text Button */
+vaadin-button[theme~="tertiary"] {
+    --vaadin-button-background: transparent;
+    --vaadin-button-text-color: var(--md-sys-color-primary);
+}
+
+/* Error Button */
+vaadin-button[theme~="error"][theme~="primary"] {
+    --vaadin-button-background: var(--md-sys-color-error);
+    --vaadin-button-text-color: var(--md-sys-color-on-error);
+}
+
+/* ================================================================
+   Eingabefelder (M3 Filled Text Field)
+   Abgerundete obere Ecken, flacher unterer Rand (Indicator Line)
+   ================================================================ */
+
+::part(input-field) {
+    --aura-surface-level: 2;
+    --aura-surface-opacity: 0.85;
+    /* M3 Filled Text Field: 4dp Radius oben, gerade Kante unten */
+    border-radius: 4px 4px 0 0;
+    border-top: none;
+    border-inline: none;
+    border-bottom: 1px solid var(--md-sys-color-outline);
+}
+
+/* M3-Fokus: kein Outline-Ring, stattdessen 3px Indicator Line unten */
+vaadin-text-field,
+vaadin-text-area,
+vaadin-email-field,
+vaadin-password-field,
+vaadin-combo-box,
+vaadin-number-field,
+vaadin-date-picker,
+vaadin-time-picker,
+vaadin-message-input,
+vaadin-select {
+    --vaadin-focus-ring-width: 0px;
+}
+
+vaadin-text-field[focused]::part(input-field),
+vaadin-text-area[focused]::part(input-field),
+vaadin-email-field[focused]::part(input-field),
+vaadin-password-field[focused]::part(input-field),
+vaadin-combo-box[focused]::part(input-field),
+vaadin-number-field[focused]::part(input-field),
+vaadin-date-picker[focused]::part(input-field),
+vaadin-time-picker[focused]::part(input-field),
+vaadin-select[focused]::part(input-field),
+vaadin-message-input[focused]::part(input-field) {
+    border-bottom: 3px solid var(--md-sys-color-primary);
+}
+
+/* ================================================================
+   MessageInput (M3 Filled Text Field — enthält intern vaadin-text-area)
+   Die globale ::part(input-field)-Regel erreicht die innere text-area
+   nicht; daher explizit mit dem vom Vaadin-Doc vorgegebenen Selektor.
+   ================================================================ */
+
+vaadin-message-input {
+    --vaadin-input-field-border-radius: 4px 4px 0 0;
+    --vaadin-input-field-border-color: var(--md-sys-color-outline);
+    --vaadin-focus-ring-width: 0px;
+    border: none;
+    border-radius: unset;
+}
+
+vaadin-message-input > vaadin-text-area[focused] {
+    --vaadin-input-field-border-color: var(--md-sys-color-primary);
+    --vaadin-input-field-border-width: 3px;
+}
+
+/* ================================================================
+   App Layout (M3 Navigation Drawer / Rail)
+   ================================================================ */
+
+vaadin-app-layout::part(navbar) {
+    --aura-surface-level: 2;
+    --aura-surface-opacity: 1;
+    border-bottom: 0;
+}
+
+vaadin-app-layout::part(drawer) {
+    --aura-surface-level: 1;
+    --aura-surface-opacity: 1;
+}
+
+/* Navigations-Items: M3 Navigation Rail → vollständig abgerundet */
+vaadin-side-nav-item {
+    border-radius: 9999px;
+}
+
+/* ================================================================
+   Dashboard Widgets / Karten (M3 Elevated Card)
+   ================================================================ */
+
+vaadin-dashboard-widget {
+    --aura-surface-level: 2;
+    --aura-surface-opacity: 1;
+    box-shadow: var(--aura-shadow-m);
+}
+
+components-view .component {
+    --aura-surface-level: 2;
+    --aura-surface-opacity: 1;
+    box-shadow: var(--aura-shadow-m);
+}
+
+/* ================================================================
+   Tabs (M3 Primary Tabs)
+   ================================================================ */
+
+vaadin-tabs {
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+/* ================================================================
+   Dialog / Overlay (M3 Dialog: 28dp Eckenradius)
+   ================================================================ */
+
+vaadin-dialog-overlay::part(overlay) {
+    --aura-surface-level: 5;
+    border-radius: 28px;
+    box-shadow: var(--aura-overlay-shadow);
+}
+
+/* ================================================================
+   Notifications (M3 Snackbar: Inverse Surface)
+   ================================================================ */
+
+vaadin-notification-card::part(overlay) {
+    --aura-notification-color-scheme: dark;
+    background: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    border-radius: 4px;
+    box-shadow: var(--aura-overlay-shadow);
+    min-width: 288px;
+    max-width: 600px;
+}
+
+/* ================================================================
+   Datentabelle / Grid (M3 Data Table)
+   ================================================================ */
+
+vaadin-grid {
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--vaadin-radius-l);
+}
+
+vaadin-grid::part(header-cell) {
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+/* ================================================================
+   Checkbox (M3: 2px Radius)
+   ================================================================ */
+
+vaadin-checkbox::part(checkbox) {
+    border-radius: 2px;
+}
+
+/* ================================================================
+   Hilfetexte und Fehlermeldungen
+   ================================================================ */
+
+[part="helper-text"] {
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+[part="error-message"] {
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    color: var(--md-sys-color-error);
+}
+
+/* ================================================================
+   Tooltip (M3 Plain Tooltip)
+   ================================================================ */
+
+vaadin-tooltip-overlay::part(overlay) {
+    background: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    border-radius: 4px;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    padding: 4px 8px;
+    box-shadow: none;
+}
+
+/* ================================================================
+   Context Menu (M3 Menu)
+   ================================================================ */
+
+vaadin-context-menu-overlay::part(overlay) {
+    --aura-surface-level: 4;
+    --aura-overlay-surface-opacity: 1;
+    border-radius: 4px;
+    box-shadow: var(--aura-overlay-shadow);
+}
+
+/* ================================================================
+   Badges / Chips (M3 Chip: 8px Radius)
+   ================================================================ */
+
+vaadin-multi-select-combo-box-chip {
+    border-radius: 8px;
+}
+
+/* ================================================================
+   Combo Box / Select (M3 Dropdown)
+   ================================================================ */
+
+vaadin-combo-box-overlay::part(overlay),
+vaadin-select-overlay::part(overlay) {
+    --aura-surface-level: 3;
+    --aura-overlay-surface-opacity: 1;
+    border-radius: 4px;
+    box-shadow: var(--aura-overlay-shadow);
+}

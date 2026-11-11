@@ -1,12 +1,14 @@
 package com.example.application.views;
 
 import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Footer;
@@ -24,6 +26,7 @@ import com.vaadin.flow.router.Layout;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.server.menu.MenuEntry;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.List;
@@ -86,35 +89,61 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         var darkModeBtn = new Button(VaadinIcon.MOON.create());
         darkModeBtn.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_TERTIARY);
         darkModeBtn.setTooltipText("Dark mode");
-        darkModeBtn.addClickListener(e -> toggleDarkMode(darkModeBtn));
+        darkModeBtn.addClickListener(this::onToggleDarkMode);
 
-        var controls = new Div(darkModeBtn, new Checkbox("Unicorn mode", this::changeUnicornMode));
+        var themeSelect = new ComboBox<String>("Theme");
+        themeSelect.setItems("Default", "Carbon", "Sparkasse", "DHL", "Deutsche Bank", "Less Carbon", "Linear", "Material");
+        themeSelect.setAllowCustomValue(false);
+        themeSelect.addValueChangeListener(this::onThemeSelect);
+        themeSelect.setValue("Default");
+
+        var row = new Div(darkModeBtn, new Checkbox("Unicorn mode", this::changeUnicornMode));
+        var controls = new Div(themeSelect, row);
 
         layout.add(controls);
         return layout;
     }
 
-    private void toggleDarkMode(Button button) {
-        darkMode = !darkMode;
-        if (darkMode) {
-            UI.getCurrent().getPage().executeJs("document.documentElement.style.colorScheme = 'dark'");
-            button.setIcon(VaadinIcon.SUN_O.create());
-            button.setTooltipText("Light mode");
-        } else {
-            UI.getCurrent().getPage().executeJs("document.documentElement.style.colorScheme = 'light'");
-            button.setIcon(VaadinIcon.MOON.create());
-            button.setTooltipText("Dark mode");
-        }
+    private void onToggleDarkMode(ClickEvent<Button> event) {
+        event.getSource().getUI().ifPresent(ui -> {
+            var button = event.getSource();
+
+            darkMode = !darkMode;
+
+            if (darkMode) {
+                ui.getPage().executeJs("document.documentElement.style.colorScheme = 'dark'");
+                button.setIcon(VaadinIcon.SUN_O.create());
+                button.setTooltipText("Light mode");
+            } else {
+                ui.getPage().executeJs("document.documentElement.style.colorScheme = 'light'");
+                button.setIcon(VaadinIcon.MOON.create());
+                button.setTooltipText("Dark mode");
+            }
+        });
+    }
+
+    private void onThemeSelect(AbstractField.ComponentValueChangeEvent<ComboBox<String>, String> event) {
+        event.getSource().getUI().ifPresent(ui -> {
+            var theme = event.getValue();
+            Registration previous = ComponentUtil.getData(ui, Registration.class);
+            if (previous != null) {
+                previous.remove();
+            }
+            String stylesheet = "themes/" + theme.toLowerCase().replace(" ", "-") + "-theme.css";
+            Registration registration = ui.getPage().addStyleSheet(stylesheet);
+            ComponentUtil.setData(ui, Registration.class, registration);
+        });
     }
 
     private void changeUnicornMode(AbstractField.ComponentValueChangeEvent<Checkbox, Boolean> event) {
-        if (event.getValue()) {
-            UI.getCurrent().getPage().executeJs("window.colorCycle.start()");
-        } else {
-            UI.getCurrent().getPage().executeJs("window.colorCycle.stop()");
-        }
+        event.getSource().getUI().ifPresent(ui -> {
+            if (event.getValue()) {
+                ui.getPage().executeJs("window.colorCycle.start()");
+            } else {
+                ui.getPage().executeJs("window.colorCycle.stop()");
+            }
+        });
     }
-
 
     private String getCurrentPageTitle() {
         return MenuConfiguration.getPageHeader(getContent()).orElse("");
